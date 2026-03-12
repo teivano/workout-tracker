@@ -399,13 +399,29 @@ input:focus { border-bottom-color: rgba(255,255,255,0.7); }
 .exercise-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 13px 14px 13px 12px;
+  cursor: pointer;
+  user-select: none;
 }
-.exercise-name { color: var(--text); font-size: 14px; font-weight: 600; flex: 1; cursor: pointer; }
+.exercise-name { color: var(--text); font-size: 14px; font-weight: 600; flex: 1; }
 .exercise-header-right { display: flex; align-items: center; gap: 8px; }
 .exercise-set-count {
   font-size: 12px; color: var(--accent-text); font-weight: 700;
   background: var(--accent-dim); padding: 2px 8px; border-radius: 10px;
 }
+
+/* Chevron */
+.exercise-chevron {
+  font-size: 18px; font-weight: 300; color: var(--text-faint);
+  display: inline-block;
+  transform: rotate(0deg);
+  transition: transform 0.22s ease, color 0.2s;
+  line-height: 1;
+}
+.exercise-chevron.open {
+  transform: rotate(90deg);
+  color: var(--accent-text);
+}
+
 .add-set-button {
   background: var(--accent); color: white; border: none;
   padding: 7px 13px; font-size: 12px; font-weight: 700;
@@ -434,20 +450,38 @@ input:focus { border-bottom-color: rgba(255,255,255,0.7); }
 }
 .series-delete:hover { color: var(--danger); }
 
-/* ═══ SELECTS ═══ */
+/* ═══ STEP INPUTS (remplace les selects) ═══ */
 .set-inputs {
-  display: flex; gap: 10px;
-  padding: 10px 14px 14px 12px;
+  display: flex; gap: 8px; align-items: center;
+  padding: 12px 14px 14px 12px;
   border-top: 1px solid var(--border);
+  flex-wrap: wrap;
 }
-.set-inputs select {
-  flex: 1; padding: 9px 8px; text-align: center;
-  border: 1px solid var(--border); background: var(--bg-input);
-  color: var(--text); border-radius: var(--radius-sm); font-size: 14px;
-  cursor: pointer; font-family: 'Poppins', sans-serif; appearance: none;
-  font-weight: 500;
+.step-input {
+  display: flex; align-items: center; gap: 0;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  flex: 1; min-width: 100px;
 }
-.set-inputs select:focus { border-color: rgba(255,255,255,0.4); outline: none; }
+.step-btn {
+  background: rgba(255,255,255,0.06);
+  border: none; color: var(--text);
+  font-size: 18px; font-weight: 300;
+  padding: 10px 14px; cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1; flex-shrink: 0;
+}
+.step-btn:hover { background: rgba(255,255,255,0.12); }
+.step-btn:active { background: rgba(255,255,255,0.18); }
+.step-value {
+  flex: 1; text-align: center;
+  font-size: 14px; font-weight: 700; color: var(--text);
+  user-select: none; white-space: nowrap;
+}
+.step-unit { font-size: 11px; font-weight: 400; color: var(--text-muted); margin-left: 2px; }
 
 /* ═══════════════════════════
    HISTORY
@@ -524,4 +558,6 @@ input:focus { border-bottom-color: rgba(255,255,255,0.7); }
 ═══════════════════════════ */
 @media (max-width: 479px) {
   .app-container { width: 100%; }
+  .set-inputs { gap: 6px; }
+  .step-btn { padding: 10px 12px; }
 }
