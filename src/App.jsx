@@ -229,6 +229,7 @@ export default function App() {
               <Timer resetTrigger={resetTrigger} />
               <ExerciseList
                 exercises={selectedSession.exercises}
+                history={selectedSession.history}
                 addSet={handleAddSet}
                 deleteSet={deleteSet}
                 flashIndex={flashIndex}
