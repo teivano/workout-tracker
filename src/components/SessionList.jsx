@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 
-export default function SessionList({ sessions, addSession, deleteSession, addExercise }) {
+export default function SessionList({ sessions, addSession, deleteSession, addExercise, renameSession }) {
   const [sessionInput, setSessionInput] = useState("");
-  const [exerciseInput, setExerciseInput] = useState("");
+  const [exerciseInputs, setExerciseInputs] = useState({});
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const [renamingIndex, setRenamingIndex] = useState(null);
+  const [renameValue, setRenameValue] = useState("");
+
+  const regex = /^[a-zA-Z\u00C0-\u00FF0-9\s]+$/;
 
   const handleAddSession = () => {
-    const regex = /^[a-zA-ZÀ-ÿ0-9\s]+$/;
     if (!sessionInput.trim() || sessionInput.length > 20 || !regex.test(sessionInput)) {
-      const inputField = document.querySelector(".session-input");
-      inputField.classList.add("input-error");
-      setTimeout(() => inputField.classList.remove("input-error"), 300);
+      const el = document.querySelector(".session-input");
+      el.classList.add("input-error");
+      setTimeout(() => el.classList.remove("input-error"), 300);
       return;
     }
     addSession(sessionInput);
@@ -18,10 +21,23 @@ export default function SessionList({ sessions, addSession, deleteSession, addEx
   };
 
   const handleAddExercise = (sessionIndex) => {
-    if (exerciseInput.trim() && sessionIndex !== null) {
-      addExercise(sessionIndex, exerciseInput);
-      setExerciseInput("");
+    const val = exerciseInputs[sessionIndex] || "";
+    if (val.trim()) {
+      addExercise(sessionIndex, val.trim());
+      setExerciseInputs((prev) => ({ ...prev, [sessionIndex]: "" }));
     }
+  };
+
+  const startRename = (index, currentName) => {
+    setRenamingIndex(index);
+    setRenameValue(currentName);
+  };
+
+  const confirmRename = (index) => {
+    if (renameValue.trim() && renameValue.length <= 20 && regex.test(renameValue)) {
+      renameSession(index, renameValue.trim());
+    }
+    setRenamingIndex(null);
   };
 
   const toggleSession = (index) => {
@@ -29,51 +45,79 @@ export default function SessionList({ sessions, addSession, deleteSession, addEx
   };
 
   return (
-    <div>
-      <h2>Liste des séances</h2>
+    <div className="session-list-page">
+      <p className="session-page-title">Mes séances</p>
 
-      <input
-        type="text"
-        className="session-input"
-        value={sessionInput}
-        onChange={(e) => {
-          const value = e.target.value;
-          if (value.length <= 20 && /^[a-zA-ZÀ-ÿ0-9\s]*$/.test(value)) {
-            setSessionInput(value);
-          }
-        }}
-        onKeyDown={(e) => e.key === "Enter" && handleAddSession()}
-        placeholder="Ajouter une séance..."
-      />
-      <button className="add-button" onClick={handleAddSession}>+</button>
+      {/* Input nouvelle séance */}
+      <div className="input-row">
+        <input
+          type="text"
+          className="session-input"
+          value={sessionInput}
+          onChange={(e) => {
+            const v = e.target.value;
+            if (v.length <= 20 && /^[a-zA-Z\u00C0-\u00FF0-9\s]*$/.test(v)) setSessionInput(v);
+          }}
+          onKeyDown={(e) => e.key === "Enter" && handleAddSession()}
+          placeholder="Nouvelle séance..."
+        />
+        <button className="add-button" onClick={handleAddSession}>+</button>
+      </div>
 
+      {/* Liste des séances */}
       {sessions.map((session, index) => (
         <div key={index} className="session-item">
           <div className="session-header">
-            <h3 onClick={() => toggleSession(index)}>✏️ {session.name}</h3>
-            <button
-              className="delete-session"
-              onClick={() => deleteSession(index)}
-            >❌</button>
+            {renamingIndex === index ? (
+              <input
+                className="rename-input"
+                value={renameValue}
+                autoFocus
+                onChange={(e) => setRenameValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") confirmRename(index);
+                  if (e.key === "Escape") setRenamingIndex(null);
+                }}
+                onBlur={() => confirmRename(index)}
+              />
+            ) : (
+              <h3 onClick={() => toggleSession(index)}>{session.name}</h3>
+            )}
+            <div className="session-actions">
+              <button
+                className="rename-btn"
+                title="Renommer"
+                onClick={() => startRename(index, session.name)}
+              >✏️</button>
+              <button
+                className="delete-session"
+                onClick={() => deleteSession(index)}
+              >❌</button>
+            </div>
           </div>
 
+          {/* Exercices */}
           {expandedIndex === index && (
-            <div className="exercise-list">
-              <h4>Ajouter un exercice :</h4>
-              <input
-                type="text"
-                value={exerciseInput}
-                onChange={(e) => setExerciseInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleAddExercise(index)}
-                placeholder="Nom de l'exercice"
-              />
-              <button className="add-button" onClick={() => handleAddExercise(index)}>+</button>
-
-              <ul>
-                {session.exercises.map((exercise, exIndex) => (
-                  <li key={exIndex}>{exercise.name}</li>
-                ))}
-              </ul>
+            <div className="session-exercises">
+              <div className="input-row" style={{ marginBottom: 10 }}>
+                <input
+                  type="text"
+                  value={exerciseInputs[index] || ""}
+                  onChange={(e) => setExerciseInputs((prev) => ({ ...prev, [index]: e.target.value }))}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddExercise(index)}
+                  placeholder="Ajouter un exercice..."
+                />
+                <button className="add-button" onClick={() => handleAddExercise(index)}>+</button>
+              </div>
+              {session.exercises.length === 0 ? (
+                <p className="no-exercises">Aucun exercice — ajoute en un !</p>
+              ) : (
+                <div className="exercise-tags">
+                  {session.exercises.map((ex, i) => (
+                    <span key={i} className="exercise-tag">{ex.name}</span>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

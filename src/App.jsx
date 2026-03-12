@@ -32,7 +32,7 @@ export default function App() {
   const [selectedSessionIndex, setSelectedSessionIndex] = useState(null);
   const [resetTrigger, setResetTrigger] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [mode, setMode] = useState("edit"); // edit | action | history
+  const [mode, setMode] = useState("edit");
 
   useEffect(() => {
     localStorage.setItem("sessions", JSON.stringify(sessions));
@@ -67,6 +67,15 @@ export default function App() {
     setSessions(updated);
   };
 
+  const renameSession = (index, newName) => {
+    const updated = [...sessions];
+    updated[index].name = newName;
+    setSessions(updated);
+    if (selectedSessionIndex === index) {
+      setSelectedSession(updated[index]);
+    }
+  };
+
   const deleteSession = (index) => {
     if (!window.confirm("Supprimer cette séance ?")) return;
     const updated = sessions.filter((_, i) => i !== index);
@@ -96,10 +105,7 @@ export default function App() {
     }
     const snapshot = {
       date: new Date().toISOString(),
-      exercises: session.exercises.map((ex) => ({
-        name: ex.name,
-        sets: [...ex.sets],
-      })),
+      exercises: session.exercises.map((ex) => ({ name: ex.name, sets: [...ex.sets] })),
     };
     session.history = [snapshot, ...(session.history || [])];
     session.exercises = session.exercises.map((ex) => ({ ...ex, sets: [] }));
@@ -130,8 +136,8 @@ export default function App() {
           {mode === "action" && selectedSession && (
             <>
               <button className="header-icon-btn" title="Historique" onClick={() => setMode("history")}>📊</button>
-              <button className="header-icon-btn finish-btn" title="Terminer la séance" onClick={finishSession}>✅</button>
-              <button className="header-icon-btn" title="Gérer les séances" onClick={() => setMode("edit")}>✏️</button>
+              <button className="header-icon-btn finish-btn" title="Terminer" onClick={finishSession}>✅</button>
+              <button className="header-icon-btn" title="Gérer" onClick={() => setMode("edit")}>✏️</button>
             </>
           )}
           {mode === "history" && (
@@ -169,7 +175,13 @@ export default function App() {
 
         <div className="app-container">
           {mode === "edit" ? (
-            <SessionList sessions={sessions} addSession={addSession} deleteSession={deleteSession} addExercise={addExercise} />
+            <SessionList
+              sessions={sessions}
+              addSession={addSession}
+              deleteSession={deleteSession}
+              addExercise={addExercise}
+              renameSession={renameSession}
+            />
           ) : mode === "history" && selectedSession ? (
             <History session={selectedSession} />
           ) : selectedSession ? (
