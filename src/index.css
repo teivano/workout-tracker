@@ -50,27 +50,28 @@ body { margin: 0; padding: 0; min-height: 100vh; background-color: #2c2c2c; }
 /* ═══ CONTAINER ═══ */
 .app-container {
   display: flex; flex-direction: column; align-items: center;
-  justify-content: flex-start; min-height: calc(100vh - 56px);
-  padding: 24px 20px 40px; width: 95%; max-width: 600px; margin: auto;
-  /* iOS: padding-bottom absorbs home indicator */
-  padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  justify-content: flex-start; min-height: calc(100dvh - 56px);
+  padding: 24px 20px calc(40px + env(safe-area-inset-bottom));
+  width: 95%; max-width: 600px; margin: auto;
 }
 
 /* ═══ SIDE MENU — MOBILE ═══ */
 .side-menu {
   position: fixed; top: 56px; left: -82%; width: 80%; max-width: 300px;
-  height: calc(100vh - 56px); background: #1a1a1a;
+  /* dvh = dynamic viewport height : tient compte de la barre Chrome iOS */
+  height: calc(100dvh - 56px);
+  background: #1a1a1a;
   box-shadow: 4px 0 20px rgba(0,0,0,0.4); transition: left 0.3s ease-in-out;
-  z-index: 1000; display: flex; flex-direction: column; padding: 20px;
-  /* iOS: pad bottom for home bar */
-  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  z-index: 1000; display: flex; flex-direction: column;
+  padding: 20px 20px 0;   /* pas de padding-bottom ici, géré par menu-bottom */
 }
 .side-menu.open { left: 0; }
+
 .side-menu.desktop-visible {
   position: fixed; top: 56px; left: 0; width: 280px;
-  height: calc(100vh - 56px); background: #1a1a1a;
+  height: calc(100dvh - 56px); background: #1a1a1a;
   border-right: 1px solid rgba(255,255,255,0.06); z-index: 100;
-  display: flex; flex-direction: column; padding: 24px 20px; transition: none;
+  display: flex; flex-direction: column; padding: 24px 20px 0; transition: none;
 }
 .side-menu h2 {
   font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.4);
@@ -94,12 +95,14 @@ body { margin: 0; padding: 0; min-height: 100vh; background-color: #2c2c2c; }
   font-size: 11px; padding: 2px 7px; border-radius: 10px; font-weight: 600;
 }
 .session-list button.active .session-badge { background: rgba(40,167,69,0.3); color: #4cdb78; }
+
+/* Bouton + footer collés en bas, jamais cachés */
 .menu-bottom {
   flex-shrink: 0;
-  display: flex; flex-direction: column; gap: 0;
+  padding: 12px 0 calc(16px + env(safe-area-inset-bottom));
 }
 .create-session-button {
-  width: 100%; margin-top: 12px; background: #28a745; color: white;
+  width: 100%; background: #28a745; color: white;
   padding: 12px; font-size: 14px; font-weight: 600; border: none;
   cursor: pointer; text-align: center; border-radius: 10px;
   font-family: 'Poppins', sans-serif; transition: background 0.2s;
@@ -114,7 +117,7 @@ body { margin: 0; padding: 0; min-height: 100vh; background-color: #2c2c2c; }
 /* ═══ OVERLAY ═══ */
 .overlay {
   position: fixed; top: 56px; left: 0; width: 100%;
-  height: calc(100vh - 56px); background: rgba(0,0,0,0.5); z-index: 999;
+  height: calc(100dvh - 56px); background: rgba(0,0,0,0.5); z-index: 999;
 }
 
 /* ═══ EMPTY STATE ═══ */
@@ -333,6 +336,6 @@ input:focus { border-bottom: 2px solid rgba(255,255,255,0.8); }
 
 /* ═══ RESPONSIVE MOBILE ═══ */
 @media (max-width: 479px) {
-  .app-container { width: 100%; padding: 16px 14px calc(40px + env(safe-area-inset-bottom)); }
+  .app-container { width: 100%; }
   .timer-container { font-size: 48px; }
 }
