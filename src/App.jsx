@@ -15,26 +15,28 @@ const useIsDesktop = () => {
   return isDesktop;
 };
 
-const migrateSessions = (s) => s.map((x) => ({ history: [], category: "", ...x }));
+const migrateSessions = (s) =>
+  s.map((x) => ({ history: [], muscles: [], ...x }));
 
 export default function App() {
   const isDesktop = useIsDesktop();
 
-  const [showOnboarding, setShowOnboarding] = useState(() =>
-    !localStorage.getItem("onboarding_done")
+  const [showOnboarding, setShowOnboarding] = useState(
+    () => !localStorage.getItem("onboarding_done")
   );
 
   const [sessions, setSessions] = useState(() => {
     try {
       const saved = localStorage.getItem("sessions");
       return saved ? migrateSessions(JSON.parse(saved)) : [];
-    } catch { return []; }
+    } catch {
+      return [];
+    }
   });
 
   const [selectedSessionIndex, setSelectedSessionIndex] = useState(null);
   const [resetTrigger, setResetTrigger] = useState(false);
-  // mode: "train" | "history" | "manage"
-  const [mode, setMode] = useState("manage");
+  const [mode, setMode] = useState("manage"); // "train" | "history" | "manage"
   const [flashIndex, setFlashIndex] = useState(null);
 
   useEffect(() => {
@@ -76,7 +78,7 @@ export default function App() {
     if (!name.trim()) return;
     setSessions((prev) => [
       ...prev,
-      { name, exercises: [], history: [], category: "" },
+      { name, exercises: [], history: [], muscles: [] },
     ]);
   };
 
@@ -104,11 +106,15 @@ export default function App() {
   };
 
   const renameSession = (index, newName) => {
-    update((s) => { s[index].name = newName; });
+    update((s) => {
+      s[index].name = newName;
+    });
   };
 
-  const setCategorySession = (index, category) => {
-    update((s) => { s[index].category = category; });
+  const setMusclesSession = (index, muscles) => {
+    update((s) => {
+      s[index].muscles = muscles;
+    });
   };
 
   const duplicateSession = (index) => {
@@ -124,7 +130,7 @@ export default function App() {
   };
 
   const deleteSession = (index) => {
-    if (!window.confirm("Supprimer cette s\u00e9ance ?")) return;
+    if (!window.confirm("Supprimer cette séance ?")) return;
     setSessions((prev) => {
       const next = prev.filter((_, i) => i !== index);
       if (selectedSessionIndex === index) {
@@ -161,7 +167,10 @@ export default function App() {
       ];
       session.exercises = session.exercises.map((ex) => ({ ...ex, sets: [] }));
     });
-    if (!hasSet) { alert("Aucune s\u00e9rie enregistr\u00e9e."); return; }
+    if (!hasSet) {
+      alert("Aucune série enregistrée.");
+      return;
+    }
     setMode("history");
   };
 
@@ -176,59 +185,49 @@ export default function App() {
 
   const showTimer = mode === "train" && !!selectedSession;
 
-  // ── titre header ──
   const headerTitle =
     mode === "train" && selectedSession
       ? selectedSession.name
       : mode === "history" && selectedSession
       ? selectedSession.name
-      : "\ud83c\udf34 Workout";
+      : "🌴 Workout";
 
   return (
     <>
       {showOnboarding && <Onboarding onDone={handleOnboardingDone} />}
 
-      {/* ════ HEADER ════ */}
       <header className="app-header">
-        {/* hamburger uniquement sur desktop pour ouvrir la sidebar — sur mobile on n'en a plus besoin */}
         <div className="app-title-block">
           <span className="app-title">{headerTitle}</span>
           {mode === "train" && selectedSession && totalSetsToday > 0 && (
             <span className="header-sets-count">
-              {totalSetsToday} s\u00e9rie{totalSetsToday > 1 ? "s" : ""}
+              {totalSetsToday} série{totalSetsToday > 1 ? "s" : ""}
             </span>
           )}
         </div>
-
-        {/* Actions header — desktop seulement (mobile utilise la bottom nav) */}
         {isDesktop && (
           <div className="header-actions">
             {mode === "train" && selectedSession && (
               <button
                 className="header-icon-btn finish-btn"
                 onClick={finishSession}
-                title="Terminer la s\u00e9ance"
               >
-                \u2705 Terminer
+                ✅ Terminer
               </button>
             )}
           </div>
         )}
       </header>
 
-      {/* ════ TIMER STICKY ════ */}
       {showTimer && <Timer resetTrigger={resetTrigger} />}
 
-      {/* ════ LAYOUT ════ */}
       <div className={`app-wrapper ${isDesktop ? "desktop" : ""}`}>
-
-        {/* Sidebar desktop */}
         {isDesktop && (
           <div className="side-menu desktop-visible">
-            <h2>S\u00e9ances</h2>
+            <h2>Séances</h2>
             <div className="session-list">
               {sessions.length === 0 && (
-                <p className="menu-empty">Aucune s\u00e9ance —<br />cr\u00e9e-en une !</p>
+                <p className="menu-empty">Aucune séance —<br />crée-en une !</p>
               )}
               {sessions.map((session, index) => (
                 <button
@@ -248,14 +247,13 @@ export default function App() {
                 className="create-session-button"
                 onClick={() => setMode("manage")}
               >
-                + G\u00e9rer les s\u00e9ances
+                + Gérer les séances
               </button>
-              <div className="menu-footer">Avec amour \u00a9 Teivano 2025</div>
+              <div className="menu-footer">Avec amour © Teivano 2025</div>
             </div>
           </div>
         )}
 
-        {/* Contenu principal */}
         <div className="app-container">
           {mode === "manage" ? (
             <SessionList
@@ -267,7 +265,7 @@ export default function App() {
               deleteExercise={deleteExercise}
               moveExercise={moveExercise}
               duplicateSession={duplicateSession}
-              setCategorySession={setCategorySession}
+              setMusclesSession={setMusclesSession}
               onSelectSession={selectSession}
             />
           ) : mode === "history" && selectedSession ? (
@@ -281,56 +279,46 @@ export default function App() {
                 deleteSet={deleteSet}
                 flashIndex={flashIndex}
               />
-              {/* Bouton Terminer prominent — mobile uniquement (desktop = header) */}
               {!isDesktop && (
                 <button className="finish-session-btn" onClick={finishSession}>
-                  \u2705 Terminer la s\u00e9ance
+                  ✅ Terminer la séance
                 </button>
               )}
             </>
           ) : (
             <div className="empty-state">
-              <span>\ud83d\udcaa</span>
-              <p>
-                S\u00e9lectionne une s\u00e9ance<br />pour commencer
-              </p>
-              <small>Va dans \u2699\ufe0f G\u00e9rer pour cr\u00e9er une s\u00e9ance</small>
+              <span>💪</span>
+              <p>Sélectionne une séance<br />pour commencer</p>
+              <small>Va dans ⚙️ Gérer pour créer une séance</small>
             </div>
           )}
         </div>
       </div>
 
-      {/* ════ BOTTOM NAV — mobile uniquement ════ */}
       {!isDesktop && (
         <nav className="bottom-nav">
           <button
             className={`bnav-btn ${mode === "train" ? "active" : ""}`}
-            onClick={() => {
-              if (selectedSession) setMode("train");
-            }}
+            onClick={() => { if (selectedSession) setMode("train"); }}
             disabled={!selectedSession}
           >
-            <span className="bnav-icon">\ud83c\udfcb\ufe0f</span>
-            <span className="bnav-label">Entra\u00eenement</span>
+            <span className="bnav-icon">🏋️</span>
+            <span className="bnav-label">Entraînement</span>
           </button>
-
           <button
             className={`bnav-btn ${mode === "history" ? "active" : ""}`}
-            onClick={() => {
-              if (selectedSession) setMode("history");
-            }}
+            onClick={() => { if (selectedSession) setMode("history"); }}
             disabled={!selectedSession}
           >
-            <span className="bnav-icon">\ud83d\udcca</span>
+            <span className="bnav-icon">📊</span>
             <span className="bnav-label">Historique</span>
           </button>
-
           <button
             className={`bnav-btn ${mode === "manage" ? "active" : ""}`}
             onClick={() => setMode("manage")}
           >
-            <span className="bnav-icon">\u2699\ufe0f</span>
-            <span className="bnav-label">G\u00e9rer</span>
+            <span className="bnav-icon">⚙️</span>
+            <span className="bnav-label">Gérer</span>
           </button>
         </nav>
       )}
