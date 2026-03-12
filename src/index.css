@@ -1,68 +1,451 @@
+/* 🌍 Global */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  font-family: 'Poppins', sans-serif;
+  background-color: #2c2c2c;
+  color: white;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  padding: 0;
   min-height: 100vh;
+  background-color: #2c2c2c;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* 🏅 Bandeau en haut */
+.header {
+  width: 100%;
+  background: black;
+  padding: 15px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+.header h1 {
+  color: white;
+  font-size: 1.5rem;
+  margin: 0;
+  text-align: left;
+}
+
+/* ✅ Menu latéral */
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: -82%;
+  width: 80%;
+  height: 100vh;
+  background: #1e1e1e;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  transition: left 0.3s ease-in-out;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.side-menu.open {
+  left: 0;
+}
+
+.session-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.session-list button {
+  background: #2c2c2c;
+  width: 90%;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  text-align: left;
+  border-radius: 10px;
+  transition: background 0.3s;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+.session-list button:hover {
+  background: #383838;
+}
+
+/* ✅ Bouton "Créer une séance" fixé en bas */
+.create-session-button {
+  width: 80%;
+  position: absolute;
+  bottom: 60px;
+  left: 20px;
+  background: #28a745;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 36px;
+}
+
+.create-session-button:hover {
+  background: #218838;
+}
+
+/* ✅ Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 999;
+}
+
+.menu-open .overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ✅ Bouton hamburger */
+.hamburger-menu {
+  position: absolute;
+  top: 15px;
+  right: -1px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: white;
+  cursor: pointer;
+  z-index: 1101;
+  transition: transform 0.3s ease-in-out;
+}
+
+.hamburger-menu.open {
+  transform: rotate(90deg);
+  right: 15px;
+}
+
+/* 🏋️ Conteneur principal */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 80px 20px 40px;
+  background-color: #2c2c2c;
+  width: 95%;
+  max-width: 600px;
+  margin: auto;
+  box-sizing: border-box;
+}
+
+/* 🕒 Timer */
+.timer-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  color: white;
+  font-size: 64px;
+  font-weight: bold;
+  text-align: center;
+  max-width: 250px;
+}
+
+/* 🔢 Timer Adjust Buttons */
+.timer-adjust {
+  background: none;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  font-size: 20px;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+.timer-adjust:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: white;
+}
+
+/* 📝 Input */
+.input-container {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  background: transparent;
+  color: white;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+  transition: border-color 0.3s;
+}
+input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+input:focus {
+  border-bottom: 2px solid white;
+}
+
+/* ✅ Boutons */
+.add-button {
+  background: #242424;
+  box-shadow: 0px 2px rgb(152, 152, 152);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: all 0.5s ease-in-out;
+}
+
+.add-button:hover {
+  background: #9a9a9a;
+}
+
+.series-button {
+  background: #242424;
+  box-shadow: 0px 2px #218838;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: all 0.5s ease-in-out;
+}
+
+.series-button:hover {
+  background: #218838;
+}
+
+/* ✅ Barre verticale pour chaque exercice */
+.exercise-item {
+  position: relative;
+  padding-left: 20px;
+  list-style: none;
+}
+
+.exercise-item::before {
+  content: "";
+  position: absolute;
+  left: 0px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background-color: #777;
+  border-radius: 2px;
+  transition: height 0.3s ease-in;
+}
+
+/* ✅ Animation ouverture des séries */
+@keyframes expandSeries {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.exercise-item.expanded .series-row {
+  animation: expandSeries 0.3s ease-in-out;
+}
+
+/* 📱 Responsive */
+@media (max-width: 480px) {
+  .app-container {
+    width: 90%;
+    padding: 100px 0px 30px;
   }
-  a:hover {
-    color: #747bff;
+
+  .series-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
   }
-  button {
-    background-color: #f9f9f9;
-  }
+}
+
+/* ✅ Footer du menu */
+.menu-footer {
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 10px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ✅ Header de chaque session */
+.session-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  background: #2c2c2c;
+  border-radius: 6px;
+}
+
+.delete-session {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: red;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.delete-session:hover {
+  transform: scale(1.1);
+}
+
+/* ❌ Effet shake */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.input-error {
+  animation: shake 0.3s ease-in-out;
+  border-bottom: 2px solid red !important;
+}
+
+/* ✅ Sélecteurs poids et répétitions */
+.set-inputs {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+}
+
+.set-inputs select {
+  width: 80px;
+  padding: 5px;
+  text-align: center;
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  border-radius: 4px;
+  transition: background 0.3s ease-in-out;
+  font-size: 14px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.set-inputs select:focus {
+  background: rgba(255, 255, 255, 0.2);
+  outline: none;
+}
+
+/* ✅ En-tête de l'exercice */
+.exercise-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.exercise-name {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ✅ Bouton +1 Série */
+.add-set-button {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.add-set-button:hover {
+  background: #218838;
+}
+
+/* ✅ Séries effectuées */
+.exercise-sets {
+  padding: 10px;
+}
+
+.exercise-sets p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin: 5px 0;
+}
+
+.series-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.series-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.series-number {
+  color: rgba(255,255,255,0.4);
+  min-width: 16px;
+}
+
+.series-weight {
+  color: white;
+  font-weight: 600;
+}
+
+.series-reps {
+  color: rgba(255,255,255,0.7);
+}
+
+/* 🔴 Clignotement du Timer à la fin */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+.timer-zero {
+  animation: blink 0.5s ease-in-out infinite;
+}
+
+/* ✅ Exercise list */
+.exercise-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
