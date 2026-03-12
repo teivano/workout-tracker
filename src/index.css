@@ -37,7 +37,7 @@ body { margin: 0; padding: 0; min-height: 100vh; background-color: #2c2c2c; }
   display: flex; align-items: center; gap: 4px; flex-shrink: 0;
 }
 .header-icon-btn {
-  background: none; border: none; font-size: 18px; color: white;
+  background: none; border: none; color: white;
   cursor: pointer; padding: 6px 8px; border-radius: 6px;
   transition: background 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif;
   font-size: 13px;
@@ -127,21 +127,70 @@ body { margin: 0; padding: 0; min-height: 100vh; background-color: #2c2c2c; }
 .empty-state p { font-size: 15px; text-align: center; }
 .empty-state small { font-size: 12px; color: rgba(255,255,255,0.2); }
 
-/* ═══ SESSION LIST (edit) ═══ */
+/* ═══ SESSION LIST PAGE (mode edit) ═══ */
+.session-list-page { width: 100%; }
+
+.session-page-title {
+  font-size: 1.1rem; font-weight: 600; color: white;
+  margin-bottom: 20px;
+}
+
 .session-item {
   width: 100%; margin-bottom: 10px; background: #1e1e1e;
   border-radius: 10px; overflow: hidden;
 }
 .session-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px; cursor: pointer;
+  padding: 14px 16px;
 }
-.session-header h3 { font-size: 15px; font-weight: 600; color: white; margin: 0; }
+.session-header h3 {
+  font-size: 15px; font-weight: 600; color: white; margin: 0;
+  cursor: pointer; flex: 1;
+}
+.session-actions { display: flex; align-items: center; gap: 4px; }
+
+.rename-btn {
+  background: none; border: none; font-size: 15px; color: rgba(255,255,255,0.4);
+  cursor: pointer; padding: 4px 6px; border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+.rename-btn:hover { color: white; background: rgba(255,255,255,0.08); }
+
+.rename-input {
+  flex: 1; padding: 4px 8px; font-size: 15px; font-weight: 600;
+  background: rgba(255,255,255,0.06); color: white;
+  border: 1px solid rgba(255,255,255,0.25); border-radius: 6px;
+  outline: none; font-family: 'Poppins', sans-serif;
+  border-bottom: 1px solid rgba(255,255,255,0.25) !important;
+}
+.rename-input:focus { border-color: rgba(255,255,255,0.6) !important; }
+
 .delete-session {
   background: none; border: none; font-size: 16px;
   color: rgba(255,80,80,0.7); cursor: pointer; transition: transform 0.2s; padding: 4px;
 }
 .delete-session:hover { transform: scale(1.15); color: #ff5050; }
+
+/* ═══ SESSION EXERCISES (dans edit) ═══ */
+.session-exercises {
+  padding: 0 16px 14px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.session-exercises .input-row { margin-top: 12px; }
+
+.no-exercises {
+  font-size: 12px; color: rgba(255,255,255,0.25);
+  font-style: italic; padding: 4px 0 6px;
+}
+
+.exercise-tags {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0 6px;
+}
+.exercise-tag {
+  background: rgba(40,167,69,0.15); color: #4cdb78;
+  font-size: 12px; font-weight: 600; padding: 4px 12px;
+  border-radius: 20px; border: 1px solid rgba(40,167,69,0.3);
+}
 
 /* ═══ INPUTS ═══ */
 input {
@@ -252,8 +301,8 @@ input:focus { border-bottom: 2px solid rgba(255,255,255,0.8); }
 }
 .history-chevron { font-size: 10px; color: rgba(255,255,255,0.3); }
 .history-detail {
-  padding: 0 16px 14px; border-top: 1px solid rgba(255,255,255,0.06);
-  display: flex; flex-direction: column; gap: 12px; padding-top: 12px;
+  padding: 12px 16px 14px; border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; flex-direction: column; gap: 12px;
 }
 .history-exercise { display: flex; flex-direction: column; gap: 6px; }
 .history-exercise-name { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); }
