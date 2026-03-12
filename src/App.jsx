@@ -20,9 +20,9 @@ const migrateSessions = (s) => s.map((x) => ({ history: [], category: "", ...x }
 export default function App() {
   const isDesktop = useIsDesktop();
 
-  const [showOnboarding, setShowOnboarding] = useState(() => {
-    return !localStorage.getItem("onboarding_done");
-  });
+  const [showOnboarding, setShowOnboarding] = useState(() =>
+    !localStorage.getItem("onboarding_done")
+  );
 
   const [sessions, setSessions] = useState(() => {
     try {
@@ -30,23 +30,34 @@ export default function App() {
       return saved ? migrateSessions(JSON.parse(saved)) : [];
     } catch { return []; }
   });
+
   const [selectedSessionIndex, setSelectedSessionIndex] = useState(null);
   const [resetTrigger, setResetTrigger] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [mode, setMode] = useState("edit");
+  // mode: "train" | "history" | "manage"
+  const [mode, setMode] = useState("manage");
   const [flashIndex, setFlashIndex] = useState(null);
 
-  useEffect(() => { localStorage.setItem("sessions", JSON.stringify(sessions)); }, [sessions]);
+  useEffect(() => {
+    localStorage.setItem("sessions", JSON.stringify(sessions));
+  }, [sessions]);
 
-  const selectedSession = selectedSessionIndex !== null ? sessions[selectedSessionIndex] : null;
+  const selectedSession =
+    selectedSessionIndex !== null ? sessions[selectedSessionIndex] : null;
 
-  const update = (fn) => setSessions((prev) => { const next = [...prev]; fn(next); return next; });
+  const update = (fn) =>
+    setSessions((prev) => {
+      const next = [...prev];
+      fn(next);
+      return next;
+    });
 
   const handleAddSet = (exerciseIndex, weight, reps) => {
     if (selectedSessionIndex === null) return;
     update((s) => {
       s[selectedSessionIndex].exercises[exerciseIndex].sets.push({
-        weight, reps, timestamp: new Date().toISOString(),
+        weight,
+        reps,
+        timestamp: new Date().toISOString(),
       });
     });
     setResetTrigger((p) => !p);
@@ -56,7 +67,9 @@ export default function App() {
 
   const deleteSet = (exerciseIndex, setIndex) => {
     if (selectedSessionIndex === null) return;
-    update((s) => { s[selectedSessionIndex].exercises[exerciseIndex].sets.splice(setIndex, 1); });
+    update((s) => {
+      s[selectedSessionIndex].exercises[exerciseIndex].sets.splice(setIndex, 1);
+    });
   };
 
   const addSession = (name) => {
@@ -69,12 +82,16 @@ export default function App() {
 
   const addExercise = (sessionIndex, exerciseName) => {
     if (!exerciseName.trim()) return;
-    update((s) => { s[sessionIndex].exercises.push({ name: exerciseName, sets: [] }); });
+    update((s) => {
+      s[sessionIndex].exercises.push({ name: exerciseName, sets: [] });
+    });
   };
 
   const deleteExercise = (sessionIndex, exerciseIndex) => {
     if (!window.confirm("Supprimer cet exercice ?")) return;
-    update((s) => { s[sessionIndex].exercises.splice(exerciseIndex, 1); });
+    update((s) => {
+      s[sessionIndex].exercises.splice(exerciseIndex, 1);
+    });
   };
 
   const moveExercise = (sessionIndex, exerciseIndex, direction) => {
@@ -98,7 +115,8 @@ export default function App() {
     update((s) => {
       const orig = s[index];
       s.splice(index + 1, 0, {
-        ...orig, name: orig.name + " (copie)",
+        ...orig,
+        name: orig.name + " (copie)",
         exercises: orig.exercises.map((ex) => ({ ...ex, sets: [] })),
         history: [],
       });
@@ -106,19 +124,22 @@ export default function App() {
   };
 
   const deleteSession = (index) => {
-    if (!window.confirm("Supprimer cette séance ?")) return;
+    if (!window.confirm("Supprimer cette s\u00e9ance ?")) return;
     setSessions((prev) => {
       const next = prev.filter((_, i) => i !== index);
-      if (selectedSessionIndex === index) { setSelectedSessionIndex(null); setMode("edit"); }
-      else if (selectedSessionIndex > index) setSelectedSessionIndex((i) => i - 1);
+      if (selectedSessionIndex === index) {
+        setSelectedSessionIndex(null);
+        setMode("manage");
+      } else if (selectedSessionIndex > index) {
+        setSelectedSessionIndex((i) => i - 1);
+      }
       return next;
     });
   };
 
   const selectSession = (index) => {
     setSelectedSessionIndex(index);
-    setMode("action");
-    setIsMenuOpen(false);
+    setMode("train");
   };
 
   const finishSession = () => {
@@ -129,12 +150,18 @@ export default function App() {
       hasSet = session.exercises.some((ex) => ex.sets.length > 0);
       if (!hasSet) return;
       session.history = [
-        { date: new Date().toISOString(), exercises: session.exercises.map((ex) => ({ name: ex.name, sets: [...ex.sets] })) },
+        {
+          date: new Date().toISOString(),
+          exercises: session.exercises.map((ex) => ({
+            name: ex.name,
+            sets: [...ex.sets],
+          })),
+        },
         ...(session.history || []),
       ];
       session.exercises = session.exercises.map((ex) => ({ ...ex, sets: [] }));
     });
-    if (!hasSet) { alert("Aucune série enregistrée."); return; }
+    if (!hasSet) { alert("Aucune s\u00e9rie enregistr\u00e9e."); return; }
     setMode("history");
   };
 
@@ -147,76 +174,90 @@ export default function App() {
     ? selectedSession.exercises.reduce((t, ex) => t + ex.sets.length, 0)
     : 0;
 
-  // Le timer est sticky : on l'affiche en dehors du flux normal
-  const showTimer = mode === "action" && selectedSession;
+  const showTimer = mode === "train" && !!selectedSession;
+
+  // ── titre header ──
+  const headerTitle =
+    mode === "train" && selectedSession
+      ? selectedSession.name
+      : mode === "history" && selectedSession
+      ? selectedSession.name
+      : "\ud83c\udf34 Workout";
 
   return (
     <>
       {showOnboarding && <Onboarding onDone={handleOnboardingDone} />}
 
+      {/* ════ HEADER ════ */}
       <header className="app-header">
-        {!isDesktop && (
-          <button className={`hamburger-menu ${isMenuOpen ? "open" : ""}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? "✖" : "☰"}
-          </button>
-        )}
+        {/* hamburger uniquement sur desktop pour ouvrir la sidebar — sur mobile on n'en a plus besoin */}
         <div className="app-title-block">
-          <span className="app-title">
-            {mode === "history" && selectedSession ? selectedSession.name
-              : mode === "action" && selectedSession ? selectedSession.name
-              : "🌴 Workout"}
-          </span>
-          {mode === "action" && selectedSession && totalSetsToday > 0 && (
-            <span className="header-sets-count">{totalSetsToday} série{totalSetsToday > 1 ? "s" : ""}</span>
+          <span className="app-title">{headerTitle}</span>
+          {mode === "train" && selectedSession && totalSetsToday > 0 && (
+            <span className="header-sets-count">
+              {totalSetsToday} s\u00e9rie{totalSetsToday > 1 ? "s" : ""}
+            </span>
           )}
         </div>
-        <div className="header-actions">
-          {mode === "action" && selectedSession && (
-            <>
-              <button className="header-icon-btn" onClick={() => setMode("history")} title="Historique">📊</button>
-              <button className="header-icon-btn finish-btn" onClick={finishSession} title="Terminer">✅</button>
-              <button className="header-icon-btn" onClick={() => setMode("edit")} title="Gérer">✏️</button>
-            </>
-          )}
-          {mode === "history" && (
-            <button className="header-icon-btn" onClick={() => setMode("action")}>← Retour</button>
-          )}
-          {mode === "edit" && <div style={{ width: 40 }} />}
-        </div>
+
+        {/* Actions header — desktop seulement (mobile utilise la bottom nav) */}
+        {isDesktop && (
+          <div className="header-actions">
+            {mode === "train" && selectedSession && (
+              <button
+                className="header-icon-btn finish-btn"
+                onClick={finishSession}
+                title="Terminer la s\u00e9ance"
+              >
+                \u2705 Terminer
+              </button>
+            )}
+          </div>
+        )}
       </header>
 
-      {/* Timer sticky — collé sous le header, hors du flux */}
+      {/* ════ TIMER STICKY ════ */}
       {showTimer && <Timer resetTrigger={resetTrigger} />}
 
+      {/* ════ LAYOUT ════ */}
       <div className={`app-wrapper ${isDesktop ? "desktop" : ""}`}>
-        {!isDesktop && isMenuOpen && <div className="overlay" onClick={() => setIsMenuOpen(false)} />}
-        <div className={`side-menu ${isDesktop ? "desktop-visible" : isMenuOpen ? "open" : ""}`}>
-          <h2>Séances</h2>
-          <div className="session-list">
-            {sessions.length === 0 && (
-              <p className="menu-empty">Aucune séance —<br />crée-en une !</p>
-            )}
-            {sessions.map((session, index) => (
-              <button key={index} onClick={() => selectSession(index)}
-                className={selectedSessionIndex === index ? "active" : ""}>
-                <span>{session.name}</span>
-                {session.history?.length > 0 && (
-                  <span className="session-badge">{session.history.length}</span>
-                )}
-              </button>
-            ))}
-          </div>
-          <div className="menu-bottom">
-            <button className="create-session-button"
-              onClick={() => { setMode("edit"); setIsMenuOpen(false); }}>
-              + Gérer les séances
-            </button>
-            <div className="menu-footer">Avec amour © Teivano 2025</div>
-          </div>
-        </div>
 
+        {/* Sidebar desktop */}
+        {isDesktop && (
+          <div className="side-menu desktop-visible">
+            <h2>S\u00e9ances</h2>
+            <div className="session-list">
+              {sessions.length === 0 && (
+                <p className="menu-empty">Aucune s\u00e9ance —<br />cr\u00e9e-en une !</p>
+              )}
+              {sessions.map((session, index) => (
+                <button
+                  key={index}
+                  onClick={() => selectSession(index)}
+                  className={selectedSessionIndex === index ? "active" : ""}
+                >
+                  <span>{session.name}</span>
+                  {session.history?.length > 0 && (
+                    <span className="session-badge">{session.history.length}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+            <div className="menu-bottom">
+              <button
+                className="create-session-button"
+                onClick={() => setMode("manage")}
+              >
+                + G\u00e9rer les s\u00e9ances
+              </button>
+              <div className="menu-footer">Avec amour \u00a9 Teivano 2025</div>
+            </div>
+          </div>
+        )}
+
+        {/* Contenu principal */}
         <div className="app-container">
-          {mode === "edit" ? (
+          {mode === "manage" ? (
             <SessionList
               sessions={sessions}
               addSession={addSession}
@@ -227,26 +268,72 @@ export default function App() {
               moveExercise={moveExercise}
               duplicateSession={duplicateSession}
               setCategorySession={setCategorySession}
+              onSelectSession={selectSession}
             />
           ) : mode === "history" && selectedSession ? (
             <History session={selectedSession} />
           ) : selectedSession ? (
-            <ExerciseList
-              exercises={selectedSession.exercises}
-              history={selectedSession.history}
-              addSet={handleAddSet}
-              deleteSet={deleteSet}
-              flashIndex={flashIndex}
-            />
+            <>
+              <ExerciseList
+                exercises={selectedSession.exercises}
+                history={selectedSession.history}
+                addSet={handleAddSet}
+                deleteSet={deleteSet}
+                flashIndex={flashIndex}
+              />
+              {/* Bouton Terminer prominent — mobile uniquement (desktop = header) */}
+              {!isDesktop && (
+                <button className="finish-session-btn" onClick={finishSession}>
+                  \u2705 Terminer la s\u00e9ance
+                </button>
+              )}
+            </>
           ) : (
             <div className="empty-state">
-              <span>💪</span>
-              <p>Sélectionne une séance<br />pour commencer</p>
-              <small>Ouvre le menu ☰ ou crée une séance</small>
+              <span>\ud83d\udcaa</span>
+              <p>
+                S\u00e9lectionne une s\u00e9ance<br />pour commencer
+              </p>
+              <small>Va dans \u2699\ufe0f G\u00e9rer pour cr\u00e9er une s\u00e9ance</small>
             </div>
           )}
         </div>
       </div>
+
+      {/* ════ BOTTOM NAV — mobile uniquement ════ */}
+      {!isDesktop && (
+        <nav className="bottom-nav">
+          <button
+            className={`bnav-btn ${mode === "train" ? "active" : ""}`}
+            onClick={() => {
+              if (selectedSession) setMode("train");
+            }}
+            disabled={!selectedSession}
+          >
+            <span className="bnav-icon">\ud83c\udfcb\ufe0f</span>
+            <span className="bnav-label">Entra\u00eenement</span>
+          </button>
+
+          <button
+            className={`bnav-btn ${mode === "history" ? "active" : ""}`}
+            onClick={() => {
+              if (selectedSession) setMode("history");
+            }}
+            disabled={!selectedSession}
+          >
+            <span className="bnav-icon">\ud83d\udcca</span>
+            <span className="bnav-label">Historique</span>
+          </button>
+
+          <button
+            className={`bnav-btn ${mode === "manage" ? "active" : ""}`}
+            onClick={() => setMode("manage")}
+          >
+            <span className="bnav-icon">\u2699\ufe0f</span>
+            <span className="bnav-label">G\u00e9rer</span>
+          </button>
+        </nav>
+      )}
     </>
   );
 }
