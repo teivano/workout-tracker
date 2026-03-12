@@ -21,43 +21,29 @@
 - ✅ PWA activée
 - ✅ Persistance localStorage sécurisée
 - ✅ Confirmation avant suppression
+- ✅ Phase 0 — Responsive mobile / tablet / desktop
+- ✅ Phase 1 — Historique par date
 
 ---
 
 ## Phases à venir
 
-### Phase 0 — Responsive ⬅️ À FAIRE EN PREMIER
-Rendre l'app belle sur mobile, tablet et desktop.
-- **Mobile** < 480px — layout actuel, colonne unique
-- **Tablet** 480–1024px — marges plus généreuses, side menu plus large
-- **Desktop** > 1024px — layout 2 colonnes : side menu permanent à gauche, contenu à droite (hamburger masqué)
-- Fichiers à modifier : `src/App.jsx` + `src/index.css`
+### Phase 0 — Responsive ✅ TERMINÉE
+
+### Phase 1 — Historique par date ✅ TERMINÉE
+- Modèle de données : chaque séance a un tableau `history[]`
+- Bouton ✅ dans le header pour archiver une séance terminée
+- Composant `History.jsx` : liste des sessions passées, volume total, détail par exercice
+- Migration automatique des données existantes
+- Badge dans le menu latéral indiquant le nombre de sessions archivées
 
 ---
 
-### Phase 1 — Historique par date
-Refonte du modèle de données — base de toutes les features suivantes.
-- Chaque séance garde un historique des sessions passées par date
-- Nouvelle structure localStorage :
-```json
-{
-  "name": "Push",
-  "exercises": [...],
-  "history": [
-    { "date": "2026-03-12", "exercises": [...] }
-  ]
-}
-```
-- Nouveau composant `History.jsx`
-- ⚠️ Prévoir migration des données existantes en localStorage
-
----
-
-### Phase 2 — Features d'entraînement
+### Phase 2 — Features d'entraînement ⬅️ À FAIRE
 - **11** Supprimer / modifier une série enregistrée
 - **10** Repos suggéré selon l'exercice (configurable par exercice)
 - **13** Notes par série ou par séance
-- **12** Réorganiser l'ordre des exercices (drag or boutons ↑↓)
+- **12** Réorganiser l'ordre des exercices (boutons ↑↓)
 
 ---
 
@@ -65,13 +51,12 @@ Refonte du modèle de données — base de toutes les features suivantes.
 - **14** Duplication d'une séance
 - **15** Bibliothèque d'exercices pré-remplie (squat, bench, deadlift...)
 - **16** Catégories de séances (Push / Pull / Legs / Full Body)
-- **9** Comparaison avec la dernière séance (dépend de la Phase 1)
+- **9** Comparaison avec la dernière séance
 
 ---
 
 ### Phase 4 — Polish UI
-À faire en dernier, quand les features sont stables.
-- **4** États vides illustrés ("Ajoute ton premier exercice !")
+- **4** États vides illustrés
 - **3** Onboarding pour nouvel utilisateur
 - **2** Micro-animations sur les interactions
 - **5** Typographie hiérarchisée cohérente
