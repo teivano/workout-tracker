@@ -147,6 +147,9 @@ export default function App() {
     ? selectedSession.exercises.reduce((t, ex) => t + ex.sets.length, 0)
     : 0;
 
+  // Le timer est sticky : on l'affiche en dehors du flux normal
+  const showTimer = mode === "action" && selectedSession;
+
   return (
     <>
       {showOnboarding && <Onboarding onDone={handleOnboardingDone} />}
@@ -181,6 +184,9 @@ export default function App() {
           {mode === "edit" && <div style={{ width: 40 }} />}
         </div>
       </header>
+
+      {/* Timer sticky — collé sous le header, hors du flux */}
+      {showTimer && <Timer resetTrigger={resetTrigger} />}
 
       <div className={`app-wrapper ${isDesktop ? "desktop" : ""}`}>
         {!isDesktop && isMenuOpen && <div className="overlay" onClick={() => setIsMenuOpen(false)} />}
@@ -225,16 +231,13 @@ export default function App() {
           ) : mode === "history" && selectedSession ? (
             <History session={selectedSession} />
           ) : selectedSession ? (
-            <>
-              <Timer resetTrigger={resetTrigger} />
-              <ExerciseList
-                exercises={selectedSession.exercises}
-                history={selectedSession.history}
-                addSet={handleAddSet}
-                deleteSet={deleteSet}
-                flashIndex={flashIndex}
-              />
-            </>
+            <ExerciseList
+              exercises={selectedSession.exercises}
+              history={selectedSession.history}
+              addSet={handleAddSet}
+              deleteSet={deleteSet}
+              flashIndex={flashIndex}
+            />
           ) : (
             <div className="empty-state">
               <span>💪</span>

@@ -5,19 +5,17 @@ const DEFAULT_REST = 75;
 function playBeep() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = ctx.createOscillator();
-    const gainNode = ctx.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
-    oscillator.type = "sine";
-    oscillator.frequency.setValueAtTime(880, ctx.currentTime);
-    gainNode.gain.setValueAtTime(0.6, ctx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + 1.2);
-  } catch (e) {
-    // AudioContext non dispo
-  }
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    gain.gain.setValueAtTime(0.6, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 1.2);
+  } catch (e) {}
 }
 
 function sendNotification() {
@@ -32,7 +30,6 @@ export default function Timer({ resetTrigger }) {
   const [isRunning, setIsRunning] = useState(false);
   const prevTrigger = useRef(resetTrigger);
 
-  // Demande permission notif au premier rendu
   useEffect(() => {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
@@ -74,49 +71,57 @@ export default function Timer({ resetTrigger }) {
   }, [isRunning]);
 
   const pct = restDuration > 0 ? timeLeft / restDuration : 0;
-  const radius = 36;
+  const radius = 22;
   const circ = 2 * Math.PI * radius;
   const dash = circ * pct;
+  const isDone = timeLeft === 0;
+  const isIdle = !isRunning && !isDone && timeLeft === restDuration;
 
   const formatTime = (s) =>
     `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
   return (
-    <div className="timer-wrap">
-      <div className="timer-ring-container">
-        <svg width="96" height="96" viewBox="0 0 96 96">
-          <circle cx="48" cy="48" r={radius} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="5" />
+    <div className={`timer-sticky ${isIdle ? "timer-idle" : ""} ${isDone ? "timer-done" : ""}`}>
+      {/* Anneau compact */}
+      <div className="timer-ring-sm">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <circle cx="26" cy="26" r={radius} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="4" />
           <circle
-            cx="48" cy="48" r={radius} fill="none"
-            stroke={timeLeft === 0 ? "#ff4444" : "#28a745"}
-            strokeWidth="5"
+            cx="26" cy="26" r={radius} fill="none"
+            stroke={isDone ? "#ff4444" : "#28a745"}
+            strokeWidth="4"
             strokeDasharray={`${dash} ${circ}`}
             strokeLinecap="round"
-            transform="rotate(-90 48 48)"
+            transform="rotate(-90 26 26)"
             style={{ transition: "stroke-dasharray 0.9s linear, stroke 0.3s" }}
           />
         </svg>
-        <span className={`timer-display ${timeLeft === 0 ? "timer-zero" : ""}`}>
+        <span className={`timer-display-sm ${isDone ? "timer-zero" : ""}`}>
           {formatTime(timeLeft)}
         </span>
       </div>
 
-      <div className="timer-controls">
-        <button className="timer-adjust" onClick={() => adjustDuration(-15)}>−15s</button>
+      {/* Contrôles inline */}
+      <div className="timer-controls-sm">
+        <button className="timer-adj-sm" onClick={() => adjustDuration(-15)}>−15s</button>
         <button
-          className="timer-adjust"
+          className="timer-adj-sm timer-play-sm"
           onClick={() => {
-            if (isRunning) {
-              setIsRunning(false);
-              setTimeLeft(restDuration);
-            } else {
-              setIsRunning(true);
-            }
+            if (isRunning) { setIsRunning(false); setTimeLeft(restDuration); }
+            else setIsRunning(true);
           }}
         >
           {isRunning ? "⏹" : "▶"}
         </button>
-        <button className="timer-adjust" onClick={() => adjustDuration(15)}>+15s</button>
+        <button className="timer-adj-sm" onClick={() => adjustDuration(15)}>+15s</button>
+      </div>
+
+      {/* Barre de progression sous le bandeau */}
+      <div className="timer-progress-bar">
+        <div
+          className={`timer-progress-fill ${isDone ? "timer-progress-done" : ""}`}
+          style={{ width: `${pct * 100}%`, transition: "width 0.9s linear" }}
+        />
       </div>
     </div>
   );
