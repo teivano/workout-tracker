@@ -73,17 +73,33 @@ export default function App() {
 
   return (
     <>
-      <div className={`app-container ${isMenuOpen ? "menu-open" : ""}`}>
-
-        <div className={`side-menu ${isMenuOpen ? "open" : ""}`}>
-          <button
-            className={`hamburger-menu ${isMenuOpen ? "open" : ""}`}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? "✖" : "☰"}
+      {/* Header fixe */}
+      <header className="app-header">
+        <button
+          className={`hamburger-menu ${isMenuOpen ? "open" : ""}`}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          {isMenuOpen ? "✖" : "☰"}
+        </button>
+        <span className="app-title">
+          {mode === "action" && selectedSession ? selectedSession.name : "🌴 Workout"}
+        </span>
+        {mode === "action" && selectedSession && (
+          <button className="back-button" onClick={() => setMode("edit")}>
+            ✏️
           </button>
-          <h2>Séances</h2>
+        )}
+      </header>
 
+      <div className={`app-wrapper ${isMenuOpen ? "menu-open" : ""}`}>
+        {/* Overlay */}
+        {isMenuOpen && (
+          <div className="overlay" onClick={() => setIsMenuOpen(false)} />
+        )}
+
+        {/* Menu latéral */}
+        <div className={`side-menu ${isMenuOpen ? "open" : ""}`}>
+          <h2>Séances</h2>
           <div className="session-list">
             {sessions.map((session, index) => (
               <button key={index} onClick={() => selectSession(index)}>
@@ -91,7 +107,6 @@ export default function App() {
               </button>
             ))}
           </div>
-
           <button
             className="create-session-button"
             onClick={() => { setMode("edit"); setIsMenuOpen(false); }}
@@ -101,7 +116,8 @@ export default function App() {
           <div className="menu-footer">Avec amour © Teivano 2025</div>
         </div>
 
-        <div className="content">
+        {/* Contenu principal */}
+        <div className="app-container">
           {mode === "edit" ? (
             <SessionList
               sessions={sessions}

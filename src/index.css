@@ -1,6 +1,12 @@
 /* 🌍 Global */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 :root {
   font-family: 'Poppins', sans-serif;
   background-color: #2c2c2c;
@@ -18,33 +24,96 @@ body {
   background-color: #2c2c2c;
 }
 
-/* 🏅 Bandeau en haut */
-.header {
-  width: 100%;
-  background: black;
-  padding: 15px 20px;
+/* ═══════════════════════════════
+   HEADER FIXE
+═══════════════════════════════ */
+.app-header {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 100;
+  right: 0;
+  height: 56px;
+  background: #111;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  z-index: 1100;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-.header h1 {
+.app-title {
+  flex: 1;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
   color: white;
-  font-size: 1.5rem;
-  margin: 0;
-  text-align: left;
+  letter-spacing: 0.5px;
 }
 
-/* ✅ Menu latéral */
+.hamburger-menu {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  width: 40px;
+}
+
+.hamburger-menu:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  width: 40px;
+  text-align: right;
+}
+
+.back-button:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* ═══════════════════════════════
+   WRAPPER & CONTAINER
+═══════════════════════════════ */
+.app-wrapper {
+  padding-top: 56px;
+  min-height: 100vh;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: calc(100vh - 56px);
+  padding: 24px 20px 40px;
+  width: 95%;
+  max-width: 600px;
+  margin: auto;
+}
+
+/* ═══════════════════════════════
+   MENU LATÉRAL
+═══════════════════════════════ */
 .side-menu {
   position: fixed;
-  top: 0;
+  top: 56px;
   left: -82%;
   width: 80%;
-  height: 100vh;
-  background: #1e1e1e;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  height: calc(100vh - 56px);
+  background: #1a1a1a;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.4);
   transition: left 0.3s ease-in-out;
   z-index: 1000;
   display: flex;
@@ -56,359 +125,293 @@ body {
   left: 0;
 }
 
+.side-menu h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
 .session-list {
   flex-grow: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 10px 0;
+  gap: 8px;
+  padding: 4px 0;
 }
 
 .session-list button {
   background: #2c2c2c;
-  width: 90%;
+  width: 100%;
   color: white;
-  padding: 12px;
-  font-size: 16px;
+  padding: 12px 16px;
+  font-size: 15px;
   border: none;
   cursor: pointer;
   text-align: left;
   border-radius: 10px;
-  transition: background 0.3s;
+  transition: background 0.2s;
+  font-family: 'Poppins', sans-serif;
 }
 
 .session-list button:hover {
   background: #383838;
 }
 
-/* ✅ Bouton "Créer une séance" fixé en bas */
 .create-session-button {
-  width: 80%;
-  position: absolute;
-  bottom: 60px;
-  left: 20px;
+  width: 100%;
+  margin-top: 12px;
   background: #28a745;
   color: white;
-  padding: 12px;
-  font-size: 16px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 600;
   border: none;
   cursor: pointer;
   text-align: center;
   border-radius: 36px;
+  font-family: 'Poppins', sans-serif;
+  transition: background 0.2s;
 }
 
 .create-session-button:hover {
   background: #218838;
 }
 
-/* ✅ Overlay */
+.menu-footer {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  padding: 12px 0 0;
+  margin-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ═══════════════════════════════
+   OVERLAY
+═══════════════════════════════ */
 .overlay {
   position: fixed;
-  top: 0;
+  top: 56px;
   left: 0;
   width: 100%;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease-in-out;
+  height: calc(100vh - 56px);
+  background: rgba(0,0,0,0.5);
   z-index: 999;
 }
 
-.menu-open .overlay {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* ✅ Bouton hamburger */
-.hamburger-menu {
-  position: absolute;
-  top: 15px;
-  right: -1px;
-  background: none;
-  border: none;
-  font-size: 28px;
-  color: white;
-  cursor: pointer;
-  z-index: 1101;
-  transition: transform 0.3s ease-in-out;
-}
-
-.hamburger-menu.open {
-  transform: rotate(90deg);
-  right: 15px;
-}
-
-/* 🏋️ Conteneur principal */
-.app-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 100vh;
-  padding: 80px 20px 40px;
-  background-color: #2c2c2c;
-  width: 95%;
-  max-width: 600px;
-  margin: auto;
-  box-sizing: border-box;
-}
-
-/* 🕒 Timer */
-.timer-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  padding: 10px;
-  color: white;
-  font-size: 64px;
-  font-weight: bold;
-  text-align: center;
-  max-width: 250px;
-}
-
-/* 🔢 Timer Adjust Buttons */
-.timer-adjust {
-  background: none;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  color: white;
-  font-size: 20px;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: all 0.3s;
-}
-.timer-adjust:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: white;
-}
-
-/* 📝 Input */
-.input-container {
-  display: flex;
-  gap: 10px;
+/* ═══════════════════════════════
+   SESSION LIST (mode edit)
+═══════════════════════════════ */
+.session-item {
   width: 100%;
-  max-width: 400px;
-  padding: 10px;
+  margin-bottom: 12px;
+  background: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-input {
-  flex: 1;
-  padding: 10px;
-  font-size: 16px;
-  background: transparent;
-  color: white;
-  border: none;
-  outline: none;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-  transition: border-color 0.3s;
-}
-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-input:focus {
-  border-bottom: 2px solid white;
-}
-
-/* ✅ Boutons */
-.add-button {
-  background: #242424;
-  box-shadow: 0px 2px rgb(152, 152, 152);
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 6px;
-  transition: all 0.5s ease-in-out;
-}
-
-.add-button:hover {
-  background: #9a9a9a;
-}
-
-.series-button {
-  background: #242424;
-  box-shadow: 0px 2px #218838;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 6px;
-  transition: all 0.5s ease-in-out;
-}
-
-.series-button:hover {
-  background: #218838;
-}
-
-/* ✅ Barre verticale pour chaque exercice */
-.exercise-item {
-  position: relative;
-  padding-left: 20px;
-  list-style: none;
-}
-
-.exercise-item::before {
-  content: "";
-  position: absolute;
-  left: 0px;
-  top: 0;
-  width: 2px;
-  height: 100%;
-  background-color: #777;
-  border-radius: 2px;
-  transition: height 0.3s ease-in;
-}
-
-/* ✅ Animation ouverture des séries */
-@keyframes expandSeries {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.exercise-item.expanded .series-row {
-  animation: expandSeries 0.3s ease-in-out;
-}
-
-/* 📱 Responsive */
-@media (max-width: 480px) {
-  .app-container {
-    width: 90%;
-    padding: 100px 0px 30px;
-  }
-
-  .series-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-  }
-}
-
-/* ✅ Footer du menu */
-.menu-footer {
-  text-align: center;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
-  padding: 10px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* ✅ Header de chaque session */
 .session-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 10px;
-  background: #2c2c2c;
-  border-radius: 6px;
+  padding: 14px 16px;
+  cursor: pointer;
+}
+
+.session-header h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  margin: 0;
 }
 
 .delete-session {
   background: none;
   border: none;
-  font-size: 18px;
-  color: red;
+  font-size: 16px;
+  color: rgba(255,80,80,0.8);
   cursor: pointer;
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s;
+  padding: 4px;
 }
 
 .delete-session:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
-/* ❌ Effet shake */
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
-}
-
-.input-error {
-  animation: shake 0.3s ease-in-out;
-  border-bottom: 2px solid red !important;
-}
-
-/* ✅ Sélecteurs poids et répétitions */
-.set-inputs {
-  display: flex;
-  gap: 10px;
-  padding: 10px;
-}
-
-.set-inputs select {
-  width: 80px;
-  padding: 5px;
-  text-align: center;
-  border: 1px solid white;
+/* ═══════════════════════════════
+   INPUTS
+═══════════════════════════════ */
+input {
+  flex: 1;
+  padding: 10px 0;
+  font-size: 16px;
   background: transparent;
   color: white;
-  border-radius: 4px;
-  transition: background 0.3s ease-in-out;
-  font-size: 14px;
-  appearance: none;
-  cursor: pointer;
-}
-
-.set-inputs select:focus {
-  background: rgba(255, 255, 255, 0.2);
+  border: none;
   outline: none;
+  border-bottom: 2px solid rgba(255,255,255,0.3);
+  transition: border-color 0.3s;
+  font-family: 'Poppins', sans-serif;
 }
 
-/* ✅ En-tête de l'exercice */
+input::placeholder {
+  color: rgba(255,255,255,0.35);
+}
+
+input:focus {
+  border-bottom: 2px solid white;
+}
+
+.add-button {
+  background: #2c2c2c;
+  box-shadow: 0px 2px rgba(150,150,150,0.5);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-left: 8px;
+}
+
+.add-button:hover {
+  background: #444;
+}
+
+.input-row {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+/* ═══════════════════════════════
+   TIMER
+═══════════════════════════════ */
+.timer-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 16px;
+  color: white;
+  font-size: 56px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.timer-adjust {
+  background: none;
+  border: 2px solid rgba(255,255,255,0.3);
+  color: white;
+  font-size: 18px;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.timer-adjust:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: white;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+
+.timer-zero {
+  animation: blink 0.5s ease-in-out infinite;
+  color: #ff4444;
+}
+
+/* ═══════════════════════════════
+   EXERCISE LIST
+═══════════════════════════════ */
+.exercise-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.exercise-item {
+  position: relative;
+  padding-left: 16px;
+  margin-bottom: 8px;
+  background: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.exercise-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: #28a745;
+  border-radius: 2px 0 0 2px;
+}
+
 .exercise-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 14px 14px 14px 8px;
+  cursor: pointer;
 }
 
 .exercise-name {
   color: white;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
 }
 
-/* ✅ Bouton +1 Série */
 .add-set-button {
   background: #28a745;
   color: white;
   border: none;
-  padding: 8px 12px;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 6px;
+  padding: 7px 13px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 20px;
   cursor: pointer;
-  transition: background 0.3s ease-in-out;
+  transition: background 0.2s;
+  font-family: 'Poppins', sans-serif;
 }
 
 .add-set-button:hover {
   background: #218838;
 }
 
-/* ✅ Séries effectuées */
 .exercise-sets {
-  padding: 10px;
+  padding: 0 14px 12px 8px;
 }
 
 .exercise-sets p {
-  font-size: 13px;
-  color: rgba(255,255,255,0.5);
-  margin: 5px 0;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .series-container {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
 }
 
 .series-row {
@@ -416,11 +419,13 @@ input:focus {
   gap: 12px;
   align-items: center;
   font-size: 14px;
+  padding: 4px 0;
 }
 
 .series-number {
-  color: rgba(255,255,255,0.4);
-  min-width: 16px;
+  color: rgba(255,255,255,0.3);
+  min-width: 18px;
+  font-size: 12px;
 }
 
 .series-weight {
@@ -429,23 +434,67 @@ input:focus {
 }
 
 .series-reps {
-  color: rgba(255,255,255,0.7);
+  color: rgba(255,255,255,0.6);
 }
 
-/* 🔴 Clignotement du Timer à la fin */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
+/* ═══════════════════════════════
+   SELECTS POIDS/REPS
+═══════════════════════════════ */
+.set-inputs {
+  display: flex;
+  gap: 12px;
+  padding: 10px 14px 14px 8px;
+  border-top: 1px solid rgba(255,255,255,0.08);
 }
 
-.timer-zero {
-  animation: blink 0.5s ease-in-out infinite;
+.set-inputs select {
+  flex: 1;
+  padding: 8px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: #2c2c2c;
+  color: white;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  appearance: none;
 }
 
-/* ✅ Exercise list */
-.exercise-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
+.set-inputs select:focus {
+  border-color: white;
+  outline: none;
+}
+
+/* ═══════════════════════════════
+   ANIMATIONS & ERREURS
+═══════════════════════════════ */
+@keyframes expandSeries {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.exercise-item.expanded .series-row {
+  animation: expandSeries 0.25s ease-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.input-error {
+  animation: shake 0.3s ease-in-out;
+  border-bottom-color: #ff4444 !important;
+}
+
+/* ═══════════════════════════════
+   RESPONSIVE
+═══════════════════════════════ */
+@media (max-width: 480px) {
+  .app-container {
+    width: 100%;
+    padding: 20px 16px 40px;
+  }
 }
