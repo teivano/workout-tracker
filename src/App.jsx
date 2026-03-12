@@ -24,11 +24,8 @@ export default function App() {
     try {
       const saved = localStorage.getItem("sessions");
       return saved ? migrateSessions(JSON.parse(saved)) : [];
-    } catch {
-      return [];
-    }
+    } catch { return []; }
   });
-  const [selectedSession, setSelectedSession] = useState(null);
   const [selectedSessionIndex, setSelectedSessionIndex] = useState(null);
   const [resetTrigger, setResetTrigger] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -38,16 +35,33 @@ export default function App() {
     localStorage.setItem("sessions", JSON.stringify(sessions));
   }, [sessions]);
 
+  const selectedSession = selectedSessionIndex !== null ? sessions[selectedSessionIndex] : null;
+
+  const updateSessions = (updated) => setSessions(updated);
+
   const handleAddSet = (exerciseIndex, weight, reps) => {
-    const updated = [...sessions];
-    if (selectedSessionIndex !== null) {
-      updated[selectedSessionIndex].exercises[exerciseIndex].sets.push({
-        weight, reps, timestamp: new Date().toISOString(),
-      });
-      setSessions(updated);
-      setSelectedSession(updated[selectedSessionIndex]);
-      setResetTrigger((prev) => !prev);
-    }
+    if (selectedSessionIndex === null) return;
+    const updated = sessions.map((s, i) => {
+      if (i !== selectedSessionIndex) return s;
+      const exercises = s.exercises.map((ex, ei) =>
+        ei === exerciseIndex ? { ...ex, sets: [...ex.sets, { weight, reps, timestamp: new Date().toISOString() }] } : ex
+      );
+      return { ...s, exercises };
+    });
+    updateSessions(updated);
+    setResetTrigger((p) => !p);
+  };
+
+  const deleteSet = (exerciseIndex, setIndex) => {
+    if (selectedSessionIndex === null) return;
+    const updated = sessions.map((s, i) => {
+      if (i !== selectedSessionIndex) return s;
+      const exercises = s.exercises.map((ex, ei) =>
+        ei === exerciseIndex ? { ...ex, sets: ex.sets.filter((_, si) => si !== setIndex) } : ex
+      );
+      return { ...s, exercises };
+    });
+    updateSessions(updated);
   };
 
   const addSession = (name) => {
@@ -55,25 +69,41 @@ export default function App() {
     const newSession = { name, exercises: [], history: [] };
     const updated = [...sessions, newSession];
     setSessions(updated);
-    setSelectedSession(newSession);
     setSelectedSessionIndex(updated.length - 1);
     setMode("action");
   };
 
   const addExercise = (sessionIndex, exerciseName) => {
     if (!exerciseName.trim()) return;
-    const updated = [...sessions];
-    updated[sessionIndex].exercises.push({ name: exerciseName, sets: [] });
-    setSessions(updated);
+    const updated = sessions.map((s, i) =>
+      i === sessionIndex ? { ...s, exercises: [...s.exercises, { name: exerciseName, sets: [] }] } : s
+    );
+    updateSessions(updated);
+  };
+
+  const deleteExercise = (sessionIndex, exerciseIndex) => {
+    if (!window.confirm("Supprimer cet exercice ?")) return;
+    const updated = sessions.map((s, i) =>
+      i === sessionIndex ? { ...s, exercises: s.exercises.filter((_, ei) => ei !== exerciseIndex) } : s
+    );
+    updateSessions(updated);
+  };
+
+  const moveExercise = (sessionIndex, exerciseIndex, direction) => {
+    const updated = sessions.map((s, i) => {
+      if (i !== sessionIndex) return s;
+      const exercises = [...s.exercises];
+      const target = exerciseIndex + direction;
+      if (target < 0 || target >= exercises.length) return s;
+      [exercises[exerciseIndex], exercises[target]] = [exercises[target], exercises[exerciseIndex]];
+      return { ...s, exercises };
+    });
+    updateSessions(updated);
   };
 
   const renameSession = (index, newName) => {
-    const updated = [...sessions];
-    updated[index].name = newName;
-    setSessions(updated);
-    if (selectedSessionIndex === index) {
-      setSelectedSession(updated[index]);
-    }
+    const updated = sessions.map((s, i) => i === index ? { ...s, name: newName } : s);
+    updateSessions(updated);
   };
 
   const deleteSession = (index) => {
@@ -81,14 +111,14 @@ export default function App() {
     const updated = sessions.filter((_, i) => i !== index);
     setSessions(updated);
     if (selectedSessionIndex === index) {
-      setSelectedSession(null);
       setSelectedSessionIndex(null);
       setMode("edit");
+    } else if (selectedSessionIndex > index) {
+      setSelectedSessionIndex(selectedSessionIndex - 1);
     }
   };
 
   const selectSession = (index) => {
-    setSelectedSession(sessions[index]);
     setSelectedSessionIndex(index);
     setMode("action");
     setIsMenuOpen(false);
@@ -96,21 +126,19 @@ export default function App() {
 
   const finishSession = () => {
     if (selectedSessionIndex === null) return;
-    const updated = [...sessions];
-    const session = updated[selectedSessionIndex];
+    const session = sessions[selectedSessionIndex];
     const hasSets = session.exercises.some((ex) => ex.sets.length > 0);
-    if (!hasSets) {
-      alert("Aucune série enregistrée dans cette séance.");
-      return;
-    }
+    if (!hasSets) { alert("Aucune série enregistrée."); return; }
     const snapshot = {
       date: new Date().toISOString(),
       exercises: session.exercises.map((ex) => ({ name: ex.name, sets: [...ex.sets] })),
     };
-    session.history = [snapshot, ...(session.history || [])];
-    session.exercises = session.exercises.map((ex) => ({ ...ex, sets: [] }));
-    setSessions(updated);
-    setSelectedSession(updated[selectedSessionIndex]);
+    const updated = sessions.map((s, i) =>
+      i === selectedSessionIndex
+        ? { ...s, history: [snapshot, ...(s.history || [])], exercises: s.exercises.map((ex) => ({ ...ex, sets: [] })) }
+        : s
+    );
+    updateSessions(updated);
     setMode("history");
   };
 
@@ -118,26 +146,21 @@ export default function App() {
     <>
       <header className="app-header">
         {!isDesktop && (
-          <button
-            className={`hamburger-menu ${isMenuOpen ? "open" : ""}`}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
+          <button className={`hamburger-menu ${isMenuOpen ? "open" : ""}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? "✖" : "☰"}
           </button>
         )}
         <span className="app-title">
-          {mode === "history" && selectedSession
-            ? `📊 ${selectedSession.name}`
-            : mode === "action" && selectedSession
-            ? selectedSession.name
+          {mode === "history" && selectedSession ? `📊 ${selectedSession.name}`
+            : mode === "action" && selectedSession ? selectedSession.name
             : "🌴 Workout"}
         </span>
         <div className="header-actions">
           {mode === "action" && selectedSession && (
             <>
-              <button className="header-icon-btn" title="Historique" onClick={() => setMode("history")}>📊</button>
-              <button className="header-icon-btn finish-btn" title="Terminer" onClick={finishSession}>✅</button>
-              <button className="header-icon-btn" title="Gérer" onClick={() => setMode("edit")}>✏️</button>
+              <button className="header-icon-btn" onClick={() => setMode("history")} title="Historique">📊</button>
+              <button className="header-icon-btn finish-btn" onClick={finishSession} title="Terminer">✅</button>
+              <button className="header-icon-btn" onClick={() => setMode("edit")} title="Gérer">✏️</button>
             </>
           )}
           {mode === "history" && (
@@ -148,28 +171,18 @@ export default function App() {
       </header>
 
       <div className={`app-wrapper ${isDesktop ? "desktop" : ""}`}>
-        {!isDesktop && isMenuOpen && (
-          <div className="overlay" onClick={() => setIsMenuOpen(false)} />
-        )}
+        {!isDesktop && isMenuOpen && <div className="overlay" onClick={() => setIsMenuOpen(false)} />}
         <div className={`side-menu ${isDesktop ? "desktop-visible" : isMenuOpen ? "open" : ""}`}>
           <h2>Séances</h2>
           <div className="session-list">
             {sessions.map((session, index) => (
-              <button
-                key={index}
-                onClick={() => selectSession(index)}
-                className={selectedSessionIndex === index ? "active" : ""}
-              >
+              <button key={index} onClick={() => selectSession(index)} className={selectedSessionIndex === index ? "active" : ""}>
                 <span>{session.name}</span>
-                {session.history && session.history.length > 0 && (
-                  <span className="session-badge">{session.history.length}</span>
-                )}
+                {session.history?.length > 0 && <span className="session-badge">{session.history.length}</span>}
               </button>
             ))}
           </div>
-          <button className="create-session-button" onClick={() => { setMode("edit"); setIsMenuOpen(false); }}>
-            + Gérer les séances
-          </button>
+          <button className="create-session-button" onClick={() => { setMode("edit"); setIsMenuOpen(false); }}>+ Gérer les séances</button>
           <div className="menu-footer">Avec amour © Teivano 2025</div>
         </div>
 
@@ -181,19 +194,18 @@ export default function App() {
               deleteSession={deleteSession}
               addExercise={addExercise}
               renameSession={renameSession}
+              deleteExercise={deleteExercise}
+              moveExercise={moveExercise}
             />
           ) : mode === "history" && selectedSession ? (
             <History session={selectedSession} />
           ) : selectedSession ? (
             <>
               <Timer resetTrigger={resetTrigger} />
-              <ExerciseList exercises={selectedSession.exercises} addSet={handleAddSet} />
+              <ExerciseList exercises={selectedSession.exercises} addSet={handleAddSet} deleteSet={deleteSet} />
             </>
           ) : (
-            <div className="empty-state">
-              <span>💪</span>
-              <p>Sélectionne une séance pour commencer</p>
-            </div>
+            <div className="empty-state"><span>💪</span><p>Sélectionne une séance pour commencer</p></div>
           )}
         </div>
       </div>

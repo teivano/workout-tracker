@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function SessionList({ sessions, addSession, deleteSession, addExercise, renameSession }) {
+export default function SessionList({ sessions, addSession, deleteSession, addExercise, renameSession, deleteExercise, moveExercise }) {
   const [sessionInput, setSessionInput] = useState("");
   const [exerciseInputs, setExerciseInputs] = useState({});
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -48,7 +48,6 @@ export default function SessionList({ sessions, addSession, deleteSession, addEx
     <div className="session-list-page">
       <p className="session-page-title">Mes séances</p>
 
-      {/* Input nouvelle séance */}
       <div className="input-row">
         <input
           type="text"
@@ -64,7 +63,6 @@ export default function SessionList({ sessions, addSession, deleteSession, addEx
         <button className="add-button" onClick={handleAddSession}>+</button>
       </div>
 
-      {/* Liste des séances */}
       {sessions.map((session, index) => (
         <div key={index} className="session-item">
           <div className="session-header">
@@ -84,19 +82,11 @@ export default function SessionList({ sessions, addSession, deleteSession, addEx
               <h3 onClick={() => toggleSession(index)}>{session.name}</h3>
             )}
             <div className="session-actions">
-              <button
-                className="rename-btn"
-                title="Renommer"
-                onClick={() => startRename(index, session.name)}
-              >✏️</button>
-              <button
-                className="delete-session"
-                onClick={() => deleteSession(index)}
-              >❌</button>
+              <button className="rename-btn" title="Renommer" onClick={() => startRename(index, session.name)}>✏️</button>
+              <button className="delete-session" onClick={() => deleteSession(index)}>❌</button>
             </div>
           </div>
 
-          {/* Exercices */}
           {expandedIndex === index && (
             <div className="session-exercises">
               <div className="input-row" style={{ marginBottom: 10 }}>
@@ -114,7 +104,28 @@ export default function SessionList({ sessions, addSession, deleteSession, addEx
               ) : (
                 <div className="exercise-tags">
                   {session.exercises.map((ex, i) => (
-                    <span key={i} className="exercise-tag">{ex.name}</span>
+                    <span key={i} className="exercise-tag">
+                      <span className="exercise-tag-arrows">
+                        <button
+                          className="tag-arrow-btn"
+                          disabled={i === 0}
+                          onClick={() => moveExercise(index, i, -1)}
+                          title="Monter"
+                        >↑</button>
+                        <button
+                          className="tag-arrow-btn"
+                          disabled={i === session.exercises.length - 1}
+                          onClick={() => moveExercise(index, i, 1)}
+                          title="Descendre"
+                        >↓</button>
+                      </span>
+                      <span className="exercise-tag-name">{ex.name}</span>
+                      <button
+                        className="exercise-tag-delete"
+                        onClick={() => deleteExercise(index, i)}
+                        title="Supprimer"
+                      >×</button>
+                    </span>
                   ))}
                 </div>
               )}
