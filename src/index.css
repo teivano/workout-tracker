@@ -39,6 +39,7 @@ body {
   padding: 0 16px;
   z-index: 1100;
   border-bottom: 1px solid rgba(255,255,255,0.08);
+  gap: 8px;
 }
 
 .app-title {
@@ -60,6 +61,7 @@ body {
   border-radius: 6px;
   transition: background 0.2s;
   width: 40px;
+  flex-shrink: 0;
 }
 
 .hamburger-menu:hover {
@@ -77,6 +79,7 @@ body {
   transition: background 0.2s;
   width: 40px;
   text-align: right;
+  flex-shrink: 0;
 }
 
 .back-button:hover {
@@ -84,13 +87,31 @@ body {
 }
 
 /* ═══════════════════════════════
-   WRAPPER & CONTAINER
+   WRAPPER — MOBILE
 ═══════════════════════════════ */
 .app-wrapper {
   padding-top: 56px;
   min-height: 100vh;
 }
 
+/* ═══════════════════════════════
+   WRAPPER — DESKTOP (2 colonnes)
+═══════════════════════════════ */
+.app-wrapper.desktop {
+  display: flex;
+  flex-direction: row;
+}
+
+.app-wrapper.desktop .app-container {
+  margin-left: 280px;
+  max-width: 700px;
+  width: 100%;
+  padding: 32px 40px;
+}
+
+/* ═══════════════════════════════
+   CONTAINER MOBILE & TABLET
+═══════════════════════════════ */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -104,13 +125,14 @@ body {
 }
 
 /* ═══════════════════════════════
-   MENU LATÉRAL
+   MENU LATÉRAL — MOBILE
 ═══════════════════════════════ */
 .side-menu {
   position: fixed;
   top: 56px;
   left: -82%;
   width: 80%;
+  max-width: 300px;
   height: calc(100vh - 56px);
   background: #1a1a1a;
   box-shadow: 4px 0 20px rgba(0,0,0,0.4);
@@ -125,13 +147,32 @@ body {
   left: 0;
 }
 
+/* ═══════════════════════════════
+   MENU LATÉRAL — DESKTOP (permanent)
+═══════════════════════════════ */
+.side-menu.desktop-visible {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  width: 280px;
+  height: calc(100vh - 56px);
+  background: #1a1a1a;
+  box-shadow: none;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px;
+  transition: none;
+}
+
 .side-menu h2 {
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.4);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+  margin-bottom: 16px;
 }
 
 .session-list {
@@ -139,26 +180,33 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   padding: 4px 0;
 }
 
 .session-list button {
-  background: #2c2c2c;
+  background: transparent;
   width: 100%;
-  color: white;
-  padding: 12px 16px;
-  font-size: 15px;
+  color: rgba(255,255,255,0.7);
+  padding: 11px 14px;
+  font-size: 14px;
   border: none;
   cursor: pointer;
   text-align: left;
-  border-radius: 10px;
-  transition: background 0.2s;
+  border-radius: 8px;
+  transition: background 0.15s, color 0.15s;
   font-family: 'Poppins', sans-serif;
 }
 
 .session-list button:hover {
-  background: #383838;
+  background: rgba(255,255,255,0.07);
+  color: white;
+}
+
+.session-list button.active {
+  background: rgba(40,167,69,0.2);
+  color: #4cdb78;
+  font-weight: 600;
 }
 
 .create-session-button {
@@ -166,13 +214,13 @@ body {
   margin-top: 12px;
   background: #28a745;
   color: white;
-  padding: 13px;
-  font-size: 15px;
+  padding: 12px;
+  font-size: 14px;
   font-weight: 600;
   border: none;
   cursor: pointer;
   text-align: center;
-  border-radius: 36px;
+  border-radius: 10px;
   font-family: 'Poppins', sans-serif;
   transition: background 0.2s;
 }
@@ -184,14 +232,14 @@ body {
 .menu-footer {
   text-align: center;
   font-size: 11px;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.2);
   padding: 12px 0 0;
   margin-top: 12px;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 /* ═══════════════════════════════
-   OVERLAY
+   OVERLAY (mobile only)
 ═══════════════════════════════ */
 .overlay {
   position: fixed;
@@ -204,11 +252,41 @@ body {
 }
 
 /* ═══════════════════════════════
+   EMPTY STATE
+═══════════════════════════════ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 60vh;
+  color: rgba(255,255,255,0.3);
+}
+
+.empty-state span {
+  font-size: 48px;
+}
+
+.empty-state p {
+  font-size: 15px;
+  text-align: center;
+}
+
+/* ═══════════════════════════════
    SESSION LIST (mode edit)
 ═══════════════════════════════ */
+.session-page-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 20px;
+  align-self: flex-start;
+}
+
 .session-item {
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   background: #1e1e1e;
   border-radius: 10px;
   overflow: hidden;
@@ -233,7 +311,7 @@ body {
   background: none;
   border: none;
   font-size: 16px;
-  color: rgba(255,80,80,0.8);
+  color: rgba(255,80,80,0.7);
   cursor: pointer;
   transition: transform 0.2s;
   padding: 4px;
@@ -241,6 +319,7 @@ body {
 
 .delete-session:hover {
   transform: scale(1.15);
+  color: #ff5050;
 }
 
 /* ═══════════════════════════════
@@ -254,22 +333,22 @@ input {
   color: white;
   border: none;
   outline: none;
-  border-bottom: 2px solid rgba(255,255,255,0.3);
+  border-bottom: 2px solid rgba(255,255,255,0.2);
   transition: border-color 0.3s;
   font-family: 'Poppins', sans-serif;
 }
 
 input::placeholder {
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.3);
 }
 
 input:focus {
-  border-bottom: 2px solid white;
+  border-bottom: 2px solid rgba(255,255,255,0.8);
 }
 
 .add-button {
   background: #2c2c2c;
-  box-shadow: 0px 2px rgba(150,150,150,0.5);
+  box-shadow: 0px 2px rgba(150,150,150,0.4);
   color: white;
   border: none;
   padding: 10px 16px;
@@ -277,8 +356,9 @@ input:focus {
   font-weight: bold;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.2s;
   margin-left: 8px;
+  flex-shrink: 0;
 }
 
 .add-button:hover {
@@ -311,7 +391,7 @@ input:focus {
 
 .timer-adjust {
   background: none;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(255,255,255,0.25);
   color: white;
   font-size: 18px;
   padding: 6px 10px;
@@ -321,8 +401,8 @@ input:focus {
 }
 
 .timer-adjust:hover {
-  background: rgba(255,255,255,0.15);
-  border-color: white;
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.6);
 }
 
 @keyframes blink {
@@ -383,13 +463,14 @@ input:focus {
   background: #28a745;
   color: white;
   border: none;
-  padding: 7px 13px;
+  padding: 7px 14px;
   font-size: 13px;
   font-weight: 600;
   border-radius: 20px;
   cursor: pointer;
   transition: background 0.2s;
   font-family: 'Poppins', sans-serif;
+  flex-shrink: 0;
 }
 
 .add-set-button:hover {
@@ -401,11 +482,11 @@ input:focus {
 }
 
 .exercise-sets p {
-  font-size: 12px;
-  color: rgba(255,255,255,0.4);
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
   margin-bottom: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
 .series-container {
@@ -423,7 +504,7 @@ input:focus {
 }
 
 .series-number {
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.25);
   min-width: 18px;
   font-size: 12px;
 }
@@ -434,7 +515,7 @@ input:focus {
 }
 
 .series-reps {
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.55);
 }
 
 /* ═══════════════════════════════
@@ -444,15 +525,15 @@ input:focus {
   display: flex;
   gap: 12px;
   padding: 10px 14px 14px 8px;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 .set-inputs select {
   flex: 1;
   padding: 8px;
   text-align: center;
-  border: 1px solid rgba(255,255,255,0.3);
-  background: #2c2c2c;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: #252525;
   color: white;
   border-radius: 8px;
   font-size: 14px;
@@ -462,7 +543,7 @@ input:focus {
 }
 
 .set-inputs select:focus {
-  border-color: white;
+  border-color: rgba(255,255,255,0.6);
   outline: none;
 }
 
@@ -475,7 +556,7 @@ input:focus {
 }
 
 .exercise-item.expanded .series-row {
-  animation: expandSeries 0.25s ease-out;
+  animation: expandSeries 0.2s ease-out;
 }
 
 @keyframes shake {
@@ -490,11 +571,34 @@ input:focus {
 }
 
 /* ═══════════════════════════════
-   RESPONSIVE
+   RESPONSIVE — TABLET
 ═══════════════════════════════ */
-@media (max-width: 480px) {
+@media (min-width: 480px) and (max-width: 1023px) {
+  .app-container {
+    padding: 32px 32px 40px;
+    max-width: 680px;
+  }
+
+  .side-menu {
+    width: 70%;
+    max-width: 360px;
+  }
+
+  .timer-container {
+    font-size: 64px;
+  }
+}
+
+/* ═══════════════════════════════
+   RESPONSIVE — MOBILE
+═══════════════════════════════ */
+@media (max-width: 479px) {
   .app-container {
     width: 100%;
-    padding: 20px 16px 40px;
+    padding: 16px 14px 40px;
+  }
+
+  .timer-container {
+    font-size: 48px;
   }
 }

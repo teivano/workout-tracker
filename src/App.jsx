@@ -3,7 +3,19 @@ import SessionList from "./components/SessionList";
 import ExerciseList from "./components/ExerciseList";
 import Timer from "./components/Timer";
 
+const useIsDesktop = () => {
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+  useEffect(() => {
+    const handler = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return isDesktop;
+};
+
 export default function App() {
+  const isDesktop = useIsDesktop();
+
   const [sessions, setSessions] = useState(() => {
     try {
       const savedSessions = localStorage.getItem("sessions");
@@ -75,34 +87,38 @@ export default function App() {
     <>
       {/* Header fixe */}
       <header className="app-header">
-        <button
-          className={`hamburger-menu ${isMenuOpen ? "open" : ""}`}
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? "✖" : "☰"}
-        </button>
+        {!isDesktop && (
+          <button
+            className={`hamburger-menu ${isMenuOpen ? "open" : ""}`}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? "✖" : "☰"}
+          </button>
+        )}
         <span className="app-title">
           {mode === "action" && selectedSession ? selectedSession.name : "🌴 Workout"}
         </span>
         {mode === "action" && selectedSession && (
-          <button className="back-button" onClick={() => setMode("edit")}>
-            ✏️
-          </button>
+          <button className="back-button" onClick={() => setMode("edit")}>✏️</button>
+        )}
+        {(isDesktop || (!mode === "action" || !selectedSession)) && !(!isDesktop && mode === "action" && selectedSession) && (
+          <div style={{width: 40}} />
         )}
       </header>
 
-      <div className={`app-wrapper ${isMenuOpen ? "menu-open" : ""}`}>
-        {/* Overlay */}
-        {isMenuOpen && (
+      <div className={`app-wrapper ${isDesktop ? "desktop" : ""}`}>
+        {/* Overlay mobile uniquement */}
+        {!isDesktop && isMenuOpen && (
           <div className="overlay" onClick={() => setIsMenuOpen(false)} />
         )}
 
         {/* Menu latéral */}
-        <div className={`side-menu ${isMenuOpen ? "open" : ""}`}>
+        <div className={`side-menu ${isDesktop ? "desktop-visible" : (isMenuOpen ? "open" : "")}`}>
           <h2>Séances</h2>
           <div className="session-list">
             {sessions.map((session, index) => (
-              <button key={index} onClick={() => selectSession(index)}>
+              <button key={index} onClick={() => selectSession(index)}
+                className={selectedSessionIndex === index ? "active" : ""}>
                 {session.name}
               </button>
             ))}
@@ -111,7 +127,7 @@ export default function App() {
             className="create-session-button"
             onClick={() => { setMode("edit"); setIsMenuOpen(false); }}
           >
-            + Add / Edit une séance
+            + Gérer les séances
           </button>
           <div className="menu-footer">Avec amour © Teivano 2025</div>
         </div>
@@ -134,7 +150,10 @@ export default function App() {
               />
             </>
           ) : (
-            <h2>Sélectionnez une séance</h2>
+            <div className="empty-state">
+              <span>💪</span>
+              <p>Sélectionne une séance pour commencer</p>
+            </div>
           )}
         </div>
       </div>
