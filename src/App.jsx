@@ -61,12 +61,10 @@ export default function App() {
 
   const addSession = (name) => {
     if (!name.trim()) return;
-    setSessions((prev) => {
-      const next = [...prev, { name, exercises: [], history: [], category: "" }];
-      setSelectedSessionIndex(next.length - 1);
-      setMode("action");
-      return next;
-    });
+    setSessions((prev) => [
+      ...prev,
+      { name, exercises: [], history: [], category: "" },
+    ]);
   };
 
   const addExercise = (sessionIndex, exerciseName) => {
