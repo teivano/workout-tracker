@@ -15,7 +15,7 @@ const useIsDesktop = () => {
 };
 
 const migrateSessions = (sessions) =>
-  sessions.map((s) => ({ history: [], ...s }));
+  sessions.map((s) => ({ history: [], category: "", ...s }));
 
 export default function App() {
   const isDesktop = useIsDesktop();
@@ -31,91 +31,89 @@ export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mode, setMode] = useState("edit");
 
-  useEffect(() => {
-    localStorage.setItem("sessions", JSON.stringify(sessions));
-  }, [sessions]);
+  useEffect(() => { localStorage.setItem("sessions", JSON.stringify(sessions)); }, [sessions]);
 
   const selectedSession = selectedSessionIndex !== null ? sessions[selectedSessionIndex] : null;
 
-  const updateSessions = (updated) => setSessions(updated);
+  const update = (fn) => setSessions((prev) => fn([...prev]));
 
   const handleAddSet = (exerciseIndex, weight, reps) => {
     if (selectedSessionIndex === null) return;
-    const updated = sessions.map((s, i) => {
-      if (i !== selectedSessionIndex) return s;
-      const exercises = s.exercises.map((ex, ei) =>
-        ei === exerciseIndex ? { ...ex, sets: [...ex.sets, { weight, reps, timestamp: new Date().toISOString() }] } : ex
-      );
-      return { ...s, exercises };
+    update((s) => {
+      s[selectedSessionIndex].exercises[exerciseIndex].sets.push({ weight, reps, timestamp: new Date().toISOString() });
+      return s;
     });
-    updateSessions(updated);
     setResetTrigger((p) => !p);
   };
 
   const deleteSet = (exerciseIndex, setIndex) => {
     if (selectedSessionIndex === null) return;
-    const updated = sessions.map((s, i) => {
-      if (i !== selectedSessionIndex) return s;
-      const exercises = s.exercises.map((ex, ei) =>
-        ei === exerciseIndex ? { ...ex, sets: ex.sets.filter((_, si) => si !== setIndex) } : ex
-      );
-      return { ...s, exercises };
+    update((s) => {
+      s[selectedSessionIndex].exercises[exerciseIndex].sets.splice(setIndex, 1);
+      return s;
     });
-    updateSessions(updated);
   };
 
   const addSession = (name) => {
     if (!name.trim()) return;
-    const newSession = { name, exercises: [], history: [] };
-    const updated = [...sessions, newSession];
-    setSessions(updated);
-    setSelectedSessionIndex(updated.length - 1);
-    setMode("action");
+    setSessions((prev) => {
+      const next = [...prev, { name, exercises: [], history: [], category: "" }];
+      setSelectedSessionIndex(next.length - 1);
+      setMode("action");
+      return next;
+    });
   };
 
   const addExercise = (sessionIndex, exerciseName) => {
     if (!exerciseName.trim()) return;
-    const updated = sessions.map((s, i) =>
-      i === sessionIndex ? { ...s, exercises: [...s.exercises, { name: exerciseName, sets: [] }] } : s
-    );
-    updateSessions(updated);
+    update((s) => { s[sessionIndex].exercises.push({ name: exerciseName, sets: [] }); return s; });
   };
 
   const deleteExercise = (sessionIndex, exerciseIndex) => {
     if (!window.confirm("Supprimer cet exercice ?")) return;
-    const updated = sessions.map((s, i) =>
-      i === sessionIndex ? { ...s, exercises: s.exercises.filter((_, ei) => ei !== exerciseIndex) } : s
-    );
-    updateSessions(updated);
+    update((s) => { s[sessionIndex].exercises.splice(exerciseIndex, 1); return s; });
   };
 
   const moveExercise = (sessionIndex, exerciseIndex, direction) => {
-    const updated = sessions.map((s, i) => {
-      if (i !== sessionIndex) return s;
-      const exercises = [...s.exercises];
+    update((s) => {
+      const exs = s[sessionIndex].exercises;
       const target = exerciseIndex + direction;
-      if (target < 0 || target >= exercises.length) return s;
-      [exercises[exerciseIndex], exercises[target]] = [exercises[target], exercises[exerciseIndex]];
-      return { ...s, exercises };
+      if (target < 0 || target >= exs.length) return s;
+      [exs[exerciseIndex], exs[target]] = [exs[target], exs[exerciseIndex]];
+      return s;
     });
-    updateSessions(updated);
   };
 
   const renameSession = (index, newName) => {
-    const updated = sessions.map((s, i) => i === index ? { ...s, name: newName } : s);
-    updateSessions(updated);
+    update((s) => { s[index].name = newName; return s; });
+  };
+
+  const setCategorySession = (index, category) => {
+    update((s) => { s[index].category = category; return s; });
+  };
+
+  const duplicateSession = (index) => {
+    update((s) => {
+      const orig = s[index];
+      const copy = {
+        ...orig,
+        name: orig.name + " (copie)",
+        exercises: orig.exercises.map((ex) => ({ ...ex, sets: [] })),
+        history: [],
+      };
+      s.splice(index + 1, 0, copy);
+      return s;
+    });
   };
 
   const deleteSession = (index) => {
     if (!window.confirm("Supprimer cette séance ?")) return;
-    const updated = sessions.filter((_, i) => i !== index);
-    setSessions(updated);
-    if (selectedSessionIndex === index) {
-      setSelectedSessionIndex(null);
-      setMode("edit");
-    } else if (selectedSessionIndex > index) {
-      setSelectedSessionIndex(selectedSessionIndex - 1);
-    }
+    setSessions((prev) => {
+      const next = prev.filter((_, i) => i !== index);
+      if (selectedSessionIndex === index) { setSelectedSessionIndex(null); setMode("edit"); }
+      else if (selectedSessionIndex > index) setSelectedSessionIndex((i) => i - 1);
+      return next;
+    });
   };
 
   const selectSession = (index) => {
@@ -126,19 +124,14 @@ export default function App() {
 
   const finishSession = () => {
     if (selectedSessionIndex === null) return;
-    const session = sessions[selectedSessionIndex];
-    const hasSets = session.exercises.some((ex) => ex.sets.length > 0);
-    if (!hasSets) { alert("Aucune série enregistrée."); return; }
-    const snapshot = {
-      date: new Date().toISOString(),
-      exercises: session.exercises.map((ex) => ({ name: ex.name, sets: [...ex.sets] })),
-    };
-    const updated = sessions.map((s, i) =>
-      i === selectedSessionIndex
-        ? { ...s, history: [snapshot, ...(s.history || [])], exercises: s.exercises.map((ex) => ({ ...ex, sets: [] })) }
-        : s
-    );
-    updateSessions(updated);
+    update((s) => {
+      const session = s[selectedSessionIndex];
+      const hasSets = session.exercises.some((ex) => ex.sets.length > 0);
+      if (!hasSets) { alert("Aucune série enregistrée."); return s; }
+      session.history = [{ date: new Date().toISOString(), exercises: session.exercises.map((ex) => ({ name: ex.name, sets: [...ex.sets] })) }, ...(session.history || [])];
+      session.exercises = session.exercises.map((ex) => ({ ...ex, sets: [] }));
+      return s;
+    });
     setMode("history");
   };
 
@@ -182,8 +175,10 @@ export default function App() {
               </button>
             ))}
           </div>
-          <button className="create-session-button" onClick={() => { setMode("edit"); setIsMenuOpen(false); }}>+ Gérer les séances</button>
-          <div className="menu-footer">Avec amour © Teivano 2025</div>
+          <div className="menu-bottom">
+            <button className="create-session-button" onClick={() => { setMode("edit"); setIsMenuOpen(false); }}>+ Gérer les séances</button>
+            <div className="menu-footer">Avec amour © Teivano 2025</div>
+          </div>
         </div>
 
         <div className="app-container">
@@ -196,6 +191,8 @@ export default function App() {
               renameSession={renameSession}
               deleteExercise={deleteExercise}
               moveExercise={moveExercise}
+              duplicateSession={duplicateSession}
+              setCategorySession={setCategorySession}
             />
           ) : mode === "history" && selectedSession ? (
             <History session={selectedSession} />

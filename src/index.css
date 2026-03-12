@@ -21,6 +21,7 @@ body { margin: 0; padding: 0; min-height: 100vh; background-color: #2c2c2c; }
   background: #111; display: flex; align-items: center;
   padding: 0 16px; z-index: 1100;
   border-bottom: 1px solid rgba(255,255,255,0.08); gap: 8px;
+  padding-top: env(safe-area-inset-top);
 }
 .app-title {
   flex: 1; text-align: center; font-size: 1rem;
@@ -51,6 +52,8 @@ body { margin: 0; padding: 0; min-height: 100vh; background-color: #2c2c2c; }
   display: flex; flex-direction: column; align-items: center;
   justify-content: flex-start; min-height: calc(100vh - 56px);
   padding: 24px 20px 40px; width: 95%; max-width: 600px; margin: auto;
+  /* iOS: padding-bottom absorbs home indicator */
+  padding-bottom: calc(40px + env(safe-area-inset-bottom));
 }
 
 /* ═══ SIDE MENU — MOBILE ═══ */
@@ -59,6 +62,8 @@ body { margin: 0; padding: 0; min-height: 100vh; background-color: #2c2c2c; }
   height: calc(100vh - 56px); background: #1a1a1a;
   box-shadow: 4px 0 20px rgba(0,0,0,0.4); transition: left 0.3s ease-in-out;
   z-index: 1000; display: flex; flex-direction: column; padding: 20px;
+  /* iOS: pad bottom for home bar */
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
 }
 .side-menu.open { left: 0; }
 .side-menu.desktop-visible {
@@ -89,6 +94,10 @@ body { margin: 0; padding: 0; min-height: 100vh; background-color: #2c2c2c; }
   font-size: 11px; padding: 2px 7px; border-radius: 10px; font-weight: 600;
 }
 .session-list button.active .session-badge { background: rgba(40,167,69,0.3); color: #4cdb78; }
+.menu-bottom {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 0;
+}
 .create-session-button {
   width: 100%; margin-top: 12px; background: #28a745; color: white;
   padding: 12px; font-size: 14px; font-weight: 600; border: none;
@@ -125,12 +134,21 @@ body { margin: 0; padding: 0; min-height: 100vh; background-color: #2c2c2c; }
   display: flex; align-items: center; justify-content: space-between; padding: 14px 16px;
 }
 .session-header h3 { font-size: 15px; font-weight: 600; color: white; margin: 0; cursor: pointer; flex: 1; }
-.session-actions { display: flex; align-items: center; gap: 4px; }
+.session-category-badge {
+  font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+  margin-right: 8px; flex-shrink: 0;
+}
+.session-actions { display: flex; align-items: center; gap: 2px; }
 .rename-btn {
   background: none; border: none; font-size: 15px; color: rgba(255,255,255,0.4);
   cursor: pointer; padding: 4px 6px; border-radius: 6px; transition: color 0.2s, background 0.2s;
 }
 .rename-btn:hover { color: white; background: rgba(255,255,255,0.08); }
+.duplicate-btn {
+  background: none; border: none; font-size: 14px; color: rgba(255,255,255,0.4);
+  cursor: pointer; padding: 4px 6px; border-radius: 6px; transition: color 0.2s, background 0.2s;
+}
+.duplicate-btn:hover { color: white; background: rgba(255,255,255,0.08); }
 .rename-input {
   flex: 1; padding: 4px 8px; font-size: 15px; font-weight: 600;
   background: rgba(255,255,255,0.06); color: white;
@@ -144,10 +162,36 @@ body { margin: 0; padding: 0; min-height: 100vh; background-color: #2c2c2c; }
 }
 .delete-session:hover { transform: scale(1.15); color: #ff5050; }
 
+/* ═══ CATEGORY SELECT ═══ */
+.category-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 16px 12px; flex-wrap: wrap;
+}
+.category-row label { font-size: 11px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.8px; }
+.category-select {
+  background: rgba(255,255,255,0.07); color: white;
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+  padding: 4px 10px; font-size: 12px; font-family: 'Poppins', sans-serif;
+  cursor: pointer; outline: none;
+}
+.category-select:focus { border-color: rgba(255,255,255,0.4); }
+
 /* ═══ SESSION EXERCISES ═══ */
 .session-exercises { padding: 0 16px 14px; border-top: 1px solid rgba(255,255,255,0.06); }
 .session-exercises .input-row { margin-top: 12px; }
 .no-exercises { font-size: 12px; color: rgba(255,255,255,0.25); font-style: italic; padding: 4px 0 6px; }
+
+/* ═══ BIBLIO SUGGESTIONS ═══ */
+.biblio-suggestions {
+  display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 10px;
+}
+.biblio-chip {
+  background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5);
+  font-size: 11px; padding: 4px 10px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
+  transition: background 0.15s, color 0.15s; font-family: 'Poppins', sans-serif;
+}
+.biblio-chip:hover { background: rgba(40,167,69,0.2); color: #4cdb78; border-color: rgba(40,167,69,0.3); }
 
 .exercise-tags { display: flex; flex-direction: column; gap: 6px; padding: 4px 0 6px; }
 .exercise-tag {
@@ -216,7 +260,7 @@ input:focus { border-bottom: 2px solid rgba(255,255,255,0.8); }
 }
 .exercise-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 14px 14px 8px; cursor: pointer;
+  padding: 14px 14px 14px 8px;
 }
 .exercise-name { color: white; font-size: 15px; font-weight: 600; flex: 1; cursor: pointer; }
 .add-set-button {
@@ -289,6 +333,6 @@ input:focus { border-bottom: 2px solid rgba(255,255,255,0.8); }
 
 /* ═══ RESPONSIVE MOBILE ═══ */
 @media (max-width: 479px) {
-  .app-container { width: 100%; padding: 16px 14px 40px; }
+  .app-container { width: 100%; padding: 16px 14px calc(40px + env(safe-area-inset-bottom)); }
   .timer-container { font-size: 48px; }
 }
