@@ -1,3 +1,4 @@
+// GARDE-FOU : utiliser UNIQUEMENT push_files pour modifier ce fichier
 import React, { useState, useEffect, useRef } from "react";
 
 let sharedAudioCtx = null;
@@ -12,6 +13,7 @@ function playBeep() {
   try {
     const ctx = getAudioCtx();
     const resume = ctx.state === "suspended" ? ctx.resume() : Promise.resolve();
+    // .catch() ajouté : une rejection non gérée crashait le composant
     resume.then(() => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -23,14 +25,16 @@ function playBeep() {
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.4);
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 1.4);
-    });
+    }).catch(() => {});
   } catch (e) {}
 }
 
 function sendNotification() {
-  if ("Notification" in window && Notification.permission === "granted") {
-    new Notification("\u23F1 Repos termin\u00e9 !", { body: "C'est reparti \uD83D\uDCAA", silent: true });
-  }
+  try {
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification("⏱ Repos terminé !", { body: "C'est reparti 💪", silent: true });
+    }
+  } catch (e) {}
 }
 
 export default function Timer({ resetTrigger, onTimerUpdate }) {
@@ -42,6 +46,7 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
   const [isRunning, setIsRunning] = useState(false);
   const prevTrigger = useRef(resetTrigger);
 
+  // Remonte l'état au parent
   useEffect(() => {
     if (onTimerUpdate) {
       const pct = restDuration > 0 ? timeLeft / restDuration : 1;
@@ -49,12 +54,14 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
     }
   }, [timeLeft, isRunning, restDuration, onTimerUpdate]);
 
+  // Demande permission notif
   useEffect(() => {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
   }, []);
 
+  // Démarrage du timer au reset (nouvelle série ajoutée)
   useEffect(() => {
     if (resetTrigger !== prevTrigger.current) {
       prevTrigger.current = resetTrigger;
@@ -64,23 +71,26 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
     }
   }, [resetTrigger, restDuration]);
 
+  // Tick du countdown — ne fait QUE décrémenter, rien d'autre dans le callback
   useEffect(() => {
     if (!isRunning) return;
     const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          setIsRunning(false);
-          playBeep();
-          sendNotification();
-          if ("vibrate" in navigator) navigator.vibrate([300, 100, 300]);
-          return 0;
-        }
-        return prev - 1;
-      });
+      setTimeLeft((prev) => (prev <= 1 ? 0 : prev - 1));
     }, 1000);
     return () => clearInterval(interval);
   }, [isRunning]);
+
+  // Réaction quand le timer arrive à 0 — séparé du setInterval pour éviter
+  // setState-dans-setState qui crashait la page en blanc
+  useEffect(() => {
+    if (timeLeft === 0 && isRunning) {
+      setIsRunning(false);
+      playBeep();
+      sendNotification();
+      try { if ("vibrate" in navigator) navigator.vibrate([300, 100, 300]); } catch (e) {}
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeLeft]);
 
   const handlePlayStop = () => {
     try { getAudioCtx().resume(); } catch (e) {}
@@ -98,6 +108,9 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
   const dash = circ * pct;
   const isDone = timeLeft === 0 && !isRunning;
   const isIdle = !isRunning && timeLeft === restDuration;
+  // Cercle rouge quand < 10% du temps restant (comme la progress bar)
+  const isLow = pct < 0.10 && isRunning;
+  const ringColor = isDone ? "#ff4444" : isLow ? "#ff2a2a" : "var(--accent)";
 
   const formatTime = (s) =>
     `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
@@ -109,12 +122,12 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
           <circle cx="36" cy="36" r={radius} fill="none"
             stroke="rgba(255,255,255,0.08)" strokeWidth="5" />
           <circle cx="36" cy="36" r={radius} fill="none"
-            stroke={isDone ? "#ff4444" : "var(--accent)"}
+            stroke={ringColor}
             strokeWidth="5"
             strokeDasharray={`${dash} ${circ}`}
             strokeLinecap="round"
             transform="rotate(-90 36 36)"
-            style={{ transition: "stroke-dasharray 0.9s linear, stroke 0.3s" }}
+            style={{ transition: "stroke-dasharray 0.9s linear, stroke 0.4s ease" }}
           />
         </svg>
         <span className={`timer-bubble-time${isDone ? " timer-bubble-time-done" : ""}`}>

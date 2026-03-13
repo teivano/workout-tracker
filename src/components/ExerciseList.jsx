@@ -21,7 +21,6 @@ function WeightInput({ value, onChange }) {
   };
 
   const startLongPress = (delta) => {
-    // Délai 400ms avant répétition rapide en +5kg
     longPressRef.current = setTimeout(() => {
       repeatRef.current = setInterval(() => step(delta * 10), 120);
     }, 400);
@@ -32,7 +31,6 @@ function WeightInput({ value, onChange }) {
     clearInterval(repeatRef.current);
   };
 
-  // Valeur affichée : toujours 1 décimale si .5, sinon entier
   const display = Number.isInteger(value) ? `${value}` : `${value.toFixed(1)}`;
 
   return (
@@ -102,7 +100,19 @@ function DeltaBadge({ currentSets, lastSets }) {
 
 export default function ExerciseList({ exercises, history, addSet, deleteSet, flashIndex, onExpandedChange }) {
   const [expandedIndex, setExpandedIndex] = useState(exercises.length > 0 ? 0 : null);
-  const [weights, setWeights] = useState({});
+
+  // Poids initial = meilleur poids de la dernière séance sur cet exercice (0 si inconnu)
+  const [weights, setWeights] = useState(() => {
+    const init = {};
+    exercises.forEach((ex, i) => {
+      const lastData = getLastSessionSets(history, ex.name);
+      if (lastData && lastData.sets.length > 0) {
+        init[i] = getBestSet(lastData.sets).weight;
+      }
+    });
+    return init;
+  });
+
   const [reps, setReps] = useState({});
   const [animating, setAnimating] = useState({});
   const prevExercisesLen = useRef(exercises.length);
