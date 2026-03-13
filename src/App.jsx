@@ -48,14 +48,11 @@ export default function App() {
   const [flashIndex, setFlashIndex] = useState(null);
   const [activeExerciseName, setActiveExerciseName] = useState(null);
 
-  // Etat timer — remonte depuis Timer headless
   const [timerPct, setTimerPct] = useState(1);
   const [timerRunning, setTimerRunning] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(0);
 
   const [historySession, setHistorySession] = useState(null);
-
-  // Confirmation "Terminer la seance"
   const [confirmFinish, setConfirmFinish] = useState(false);
 
   const sessionStartRef = useRef(null);
@@ -199,12 +196,9 @@ export default function App() {
 
   const handleFinishClick = () => {
     if (!confirmFinish) {
-      // Premier clic : demande de confirmation
       setConfirmFinish(true);
-      // Auto-annulation apres 4s si pas de second clic
       setTimeout(() => setConfirmFinish(false), 4000);
     } else {
-      // Second clic : on valide
       doFinishSession();
     }
   };
@@ -214,10 +208,6 @@ export default function App() {
     setShowOnboarding(false);
   };
 
-  const totalSetsToday = selectedSession
-    ? selectedSession.exercises.reduce((t, ex) => t + ex.sets.length, 0)
-    : 0;
-
   const sessionInProgress = selectedSession !== null;
 
   const handleTimerUpdate = useCallback((pct, running, seconds) => {
@@ -226,21 +216,18 @@ export default function App() {
     setTimerSeconds(seconds ?? 0);
   }, []);
 
-  // Formatage chrono pour le header
   const formatTime = (s) =>
     `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
   const isTimerLow = timerRunning && timerPct < 0.10;
   const isTimerDone = !timerRunning && timerSeconds === 0 && sessionInProgress;
 
-  // Couleur du chrono dans le header
   const timerColor = isTimerDone
     ? "var(--danger)"
     : isTimerLow
     ? "#ff8c42"
     : "var(--accent-text)";
 
-  // Largeur progress bar header (se vide de droite a gauche)
   const progressWidth = timerRunning || isTimerDone ? `${timerPct * 100}%` : "0%";
   const progressColor = isTimerLow || isTimerDone ? "#ff2a2a" : "var(--accent)";
 
@@ -248,16 +235,13 @@ export default function App() {
     <>
       {showOnboarding && <Onboarding onDone={handleOnboardingDone} />}
 
-      {/* Timer headless — logique uniquement, zero rendu */}
       {sessionInProgress && (
         <Timer resetTrigger={resetTrigger} onTimerUpdate={handleTimerUpdate} />
       )}
 
-      {/* ===== HEADER DYNAMIQUE ===== */}
       <header className={`app-header${sessionInProgress ? " app-header-active" : ""}`}>
         <div className="app-header-inner">
           {sessionInProgress ? (
-            // Etat actif : nom seance + exercice + chrono + bouton Terminer
             <>
               <div className="header-session-info">
                 <span className="header-session-name">{selectedSession.name}</span>
@@ -278,19 +262,17 @@ export default function App() {
                   className={`header-finish-btn${confirmFinish ? " header-finish-btn-confirm" : ""}`}
                   onClick={handleFinishClick}
                 >
-                  {confirmFinish ? "Confirmée ?" : "Terminer"}
+                  {confirmFinish ? "Confirmer ?" : "Terminer"}
                 </button>
               </div>
             </>
           ) : (
-            // Etat repos : logo centre
             <div className="app-title-block">
               <span className="app-title">Workout</span>
             </div>
           )}
         </div>
 
-        {/* Progress bar = bordure basse du header, visible uniquement en seance */}
         {sessionInProgress && (
           <div className="header-progress">
             <div
@@ -362,7 +344,10 @@ export default function App() {
                 onExpandedChange={setActiveExerciseName}
               />
               {!isDesktop && (
-                <button className="finish-session-btn" onClick={handleFinishClick}>
+                <button
+                  className={`finish-session-btn${confirmFinish ? " finish-session-btn-confirm" : ""}`}
+                  onClick={handleFinishClick}
+                >
                   {confirmFinish ? "⚠️ Appuyer à nouveau pour terminer" : "Terminer la séance"}
                 </button>
               )}

@@ -35,7 +35,6 @@ const EXERCISES_BY_MUSCLE = {
   adducteurs:   ["Adduction machine", "Sumo squat", "Fentes latérales", "Câble adduction", "Copenhagen plank", "Butterfly machine"],
 };
 
-// SVG haltère pour empty state
 function DumbbellEmptySVG() {
   return (
     <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.35 }}>
@@ -142,7 +141,6 @@ export default function SessionList({
   const [savedIndex, setSavedIndex] = useState(null);
   const inputRef = useRef(null);
 
-  // Focus auto sur l'input quand il s'affiche
   useEffect(() => {
     if (showInput) setTimeout(() => inputRef.current?.focus(), 60);
   }, [showInput]);
@@ -157,7 +155,6 @@ export default function SessionList({
     addSession(val);
     setSessionInput("");
     setShowInput(false);
-    // Nouvelle séance arrive en index 0 (prepend dans App.jsx)
     setExpandedIndex(0);
     setNewSessionIndex(0);
   };
@@ -179,18 +176,21 @@ export default function SessionList({
 
   const toggleExpand = (index) => {
     if (expandedIndex === index) {
+      // Fermeture
       setExpandedIndex(null);
       setNewSessionIndex(null);
     } else {
+      // Ouverture uniquement si au moins 1 muscle selectionne
+      const muscles = sessions[index]?.muscles || [];
+      if (muscles.length === 0) return; // bloquer silencieusement — le bouton indique deja quoi faire
       setExpandedIndex(index);
     }
   };
 
-  // Quand on ajoute un muscle à une séance vide, ouvrir la carte automatiquement
   const handleMusclesChange = (index, muscles) => {
     setMusclesSession(index, muscles);
-    // Si la séance n'a pas encore d'exercices, ouvrir pour montrer les suggestions
-    if (sessions[index]?.exercises?.length === 0 && muscles.length > 0) {
+    // Ouvrir automatiquement au premier muscle ajoute sur une seance vide
+    if (muscles.length > 0 && sessions[index]?.exercises?.length === 0) {
       setExpandedIndex(index);
     }
   };
@@ -222,7 +222,6 @@ export default function SessionList({
     <div className="session-list-page">
       <p className="session-page-title">Mes séances</p>
 
-      {/* Bouton + input toujours en haut */}
       <div className="session-create-row">
         {showInput ? (
           <div className="session-create-input-wrap">
@@ -257,6 +256,7 @@ export default function SessionList({
         const isExpanded = expandedIndex === index;
         const isNew = newSessionIndex === index;
         const isSaved = savedIndex === index;
+        const hasMuscles = muscles.length > 0;
         const seen = new Set(session.exercises.map((e) => e.name));
         const muscleGroups = muscles
           .map((id) => ({
@@ -302,8 +302,7 @@ export default function SessionList({
 
             {isExpanded && (
               <div className="session-exercises">
-                {/* Prompt contextuel si muscles selectionnes mais 0 exercices */}
-                {exCount === 0 && muscles.length > 0 && (
+                {exCount === 0 && hasMuscles && (
                   <p className="session-exercises-prompt">
                     Ajoute des exercices depuis les suggestions ci-dessous ↓
                   </p>
@@ -335,10 +334,6 @@ export default function SessionList({
                   </div>
                 )}
 
-                {exCount === 0 && muscles.length === 0 && (
-                  <p className="no-exercises">Sélectionne des muscles pour voir les suggestions</p>
-                )}
-
                 {exCount > 0 && (
                   <div className="exercise-tags">
                     {session.exercises.map((ex, i) => (
@@ -363,15 +358,20 @@ export default function SessionList({
               </div>
             )}
 
+            {/* Bouton expand — indique quoi faire si pas de muscle */}
             <button
-              className={`session-expand-btn ${isExpanded ? "open" : ""}`}
+              className={`session-expand-btn ${isExpanded ? "open" : ""}${!hasMuscles ? " session-expand-btn-hint" : ""}`}
               onClick={() => toggleExpand(index)}
             >
-              {isSaved
-                ? <span className="expand-saved-label">✓ Enregistrée</span>
-                : isExpanded
-                ? "▲ Réduire"
-                : <>{"\u25bc "}<span className={exCountDanger ? "expand-count-danger" : ""}>{exCount} exercice{exCount !== 1 ? "s" : ""}</span></>}
+              {isSaved ? (
+                <span className="expand-saved-label">✓ Enregistrée</span>
+              ) : !hasMuscles ? (
+                <span className="expand-hint-label">↑ Sélectionne d’abord des muscles</span>
+              ) : isExpanded ? (
+                "▲ Réduire"
+              ) : (
+                <>{"\u25bc "}<span className={exCountDanger ? "expand-count-danger" : ""}>{exCount} exercice{exCount !== 1 ? "s" : ""}</span></>
+              )}
             </button>
           </div>
         );
