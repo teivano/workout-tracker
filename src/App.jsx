@@ -8,6 +8,7 @@ import History from "./components/History";
 import Onboarding from "./components/Onboarding";
 import SessionPicker from "./components/SessionPicker";
 import Settings, { applyAccentColor } from "./components/Settings";
+import { IconHistory, IconTrain, IconSessions, IconSettings } from "./components/NavIcons";
 
 const useIsDesktop = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
@@ -50,7 +51,7 @@ export default function App() {
   const [timerRunning, setTimerRunning] = useState(false);
   const [historySession, setHistorySession] = useState(null);
 
-  // Horodatage du début de séance — pour calculer la durée totale à la fin
+  // Horodatage du debut de seance
   const sessionStartRef = useRef(null);
 
   useEffect(() => {
@@ -135,7 +136,7 @@ export default function App() {
   };
 
   const deleteSession = (index) => {
-    if (!window.confirm("Supprimer cette séance ?")) return;
+    if (!window.confirm("Supprimer cette seance ?")) return;
     setSessions((prev) => {
       const next = prev.filter((_, i) => i !== index);
       if (selectedSessionIndex === index) {
@@ -152,7 +153,6 @@ export default function App() {
     setSelectedSessionIndex(index);
     setActiveExerciseName(null);
     setMode("train");
-    // Enregistre l'heure de début de séance
     sessionStartRef.current = Date.now();
   };
 
@@ -164,11 +164,10 @@ export default function App() {
     const hasSet = currentSession.exercises.some((ex) => ex.sets.length > 0);
 
     if (!hasSet) {
-      alert("Aucune série enregistrée.");
+      alert("Aucune serie enregistree.");
       return;
     }
 
-    // Calcule la durée en secondes depuis le début de séance
     const durationSeconds = sessionStartRef.current
       ? Math.round((Date.now() - sessionStartRef.current) / 1000)
       : null;
@@ -176,7 +175,6 @@ export default function App() {
 
     const newEntry = {
       date: new Date().toISOString(),
-      // durationSeconds : null pour les anciennes entrées sans suivi (rétro-compat)
       durationSeconds,
       exercises: currentSession.exercises.map((ex) => ({ name: ex.name, sets: [...ex.sets] })),
     };
@@ -212,7 +210,7 @@ export default function App() {
     mode === "train" && selectedSession ? selectedSession.name
     : mode === "history" && (historySession || selectedSession)
       ? (historySession || selectedSession).name
-    : "🌴 Workout";
+    : "Workout";
 
   const handleTimerUpdate = useCallback((pct, running) => {
     setTimerPct(pct);
@@ -228,7 +226,7 @@ export default function App() {
           <span className="app-title">{headerTitle}</span>
           {mode === "train" && selectedSession && totalSetsToday > 0 && (
             <span className="header-sets-count">
-              {totalSetsToday} série{totalSetsToday > 1 ? "s" : ""}
+              {totalSetsToday} serie{totalSetsToday > 1 ? "s" : ""}
             </span>
           )}
         </div>
@@ -236,7 +234,7 @@ export default function App() {
           <div className="header-actions">
             {mode === "train" && selectedSession && (
               <button className="header-icon-btn finish-btn" onClick={finishSession}>
-                ✅ Terminer
+                Terminer
               </button>
             )}
           </div>
@@ -253,10 +251,10 @@ export default function App() {
       <div className={`app-wrapper ${isDesktop ? "desktop" : ""}`}>
         {isDesktop && (
           <div className="side-menu desktop-visible">
-            <h2>Séances</h2>
+            <h2>Seances</h2>
             <div className="session-list">
               {sessions.length === 0 && (
-                <p className="menu-empty">Aucune séance —<br />crée-en une !</p>
+                <p className="menu-empty">Aucune seance —<br />cree-en une !</p>
               )}
               {sessions.map((session, index) => (
                 <button
@@ -273,9 +271,9 @@ export default function App() {
             </div>
             <div className="menu-bottom">
               <button className="create-session-button" onClick={() => setMode("sessions")}>
-                + Gérer les séances
+                + Gerer les seances
               </button>
-              <div className="menu-footer">Avec amour © Teivano 2025</div>
+              <div className="menu-footer">Avec amour c Teivano 2025</div>
             </div>
           </div>
         )}
@@ -312,15 +310,14 @@ export default function App() {
               />
               {!isDesktop && (
                 <button className="finish-session-btn" onClick={finishSession}>
-                  ✅ Terminer la séance
+                  Terminer la seance
                 </button>
               )}
             </>
           ) : (
             <div className="empty-state">
-              <span>💪</span>
-              <p>Sélectionne une séance<br />pour commencer</p>
-              <small>Va dans Séances pour créer une séance</small>
+              <p>Selectionne une seance pour commencer</p>
+              <small>Va dans Seances pour creer une seance</small>
             </div>
           )}
         </div>
@@ -332,7 +329,7 @@ export default function App() {
             <div className="session-bar">
               <div className="session-bar-ticker">
                 <span className={activeExerciseName ? "ticker-text" : "ticker-text ticker-muted"}>
-                  {activeExerciseName || selectedSession?.name || "Séance en cours"}
+                  {activeExerciseName || selectedSession?.name || "Seance en cours"}
                 </span>
               </div>
               <div className="session-bar-progress">
@@ -349,7 +346,9 @@ export default function App() {
               className={`bnav-btn ${mode === "history" ? "active" : ""}`}
               onClick={() => setMode("history")}
             >
-              <div className="bnav-icon-wrap"><span className="bnav-icon">📊</span></div>
+              <div className="bnav-icon-wrap">
+                <IconHistory size={20} />
+              </div>
               <span className="bnav-label">Historique</span>
             </button>
 
@@ -357,24 +356,30 @@ export default function App() {
               className={`bnav-btn bnav-center ${mode === "train" ? "active" : ""}`}
               onClick={() => setMode("train")}
             >
-              <div className="bnav-icon-wrap"><span className="bnav-icon">🏋️</span></div>
-              <span className="bnav-label">Entraînement</span>
+              <div className="bnav-icon-wrap">
+                <IconTrain size={22} />
+              </div>
+              <span className="bnav-label">Entrainement</span>
             </button>
 
             <button
               className={`bnav-btn ${mode === "sessions" ? "active" : ""}`}
               onClick={() => setMode("sessions")}
             >
-              <div className="bnav-icon-wrap"><span className="bnav-icon">📋</span></div>
-              <span className="bnav-label">Séances</span>
+              <div className="bnav-icon-wrap">
+                <IconSessions size={20} />
+              </div>
+              <span className="bnav-label">Seances</span>
             </button>
 
             <button
               className={`bnav-btn ${mode === "settings" ? "active" : ""}`}
               onClick={() => setMode("settings")}
             >
-              <div className="bnav-icon-wrap"><span className="bnav-icon">⚙️</span></div>
-              <span className="bnav-label">Réglages</span>
+              <div className="bnav-icon-wrap">
+                <IconSettings size={20} />
+              </div>
+              <span className="bnav-label">Reglages</span>
             </button>
           </nav>
         </>
