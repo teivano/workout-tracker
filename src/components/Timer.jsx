@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const DEFAULT_REST = 75;
-
 let sharedAudioCtx = null;
 function getAudioCtx() {
   if (!sharedAudioCtx || sharedAudioCtx.state === "closed") {
@@ -31,19 +29,24 @@ function playBeep() {
 
 function sendNotification() {
   if ("Notification" in window && Notification.permission === "granted") {
-    new Notification("⏱ Repos terminé !", { body: "C'est reparti 💪", silent: true });
+    new Notification("\u23f1 Repos termin\u00e9 !", { body: "C'est reparti \ud83d\udcaa", silent: true });
   }
 }
 
 export default function Timer({ resetTrigger, onTimerUpdate }) {
-  const [restDuration, setRestDuration] = useState(DEFAULT_REST);
-  const [timeLeft, setTimeLeft] = useState(DEFAULT_REST);
+  // Lit la durée persistée dans localStorage (réglée depuis Settings)
+  const [restDuration] = useState(() => {
+    const saved = parseInt(localStorage.getItem("rest_duration"), 10);
+    return !isNaN(saved) && saved >= 10 ? saved : 75;
+  });
+  const [timeLeft, setTimeLeft] = useState(restDuration);
   const [isRunning, setIsRunning] = useState(false);
   const prevTrigger = useRef(resetTrigger);
 
   // Notifie le parent du % restant et de l'état running
   useEffect(() => {
     if (onTimerUpdate) {
+      // pct = 0 quand le temps est écoulé, 1 quand on vient de lancer
       const pct = restDuration > 0 ? timeLeft / restDuration : 1;
       onTimerUpdate(pct, isRunning);
     }
@@ -55,6 +58,7 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
     }
   }, []);
 
+  // Reset + démarrage auto quand une série est ajoutée
   useEffect(() => {
     if (resetTrigger !== prevTrigger.current) {
       prevTrigger.current = resetTrigger;
@@ -82,14 +86,6 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
     return () => clearInterval(interval);
   }, [isRunning]);
 
-  const adjustDuration = (amount) => {
-    setRestDuration((prev) => {
-      const next = Math.max(10, prev + amount);
-      if (!isRunning) setTimeLeft(next);
-      return next;
-    });
-  };
-
   const handlePlayStop = () => {
     try { getAudioCtx().resume(); } catch (e) {}
     if (isRunning) {
@@ -111,19 +107,19 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
     `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
   return (
-    <div className={`timer-bubble ${
-      isIdle ? "timer-bubble-idle" : ""
-    } ${
-      isDone ? "timer-bubble-done" : ""
-    } ${
-      isRunning ? "timer-bubble-running" : ""
+    <div className={`timer-bubble${
+      isIdle ? " timer-bubble-idle" : ""
+    }${
+      isDone ? " timer-bubble-done" : ""
+    }${
+      isRunning ? " timer-bubble-running" : ""
     }`}>
       <div className="timer-bubble-ring" onClick={handlePlayStop}>
         <svg width="72" height="72" viewBox="0 0 72 72">
           <circle cx="36" cy="36" r={radius} fill="none"
             stroke="rgba(255,255,255,0.08)" strokeWidth="5" />
           <circle cx="36" cy="36" r={radius} fill="none"
-            stroke={isDone ? "#ff4444" : "#28a745"}
+            stroke={isDone ? "#ff4444" : "var(--accent)"}
             strokeWidth="5"
             strokeDasharray={`${dash} ${circ}`}
             strokeLinecap="round"
@@ -131,14 +127,11 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
             style={{ transition: "stroke-dasharray 0.9s linear, stroke 0.3s" }}
           />
         </svg>
-        <span className={`timer-bubble-time ${isDone ? "timer-bubble-time-done" : ""}`}>
+        <span className={`timer-bubble-time${isDone ? " timer-bubble-time-done" : ""}`}>
           {formatTime(timeLeft)}
         </span>
       </div>
-      <div className="timer-bubble-adj">
-        <button className="timer-bubble-btn" onClick={() => adjustDuration(-15)}>−15s</button>
-        <button className="timer-bubble-btn" onClick={() => adjustDuration(15)}>+15s</button>
-      </div>
+      {/* Boutons −15s/+15s supprimés — réglage via Settings */}
     </div>
   );
 }

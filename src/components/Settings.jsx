@@ -2,13 +2,27 @@ import React, { useState } from "react";
 import { APP_VERSION } from "../version.js";
 
 const PALETTE = [
-  { id: "green",  label: "Vert",    accent: "#28a745", dim: "rgba(40,167,69,0.18)",   border: "rgba(40,167,69,0.3)",   text: "#4cdb78" },
-  { id: "blue",   label: "Bleu",    accent: "#2196f3", dim: "rgba(33,150,243,0.18)",  border: "rgba(33,150,243,0.3)",  text: "#64b8ff" },
-  { id: "violet", label: "Violet",  accent: "#9c27b0", dim: "rgba(156,39,176,0.18)",  border: "rgba(156,39,176,0.3)",  text: "#ce7de8" },
-  { id: "orange", label: "Orange",  accent: "#ff7043", dim: "rgba(255,112,67,0.18)",  border: "rgba(255,112,67,0.3)",  text: "#ff9a78" },
-  { id: "red",    label: "Rouge",   accent: "#e53935", dim: "rgba(229,57,53,0.18)",   border: "rgba(229,57,53,0.3)",   text: "#ff6b6b" },
-  { id: "cyan",   label: "Cyan",    accent: "#00bcd4", dim: "rgba(0,188,212,0.18)",   border: "rgba(0,188,212,0.3)",   text: "#4dd9ed" },
-  { id: "pink",   label: "Rose",    accent: "#e91e63", dim: "rgba(233,30,99,0.18)",   border: "rgba(233,30,99,0.3)",   text: "#f06292" },
+  { id: "green",  label: "Vert",   accent: "#28a745", dim: "rgba(40,167,69,0.18)",   border: "rgba(40,167,69,0.3)",   text: "#4cdb78" },
+  { id: "blue",   label: "Bleu",   accent: "#2196f3", dim: "rgba(33,150,243,0.18)",  border: "rgba(33,150,243,0.3)",  text: "#64b8ff" },
+  { id: "violet", label: "Violet", accent: "#9c27b0", dim: "rgba(156,39,176,0.18)",  border: "rgba(156,39,176,0.3)",  text: "#ce7de8" },
+  { id: "orange", label: "Orange", accent: "#ff7043", dim: "rgba(255,112,67,0.18)",  border: "rgba(255,112,67,0.3)",  text: "#ff9a78" },
+  { id: "red",    label: "Rouge",  accent: "#e53935", dim: "rgba(229,57,53,0.18)",   border: "rgba(229,57,53,0.3)",   text: "#ff6b6b" },
+  { id: "cyan",   label: "Cyan",   accent: "#00bcd4", dim: "rgba(0,188,212,0.18)",   border: "rgba(0,188,212,0.3)",   text: "#4dd9ed" },
+  { id: "pink",   label: "Rose",   accent: "#e91e63", dim: "rgba(233,30,99,0.18)",   border: "rgba(233,30,99,0.3)",   text: "#f06292" },
+];
+
+// Durées de repos disponibles en secondes
+const REST_OPTIONS = [
+  { value: 30,  label: "30 s" },
+  { value: 45,  label: "45 s" },
+  { value: 60,  label: "1 min" },
+  { value: 75,  label: "1 min 15" },
+  { value: 90,  label: "1 min 30" },
+  { value: 120, label: "2 min" },
+  { value: 150, label: "2 min 30" },
+  { value: 180, label: "3 min" },
+  { value: 240, label: "4 min" },
+  { value: 300, label: "5 min" },
 ];
 
 export function applyAccentColor(colorId) {
@@ -24,12 +38,22 @@ export default function Settings() {
   const [accentId, setAccentId] = useState(
     () => localStorage.getItem("accent_color") || "green"
   );
+  const [restDuration, setRestDuration] = useState(() => {
+    const saved = parseInt(localStorage.getItem("rest_duration"), 10);
+    return !isNaN(saved) && saved >= 10 ? saved : 75;
+  });
   const [confirmReset, setConfirmReset] = useState(false);
 
   const handleColorChange = (id) => {
     setAccentId(id);
     localStorage.setItem("accent_color", id);
     applyAccentColor(id);
+  };
+
+  const handleRestChange = (val) => {
+    const v = parseInt(val, 10);
+    setRestDuration(v);
+    localStorage.setItem("rest_duration", String(v));
   };
 
   const handleReset = () => {
@@ -44,13 +68,11 @@ export default function Settings() {
       {/* ── Compte ── */}
       <section className="settings-section">
         <p className="settings-section-title">Compte</p>
-
         <div className="settings-card settings-account-card">
           <div className="settings-account-status">
             <span className="settings-status-dot offline" />
-            <span className="settings-status-label">Mode hors-ligne · données locales</span>
+            <span className="settings-status-label">Mode hors-ligne \u00b7 donn\u00e9es locales</span>
           </div>
-
           <button className="settings-google-btn" disabled>
             <svg className="settings-google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -59,13 +81,34 @@ export default function Settings() {
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
             <span>Continuer avec Google</span>
-            <span className="settings-soon-badge">Bientôt</span>
+            <span className="settings-soon-badge">Bient\u00f4t</span>
           </button>
-
           <p className="settings-account-hint">
             La synchronisation en ligne (multi-appareils, sauvegarde cloud) arrivera prochainement.
-            Tes données locales seront migrées automatiquement.
+            Tes donn\u00e9es locales seront migr\u00e9es automatiquement.
           </p>
+        </div>
+      </section>
+
+      {/* ── Entra\u00eenement ── */}
+      <section className="settings-section">
+        <p className="settings-section-title">Entra\u00eenement</p>
+        <div className="settings-card">
+          <div className="settings-row">
+            <div className="settings-row-label">
+              <span className="settings-row-title">Dur\u00e9e de repos</span>
+              <span className="settings-row-sub">Temps entre chaque s\u00e9rie</span>
+            </div>
+            <select
+              className="settings-select"
+              value={restDuration}
+              onChange={(e) => handleRestChange(e.target.value)}
+            >
+              {REST_OPTIONS.map(o => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </section>
 
@@ -83,7 +126,7 @@ export default function Settings() {
                 title={c.label}
                 type="button"
               >
-                {accentId === c.id && <span className="palette-check">✓</span>}
+                {accentId === c.id && <span className="palette-check">\u2713</span>}
               </button>
             ))}
           </div>
@@ -93,17 +136,17 @@ export default function Settings() {
         </div>
       </section>
 
-      {/* ── Données ── */}
+      {/* ── Donn\u00e9es ── */}
       <section className="settings-section">
-        <p className="settings-section-title">Données</p>
+        <p className="settings-section-title">Donn\u00e9es</p>
         <div className="settings-card">
           <p className="settings-hint">
-            Supprime toutes tes séances, ton historique et tes préférences.
-            Cette action est irréversible.
+            Supprime toutes tes s\u00e9ances, ton historique et tes pr\u00e9f\u00e9rences.
+            Cette action est irr\u00e9versible.
           </p>
           {confirmReset ? (
             <div className="settings-confirm-row">
-              <span className="settings-confirm-label">Tu es sûr ?</span>
+              <span className="settings-confirm-label">Tu es s\u00fbr ?</span>
               <button className="settings-btn settings-btn-danger" onClick={handleReset}>
                 Oui, tout effacer
               </button>
@@ -113,14 +156,14 @@ export default function Settings() {
             </div>
           ) : (
             <button className="settings-btn settings-btn-danger-outline" onClick={handleReset}>
-              🗑 Réinitialiser l'application
+              \ud83d\uddd1 R\u00e9initialiser l'application
             </button>
           )}
         </div>
       </section>
 
       {/* ── Footer version ── */}
-      <p className="settings-version">Workout Tracker · v{APP_VERSION}</p>
+      <p className="settings-version">Workout Tracker \u00b7 v{APP_VERSION}</p>
     </div>
   );
 }
