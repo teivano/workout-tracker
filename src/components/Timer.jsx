@@ -29,12 +29,11 @@ function playBeep() {
 
 function sendNotification() {
   if ("Notification" in window && Notification.permission === "granted") {
-    new Notification("\u23f1 Repos termin\u00e9 !", { body: "C'est reparti \ud83d\udcaa", silent: true });
+    new Notification("\u23F1 Repos termin\u00e9 !", { body: "C'est reparti \uD83D\uDCAA", silent: true });
   }
 }
 
 export default function Timer({ resetTrigger, onTimerUpdate }) {
-  // Lit la durée persistée dans localStorage (réglée depuis Settings)
   const [restDuration] = useState(() => {
     const saved = parseInt(localStorage.getItem("rest_duration"), 10);
     return !isNaN(saved) && saved >= 10 ? saved : 75;
@@ -43,10 +42,8 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
   const [isRunning, setIsRunning] = useState(false);
   const prevTrigger = useRef(resetTrigger);
 
-  // Notifie le parent du % restant et de l'état running
   useEffect(() => {
     if (onTimerUpdate) {
-      // pct = 0 quand le temps est écoulé, 1 quand on vient de lancer
       const pct = restDuration > 0 ? timeLeft / restDuration : 1;
       onTimerUpdate(pct, isRunning);
     }
@@ -58,7 +55,6 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
     }
   }, []);
 
-  // Reset + démarrage auto quand une série est ajoutée
   useEffect(() => {
     if (resetTrigger !== prevTrigger.current) {
       prevTrigger.current = resetTrigger;
@@ -107,13 +103,7 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
     `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
   return (
-    <div className={`timer-bubble${
-      isIdle ? " timer-bubble-idle" : ""
-    }${
-      isDone ? " timer-bubble-done" : ""
-    }${
-      isRunning ? " timer-bubble-running" : ""
-    }`}>
+    <div className={`timer-bubble${isIdle ? " timer-bubble-idle" : ""}${isDone ? " timer-bubble-done" : ""}${isRunning ? " timer-bubble-running" : ""}`}>
       <div className="timer-bubble-ring" onClick={handlePlayStop}>
         <svg width="72" height="72" viewBox="0 0 72 72">
           <circle cx="36" cy="36" r={radius} fill="none"
@@ -131,7 +121,6 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
           {formatTime(timeLeft)}
         </span>
       </div>
-      {/* Boutons −15s/+15s supprimés — réglage via Settings */}
     </div>
   );
 }

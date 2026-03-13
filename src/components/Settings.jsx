@@ -11,7 +11,6 @@ const PALETTE = [
   { id: "pink",   label: "Rose",   accent: "#e91e63", dim: "rgba(233,30,99,0.18)",   border: "rgba(233,30,99,0.3)",   text: "#f06292" },
 ];
 
-// Durées de repos disponibles en secondes
 const REST_OPTIONS = [
   { value: 30,  label: "30 s" },
   { value: 45,  label: "45 s" },
@@ -65,7 +64,6 @@ export default function Settings() {
   return (
     <div className="settings-page">
 
-      {/* ── Compte ── */}
       <section className="settings-section">
         <p className="settings-section-title">Compte</p>
         <div className="settings-card settings-account-card">
@@ -90,7 +88,6 @@ export default function Settings() {
         </div>
       </section>
 
-      {/* ── Entra\u00eenement ── */}
       <section className="settings-section">
         <p className="settings-section-title">Entra\u00eenement</p>
         <div className="settings-card">
@@ -112,7 +109,6 @@ export default function Settings() {
         </div>
       </section>
 
-      {/* ── Apparence ── */}
       <section className="settings-section">
         <p className="settings-section-title">Couleur d'accentuation</p>
         <div className="settings-card">
@@ -136,7 +132,6 @@ export default function Settings() {
         </div>
       </section>
 
-      {/* ── Donn\u00e9es ── */}
       <section className="settings-section">
         <p className="settings-section-title">Donn\u00e9es</p>
         <div className="settings-card">
@@ -156,13 +151,12 @@ export default function Settings() {
             </div>
           ) : (
             <button className="settings-btn settings-btn-danger-outline" onClick={handleReset}>
-              \ud83d\uddd1 R\u00e9initialiser l'application
+              \uD83D\uDDD1 R\u00e9initialiser l'application
             </button>
           )}
         </div>
       </section>
 
-      {/* ── Footer version ── */}
       <p className="settings-version">Workout Tracker \u00b7 v{APP_VERSION}</p>
     </div>
   );

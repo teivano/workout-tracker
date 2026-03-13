@@ -46,6 +46,7 @@ export default function App() {
   const [activeExerciseName, setActiveExerciseName] = useState(null);
   const [timerPct, setTimerPct] = useState(1);
   const [timerRunning, setTimerRunning] = useState(false);
+  const [historySession, setHistorySession] = useState(null);
 
   useEffect(() => {
     localStorage.setItem("sessions", JSON.stringify(sessions));
@@ -150,63 +151,6 @@ export default function App() {
   const finishSession = () => {
     if (selectedSessionIndex === null) return;
     let hasSet = false;
-    update((s) => {
-      const session = s[selectedSessionIndex];
-      hasSet = session.exercises.some((ex) => ex.sets.length > 0);
-      if (!hasSet) return;
-      session.history = [
-        {
-          date: new Date().toISOString(),
-          exercises: session.exercises.map((ex) => ({ name: ex.name, sets: [...ex.sets] })),
-        },
-        ...(session.history || []),
-      ];
-      session.exercises = session.exercises.map((ex) => ({ ...ex, sets: [] }));
-    });
-    if (!hasSet) { alert("Aucune s\u00e9rie enregistr\u00e9e."); return; }
-    // Montre l'historique de la s\u00e9ance termin\u00e9e, puis r\u00e9initialise la s\u00e9lection
-    // pour que le retour sur "train" affiche le picker
-    const justFinishedIndex = selectedSessionIndex;
-    setSelectedSessionIndex(justFinishedIndex); // garde pour afficher l'historique
-    setMode("history");
-    setActiveExerciseName(null);
-    setTimerRunning(false);
-    setTimerPct(1);
-    // Apr\u00e8s avoir bas\u00e9 le mode sur history, on d\u00e9lie la s\u00e9lection
-    // pour que tap sur Entra\u00eenement => picker
-    setTimeout(() => setSelectedSessionIndex(null), 0);
-  };
-
-  const handleOnboardingDone = () => {
-    localStorage.setItem("onboarding_done", "1");
-    setShowOnboarding(false);
-  };
-
-  const totalSetsToday = selectedSession
-    ? selectedSession.exercises.reduce((t, ex) => t + ex.sets.length, 0)
-    : 0;
-
-  // Timer et session bar visibles d\u00e8s qu'une session est active
-  // ET persistants m\u00eame si on change d'onglet
-  const hasActiveSession = selectedSession !== null || (mode === "history" && sessions.length > 0);
-  // Plus pr\u00e9cis : on garde le timer mont\u00e9 tant que selectedSession exist(ait)
-  // On utilise un ref pour savoir si une session \u00e9tait en cours
-  const sessionInProgress = selectedSession !== null;
-  const sessionBarVisible = sessionInProgress;
-
-  const headerTitle =
-    mode === "train" && selectedSession ? selectedSession.name
-    : mode === "history" && selectedSession ? selectedSession.name
-    : "\ud83c\udf34 Workout";
-
-  // L'onglet historique doit afficher la derni\u00e8re s\u00e9ance termin\u00e9e
-  // m\u00eame apr\u00e8s le setSelectedSessionIndex(null)
-  // On garde donc un ref de la derni\u00e8re session vue en historique
-  const [historySession, setHistorySession] = useState(null);
-
-  const finishSessionFinal = () => {
-    if (selectedSessionIndex === null) return;
-    let hasSet = false;
     const idx = selectedSessionIndex;
     update((s) => {
       const session = s[idx];
@@ -222,15 +166,30 @@ export default function App() {
       session.exercises = session.exercises.map((ex) => ({ ...ex, sets: [] }));
     });
     if (!hasSet) { alert("Aucune s\u00e9rie enregistr\u00e9e."); return; }
-    // Sauvegarde la session pour l'afficher en historique
     setHistorySession(sessions[idx]);
-    // D\u00e9s\u00e9lectionne pour que retour sur train => picker
     setSelectedSessionIndex(null);
     setMode("history");
     setActiveExerciseName(null);
     setTimerRunning(false);
     setTimerPct(1);
   };
+
+  const handleOnboardingDone = () => {
+    localStorage.setItem("onboarding_done", "1");
+    setShowOnboarding(false);
+  };
+
+  const totalSetsToday = selectedSession
+    ? selectedSession.exercises.reduce((t, ex) => t + ex.sets.length, 0)
+    : 0;
+
+  const sessionInProgress = selectedSession !== null;
+
+  const headerTitle =
+    mode === "train" && selectedSession ? selectedSession.name
+    : mode === "history" && (historySession || selectedSession)
+      ? (historySession || selectedSession).name
+    : "\uD83C\uDF34 Workout";
 
   return (
     <>
@@ -248,7 +207,7 @@ export default function App() {
         {isDesktop && (
           <div className="header-actions">
             {mode === "train" && selectedSession && (
-              <button className="header-icon-btn finish-btn" onClick={finishSessionFinal}>
+              <button className="header-icon-btn finish-btn" onClick={finishSession}>
                 \u2705 Terminer
               </button>
             )}
@@ -256,7 +215,6 @@ export default function App() {
         )}
       </header>
 
-      {/* Timer mont\u00e9 tant que session en cours, persiste sur tous les onglets */}
       {sessionInProgress && (
         <Timer
           resetTrigger={resetTrigger}
@@ -328,14 +286,14 @@ export default function App() {
                 onExpandedChange={setActiveExerciseName}
               />
               {!isDesktop && (
-                <button className="finish-session-btn" onClick={finishSessionFinal}>
+                <button className="finish-session-btn" onClick={finishSession}>
                   \u2705 Terminer la s\u00e9ance
                 </button>
               )}
             </>
           ) : (
             <div className="empty-state">
-              <span>\ud83d\udcaa</span>
+              <span>\uD83D\uDCAA</span>
               <p>S\u00e9lectionne une s\u00e9ance<br />pour commencer</p>
               <small>Va dans S\u00e9ances pour cr\u00e9er une s\u00e9ance</small>
             </div>
@@ -345,7 +303,6 @@ export default function App() {
 
       {!isDesktop && (
         <>
-          {/* Session bar : visible tant que session en cours */}
           {sessionInProgress && (
             <div className="session-bar">
               <div className="session-bar-ticker">
@@ -354,8 +311,6 @@ export default function App() {
                 </span>
               </div>
               <div className="session-bar-progress">
-                {/* Barre : pleine au d\u00e9but, se vide de droite vers gauche */}
-                {/* Direction : vert (plein) \u2192 rouge (vide) */}
                 <div
                   className={`session-bar-fill${timerRunning ? " session-bar-fill-running" : ""}`}
                   style={{ width: `${timerPct * 100}%` }}
@@ -367,13 +322,10 @@ export default function App() {
           <nav className="bottom-nav">
             <button
               className={`bnav-btn ${mode === "history" ? "active" : ""}`}
-              onClick={() => {
-                if (selectedSession) setMode("history");
-                else if (historySession) setMode("history");
-              }}
+              onClick={() => { if (selectedSession || historySession) setMode("history"); }}
               disabled={!selectedSession && !historySession}
             >
-              <div className="bnav-icon-wrap"><span className="bnav-icon">\ud83d\udcca</span></div>
+              <div className="bnav-icon-wrap"><span className="bnav-icon">\uD83D\uDCCA</span></div>
               <span className="bnav-label">Historique</span>
             </button>
 
@@ -381,7 +333,7 @@ export default function App() {
               className={`bnav-btn bnav-center ${mode === "train" ? "active" : ""}`}
               onClick={() => setMode("train")}
             >
-              <div className="bnav-icon-wrap"><span className="bnav-icon">\ud83c\udfcb\ufe0f</span></div>
+              <div className="bnav-icon-wrap"><span className="bnav-icon">\uD83C\uDFCB\uFE0F</span></div>
               <span className="bnav-label">Entra\u00eenement</span>
             </button>
 
@@ -389,7 +341,7 @@ export default function App() {
               className={`bnav-btn ${mode === "sessions" ? "active" : ""}`}
               onClick={() => setMode("sessions")}
             >
-              <div className="bnav-icon-wrap"><span className="bnav-icon">\ud83d\udccb</span></div>
+              <div className="bnav-icon-wrap"><span className="bnav-icon">\uD83D\uDCCB</span></div>
               <span className="bnav-label">S\u00e9ances</span>
             </button>
 
@@ -397,7 +349,7 @@ export default function App() {
               className={`bnav-btn ${mode === "settings" ? "active" : ""}`}
               onClick={() => setMode("settings")}
             >
-              <div className="bnav-icon-wrap"><span className="bnav-icon">\u2699\ufe0f</span></div>
+              <div className="bnav-icon-wrap"><span className="bnav-icon">\u2699\uFE0F</span></div>
               <span className="bnav-label">R\u00e9glages</span>
             </button>
           </nav>
