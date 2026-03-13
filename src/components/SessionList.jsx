@@ -34,51 +34,45 @@ const EXERCISES_BY_MUSCLE = {
   adducteurs:   ["Adduction machine", "Sumo squat", "Fentes latérales", "Câble adduction", "Copenhagen plank", "Butterfly machine"],
 };
 
-// Dropdown qui s'affiche en position fixed pour ne pas être coupé par overflow:hidden
-function MuscleSelector({ selected, onChange, cardRef }) {
+// Fix dropdown : position fixed calculée au clic, fermeture sur pointerdown hors zone
+function MuscleSelector({ selected, onChange }) {
   const [open, setOpen] = useState(false);
-  const [dropdownStyle, setDropdownStyle] = useState({});
+  const [dropPos, setDropPos] = useState({});
   const btnRef = useRef(null);
+  const dropRef = useRef(null);
 
   useEffect(() => {
     if (!open) return;
     const handler = (e) => {
-      if (btnRef.current && !btnRef.current.contains(e.target)) setOpen(false);
+      // Ne ferme PAS si le clic vient du dropdown lui-même
+      if (dropRef.current?.contains(e.target)) return;
+      if (btnRef.current?.contains(e.target)) return;
+      setOpen(false);
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    // pointerdown pour intercepter avant le click, mais en ignorant le dropdown
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, [open]);
 
   const handleOpen = () => {
-    if (btnRef.current) {
-      const rect = btnRef.current.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const dropH = Math.min(220, 14 * 38); // approx max height
-      if (spaceBelow < dropH) {
-        // Ouvrir vers le haut
-        setDropdownStyle({
-          position: "fixed",
-          left: rect.left,
-          bottom: window.innerHeight - rect.top + 4,
-          minWidth: 160,
-          zIndex: 3000,
-        });
-      } else {
-        setDropdownStyle({
-          position: "fixed",
-          left: rect.left,
-          top: rect.bottom + 4,
-          minWidth: 160,
-          zIndex: 3000,
-        });
-      }
-    }
+    if (!btnRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const approxDropH = Math.min(220, MUSCLES.length * 38);
+    const pos = spaceBelow >= approxDropH
+      ? { top: rect.bottom + 4, left: rect.left }
+      : { bottom: window.innerHeight - rect.top + 4, left: rect.left };
+    setDropPos({ position: "fixed", minWidth: 170, zIndex: 3000, ...pos });
     setOpen((o) => !o);
   };
 
   const toggle = (id) => {
-    onChange(selected.includes(id) ? selected.filter((m) => m !== id) : [...selected, id]);
-    setOpen(false);
+    onChange(selected.includes(id)
+      ? selected.filter((m) => m !== id)
+      : [...selected, id]
+    );
+    // On garde le dropdown ouvert pour permettre la multi-sélection
+    // On ne ferme que si on clique à l'extérieur
   };
 
   const remaining = MUSCLES.filter((m) => !selected.includes(m.id));
@@ -92,21 +86,28 @@ function MuscleSelector({ selected, onChange, cardRef }) {
           return (
             <span key={id} className="muscle-tag">
               {m?.label}
-              <button className="muscle-tag-remove" onClick={() => toggle(id)} type="button">×</button>
+              <button
+                className="muscle-tag-remove"
+                onPointerDown={(e) => { e.stopPropagation(); }}
+                onClick={() => onChange(selected.filter((x) => x !== id))}
+                type="button"
+              >×</button>
             </span>
           );
         })}
         {remaining.length > 0 && (
-          <div style={{ position: "relative" }}>
+          <>
             <button ref={btnRef} className="muscle-add-btn" onClick={handleOpen} type="button">
               + Ajouter
             </button>
             {open && (
-              <div className="muscle-dropdown" style={dropdownStyle}>
+              <div ref={dropRef} className="muscle-dropdown" style={dropPos}>
                 {remaining.map((m) => (
                   <button
                     key={m.id}
                     className="muscle-dropdown-item"
+                    // onPointerDown + preventDefault empêche le blur/pointerdown extérieur de se déclencher
+                    onPointerDown={(e) => e.preventDefault()}
                     onClick={() => toggle(m.id)}
                     type="button"
                   >
@@ -115,7 +116,7 @@ function MuscleSelector({ selected, onChange, cardRef }) {
                 ))}
               </div>
             )}
-          </div>
+          </>
         )}
       </div>
     </div>
@@ -216,9 +217,9 @@ export default function SessionList({
                 />
               </div>
               <div className="session-actions">
-                <button className="session-play-btn" title="Démarrer" onClick={() => onSelectSession(index)}>▶</button>
-                <button className="duplicate-btn" title="Dupliquer" onClick={() => duplicateSession(index)}>⧉</button>
-                <button className="rename-btn" title="Renommer" onClick={() => { setRenamingIndex(index); setRenameValue(session.name); }}>✏️</button>
+                <button className="session-play-btn" onClick={() => onSelectSession(index)}>▶</button>
+                <button className="duplicate-btn" onClick={() => duplicateSession(index)}>⧉</button>
+                <button className="rename-btn" onClick={() => { setRenamingIndex(index); setRenameValue(session.name); }}>✏️</button>
                 <button className="delete-session" onClick={() => deleteSession(index)}>❌</button>
               </div>
             </div>
@@ -274,7 +275,9 @@ export default function SessionList({
               className={`session-expand-btn ${isExpanded ? "open" : ""}`}
               onClick={() => toggleExpand(index)}
             >
-              {isExpanded ? "▲ Réduire" : `▼ ${session.exercises.length} exercice${session.exercises.length !== 1 ? "s" : ""}`}
+              {isExpanded
+                ? "▲ Réduire"
+                : `▼ ${session.exercises.length} exercice${session.exercises.length !== 1 ? "s" : ""}`}
             </button>
           </div>
         );

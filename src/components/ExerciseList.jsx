@@ -62,23 +62,29 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
   const [reps, setReps] = useState({});
   const [animating, setAnimating] = useState({});
   const prevExercisesLen = useRef(exercises.length);
-  // Ref vers l'ancre de bas de liste — pour auto-scroll
-  const bottomRef = useRef(null);
-  // Ref pour tracker la longueur totale des sets (tous exercices confondus)
+
+  // Refs sur le formulaire de saisie de chaque exercice pour l'auto-scroll
+  const inputRefs = useRef({});
+
+  // Tracker le total de sets pour détecter un ajout
   const prevTotalSets = useRef(
     exercises.reduce((t, ex) => t + ex.sets.length, 0)
   );
 
-  // Auto-scroll vers le bas quand une série est ajoutée
+  // Auto-scroll : scroll vers le formulaire de l'exercice actif après ajout de série
   useEffect(() => {
     const total = exercises.reduce((t, ex) => t + ex.sets.length, 0);
-    if (total > prevTotalSets.current) {
-      prevTotalSets.current = total;
-      bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-    } else {
-      prevTotalSets.current = total;
+    if (total > prevTotalSets.current && expandedIndex !== null) {
+      // Petit délai pour laisser le DOM se mettre à jour
+      setTimeout(() => {
+        inputRefs.current[expandedIndex]?.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+        });
+      }, 60);
     }
-  }, [exercises]);
+    prevTotalSets.current = total;
+  }, [exercises, expandedIndex]);
 
   useEffect(() => {
     if (prevExercisesLen.current === 0 && exercises.length > 0) setExpandedIndex(0);
@@ -110,85 +116,85 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
       <div className="empty-state" style={{ height: "40vh" }}>
         <span>🏋️</span>
         <p>Aucun exercice dans cette séance</p>
-        <small>Ajoute-en depuis ⚙️ Gérer les séances</small>
+        <small>Ajoute-en depuis ⚙️ Gérer</small>
       </div>
     );
   }
 
   return (
-    <>
-      <ul className="exercise-list">
-        {exercises.map((exercise, index) => {
-          const isExpanded = expandedIndex === index;
-          const lastData = getLastSessionSets(history, exercise.name);
-          return (
-            <li
-              key={index}
-              className={`exercise-item ${animating[index] ? "flash" : ""}`}
-            >
-              <div className="exercise-header" onClick={() => setExpandedIndex(isExpanded ? null : index)}>
-                <div className="exercise-header-left">
-                  <span className="exercise-name">{exercise.name}</span>
-                  {lastData && (
-                    <span className="last-session-hint">
-                      Dernière fois :{" "}
-                      {lastData.sets.map((s, i) => (
-                        <span key={i}>
-                          {i > 0 && <span className="hint-sep"> · </span>}
-                          <span className="hint-set">{s.weight}kg×{s.reps}</span>
-                        </span>
-                      ))}
-                      {exercise.sets.length > 0 && (
-                        <DeltaBadge currentSets={exercise.sets} lastSets={lastData.sets} />
-                      )}
-                    </span>
-                  )}
-                </div>
-                <div className="exercise-header-right">
-                  {exercise.sets.length > 0 && (
-                    <span className="exercise-set-count">{exercise.sets.length}×</span>
-                  )}
-                  <span className={`exercise-chevron ${isExpanded ? "open" : ""}`}>›</span>
+    <ul className="exercise-list">
+      {exercises.map((exercise, index) => {
+        const isExpanded = expandedIndex === index;
+        const lastData = getLastSessionSets(history, exercise.name);
+        return (
+          <li
+            key={index}
+            className={`exercise-item ${animating[index] ? "flash" : ""}`}
+          >
+            <div className="exercise-header" onClick={() => setExpandedIndex(isExpanded ? null : index)}>
+              <div className="exercise-header-left">
+                <span className="exercise-name">{exercise.name}</span>
+                {lastData && (
+                  <span className="last-session-hint">
+                    Dernière fois :{" "}
+                    {lastData.sets.map((s, i) => (
+                      <span key={i}>
+                        {i > 0 && <span className="hint-sep"> · </span>}
+                        <span className="hint-set">{s.weight}kg×{s.reps}</span>
+                      </span>
+                    ))}
+                    {exercise.sets.length > 0 && (
+                      <DeltaBadge currentSets={exercise.sets} lastSets={lastData.sets} />
+                    )}
+                  </span>
+                )}
+              </div>
+              <div className="exercise-header-right">
+                {exercise.sets.length > 0 && (
+                  <span className="exercise-set-count">{exercise.sets.length}×</span>
+                )}
+                <span className={`exercise-chevron ${isExpanded ? "open" : ""}`}>›</span>
+              </div>
+            </div>
+
+            {exercise.sets.length > 0 && (
+              <div className="exercise-sets">
+                <p>Séries effectuées :</p>
+                <div className="series-container">
+                  {exercise.sets.map((set, i) => (
+                    <div key={i} className="series-row">
+                      <span className="series-number">{i + 1}</span>
+                      <span className="series-weight">{set.weight} kg</span>
+                      <span className="series-reps">{set.reps} reps</span>
+                      <button className="series-delete" onClick={() => deleteSet(index, i)}>×</button>
+                    </div>
+                  ))}
                 </div>
               </div>
+            )}
 
-              {exercise.sets.length > 0 && (
-                <div className="exercise-sets">
-                  <p>Séries effectuées :</p>
-                  <div className="series-container">
-                    {exercise.sets.map((set, i) => (
-                      <div key={i} className="series-row">
-                        <span className="series-number">{i + 1}</span>
-                        <span className="series-weight">{set.weight} kg</span>
-                        <span className="series-reps">{set.reps} reps</span>
-                        <button className="series-delete" onClick={() => deleteSet(index, i)}>×</button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {isExpanded && (
-                <div className="set-inputs">
-                  <StepInput
-                    value={getWeight(index)}
-                    onChange={(v) => setWeights((prev) => ({ ...prev, [index]: v }))}
-                    unit="kg" min={0}
-                  />
-                  <StepInput
-                    value={getReps(index)}
-                    onChange={(v) => setReps((prev) => ({ ...prev, [index]: v }))}
-                    unit=" reps" min={1} step={1}
-                  />
-                  <button className="add-set-button" onClick={() => handleAddSet(index)}>+ Série</button>
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-      {/* Ancre pour l'auto-scroll */}
-      <div ref={bottomRef} style={{ height: 1 }} />
-    </>
+            {/* Formulaire de saisie — ref pour l'auto-scroll */}
+            {isExpanded && (
+              <div
+                className="set-inputs"
+                ref={(el) => { inputRefs.current[index] = el; }}
+              >
+                <StepInput
+                  value={getWeight(index)}
+                  onChange={(v) => setWeights((prev) => ({ ...prev, [index]: v }))}
+                  unit="kg" min={0}
+                />
+                <StepInput
+                  value={getReps(index)}
+                  onChange={(v) => setReps((prev) => ({ ...prev, [index]: v }))}
+                  unit=" reps" min={1} step={1}
+                />
+                <button className="add-set-button" onClick={() => handleAddSet(index)}>+ Série</button>
+              </div>
+            )}
+          </li>
+        );
+      })}
+    </ul>
   );
 }

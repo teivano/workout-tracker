@@ -35,8 +35,6 @@ export default function App() {
 
   const [selectedSessionIndex, setSelectedSessionIndex] = useState(null);
   const [resetTrigger, setResetTrigger] = useState(false);
-  // mode: "train" | "history" | "manage"
-  // "train" avec selectedSessionIndex===null = SessionPicker
   const [mode, setMode] = useState("manage");
   const [flashIndex, setFlashIndex] = useState(null);
 
@@ -73,9 +71,13 @@ export default function App() {
     });
   };
 
+  // Nouvelle séance ajoutée EN HAUT (unshift)
   const addSession = (name) => {
     if (!name.trim()) return;
-    setSessions((prev) => [...prev, { name, exercises: [], history: [], muscles: [] }]);
+    setSessions((prev) => [
+      { name, exercises: [], history: [], muscles: [] },
+      ...prev,
+    ]);
   };
 
   const addExercise = (sessionIndex, exerciseName) => {
@@ -165,7 +167,6 @@ export default function App() {
     ? selectedSession.exercises.reduce((t, ex) => t + ex.sets.length, 0)
     : 0;
 
-  // Timer bulle : visible seulement pendant l'entraînement actif
   const showTimer = mode === "train" && !!selectedSession;
 
   const headerTitle =
@@ -197,7 +198,6 @@ export default function App() {
         )}
       </header>
 
-      {/* Bulle timer — fixed, coin bas-droite, au-dessus bottom nav */}
       {showTimer && <Timer resetTrigger={resetTrigger} />}
 
       <div className={`app-wrapper ${isDesktop ? "desktop" : ""}`}>
@@ -247,7 +247,6 @@ export default function App() {
           ) : mode === "history" && selectedSession ? (
             <History session={selectedSession} />
           ) : mode === "train" && !selectedSession ? (
-            // Aucune séance sélectionnée → picker
             <SessionPicker sessions={sessions} onSelect={selectSession} />
           ) : selectedSession ? (
             <>
@@ -274,20 +273,16 @@ export default function App() {
         </div>
       </div>
 
-      {/* Bottom nav mobile — ordre : Historique | Entraînement | Gérer */}
       {!isDesktop && (
         <nav className="bottom-nav">
           <button
             className={`bnav-btn ${mode === "history" ? "active" : ""}`}
-            onClick={() => {
-              if (selectedSession) setMode("history");
-            }}
+            onClick={() => { if (selectedSession) setMode("history"); }}
             disabled={!selectedSession}
           >
             <span className="bnav-icon">📊</span>
             <span className="bnav-label">Historique</span>
           </button>
-
           <button
             className={`bnav-btn bnav-center ${mode === "train" ? "active" : ""}`}
             onClick={() => setMode("train")}
@@ -295,7 +290,6 @@ export default function App() {
             <span className="bnav-icon">🏋️</span>
             <span className="bnav-label">Entraînement</span>
           </button>
-
           <button
             className={`bnav-btn ${mode === "manage" ? "active" : ""}`}
             onClick={() => setMode("manage")}
