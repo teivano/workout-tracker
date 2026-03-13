@@ -1,5 +1,6 @@
 // GARDE-FOU : utiliser UNIQUEMENT push_files pour modifier ce fichier
-import React, { useState, useEffect, useRef } from "react";
+// Timer headless — aucun rendu, toute la logique remonte via onTimerUpdate
+import { useState, useEffect, useRef } from "react";
 
 let sharedAudioCtx = null;
 function getAudioCtx() {
@@ -45,10 +46,11 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
   const [isRunning, setIsRunning] = useState(false);
   const prevTrigger = useRef(resetTrigger);
 
+  // Remonte l'etat a chaque tick
   useEffect(() => {
     if (onTimerUpdate) {
       const pct = restDuration > 0 ? timeLeft / restDuration : 1;
-      onTimerUpdate(pct, isRunning);
+      onTimerUpdate(pct, isRunning, timeLeft);
     }
   }, [timeLeft, isRunning, restDuration, onTimerUpdate]);
 
@@ -58,6 +60,7 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
     }
   }, []);
 
+  // Demarre le timer a chaque nouveau set
   useEffect(() => {
     if (resetTrigger !== prevTrigger.current) {
       prevTrigger.current = resetTrigger;
@@ -75,6 +78,7 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
     return () => clearInterval(interval);
   }, [isRunning]);
 
+  // Fin du timer
   useEffect(() => {
     if (timeLeft === 0 && isRunning) {
       setIsRunning(false);
@@ -85,55 +89,7 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft]);
 
-  const handlePlayStop = () => {
-    try { getAudioCtx().resume(); } catch (e) {}
-    if (isRunning) {
-      setIsRunning(false);
-      setTimeLeft(restDuration);
-    } else {
-      setIsRunning(true);
-    }
-  };
-
-  const pct = restDuration > 0 ? timeLeft / restDuration : 0;
-  const radius = 28;
-  const circ = 2 * Math.PI * radius;
-  const dash = circ * pct;
-  const isDone = timeLeft === 0 && !isRunning;
-  const isIdle = !isRunning && timeLeft === restDuration;
-  const isLow = pct < 0.10 && isRunning;
-
-  // Couleur anneau + fond adaptatif
-  const ringColor = isDone ? "#ff4444" : isLow ? "#ff2a2a" : "var(--accent)";
-  // Fond de la bulle : neutre → orange subtil → rouge subtil
-  const ringBg = isDone
-    ? "rgba(255,42,42,0.12)"
-    : isLow
-    ? "rgba(255,112,0,0.10)"
-    : "rgba(18,18,18,0.92)";
-
-  const formatTime = (s) =>
-    `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
-
-  return (
-    <div className={`timer-bubble${isIdle ? " timer-bubble-idle" : ""}${isDone ? " timer-bubble-done" : ""}${isRunning ? " timer-bubble-running" : ""}${isLow ? " timer-bubble-low" : ""}`}>
-      <div className="timer-bubble-ring" onClick={handlePlayStop} style={{ background: ringBg }}>
-        <svg width="72" height="72" viewBox="0 0 72 72">
-          <circle cx="36" cy="36" r={radius} fill="none"
-            stroke="rgba(255,255,255,0.08)" strokeWidth="5" />
-          <circle cx="36" cy="36" r={radius} fill="none"
-            stroke={ringColor}
-            strokeWidth="5"
-            strokeDasharray={`${dash} ${circ}`}
-            strokeLinecap="round"
-            transform="rotate(-90 36 36)"
-            style={{ transition: "stroke-dasharray 0.9s linear, stroke 0.4s ease" }}
-          />
-        </svg>
-        <span className={`timer-bubble-time${isDone ? " timer-bubble-time-done" : ""}${isLow ? " timer-bubble-time-low" : ""}`}>
-          {formatTime(timeLeft)}
-        </span>
-      </div>
-    </div>
-  );
+  // Expose toggle au parent via onTimerUpdate — le header gere le click
+  // (pas de rendu ici)
+  return null;
 }
