@@ -1,20 +1,21 @@
+// GARDE-FOU : utiliser UNIQUEMENT push_files pour modifier ce fichier
 import React from "react";
 
 const MUSCLES = [
-  { id: "pectoraux", label: "Pectoraux" },
-  { id: "epaules", label: "Épaules" },
+  { id: "pectoraux",    label: "Pectoraux" },
+  { id: "epaules",      label: "Épaules" },
   { id: "grand_dorsal", label: "Grand dorsal" },
-  { id: "trapezes", label: "Trapèzes" },
-  { id: "biceps", label: "Biceps" },
-  { id: "triceps", label: "Triceps" },
-  { id: "avant_bras", label: "Avant-bras" },
-  { id: "abdominaux", label: "Abdominaux" },
-  { id: "obliques", label: "Obliques" },
-  { id: "quadriceps", label: "Quadriceps" },
-  { id: "ischio", label: "Ischio-jambiers" },
-  { id: "fessiers", label: "Fessiers" },
-  { id: "mollets", label: "Mollets" },
-  { id: "adducteurs", label: "Adducteurs" },
+  { id: "trapezes",     label: "Trapèzes" },
+  { id: "biceps",       label: "Biceps" },
+  { id: "triceps",      label: "Triceps" },
+  { id: "avant_bras",   label: "Avant-bras" },
+  { id: "abdominaux",   label: "Abdominaux" },
+  { id: "obliques",     label: "Obliques" },
+  { id: "quadriceps",   label: "Quadriceps" },
+  { id: "ischio",       label: "Ischio-jambiers" },
+  { id: "fessiers",     label: "Fessiers" },
+  { id: "mollets",      label: "Mollets" },
+  { id: "adducteurs",   label: "Adducteurs" },
 ];
 
 function getMuscleLabel(id) {
@@ -38,7 +39,8 @@ export default function SessionPicker({ sessions, onSelect }) {
       <div className="empty-state" style={{ height: "60vh" }}>
         <span>🌴</span>
         <p>Aucune séance créée</p>
-        <small>Va dans ⚙️ Gérer pour créer ta première séance</small>
+        {/* FIX #1 : nom d'onglet correct (📋 Séances, pas ⚙️ Gérer) */}
+        <small>Va dans 📋 Séances pour créer ta première séance</small>
       </div>
     );
   }

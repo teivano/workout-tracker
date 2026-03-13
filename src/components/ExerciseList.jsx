@@ -4,18 +4,33 @@ import React, { useState, useEffect, useRef } from "react";
 // Poids : 0 à 200 kg avec granularité 0.5 kg = 401 valeurs
 const WEIGHT_STEPS = Array.from({ length: 401 }, (_, i) => Math.round(i * 0.5 * 10) / 10);
 
-// StepInput avec tap = ±0.5kg et long press = ±5kg
+// WeightInput avec tap = ±0.5kg et long press = ±5kg
+// FIX #6 : valueRef évite la closure stale sur `value` dans le setInterval du long press
+// FIX #7 : cleanup du setInterval/setTimeout au démontage du composant
 function WeightInput({ value, onChange }) {
   const longPressRef = useRef(null);
   const repeatRef = useRef(null);
+  // Ref toujours synchronisée avec la prop value courante
+  const valueRef = useRef(value);
+  useEffect(() => { valueRef.current = value; }, [value]);
 
-  const getIdx = () => {
-    const idx = WEIGHT_STEPS.indexOf(value);
-    return idx >= 0 ? idx : WEIGHT_STEPS.findIndex((v) => v >= value);
+  // Cleanup au démontage : évite fuite de setInterval si le composant disparaît
+  // pendant un long press (ex: collapse de l'exercice)
+  useEffect(() => {
+    return () => {
+      clearTimeout(longPressRef.current);
+      clearInterval(repeatRef.current);
+    };
+  }, []);
+
+  const getIdx = (v) => {
+    const idx = WEIGHT_STEPS.indexOf(v);
+    return idx >= 0 ? idx : WEIGHT_STEPS.findIndex((w) => w >= v);
   };
 
   const step = (delta) => {
-    const idx = getIdx();
+    // Lit depuis valueRef.current pour ne jamais être stale
+    const idx = getIdx(valueRef.current);
     const next = Math.max(0, Math.min(WEIGHT_STEPS.length - 1, idx + delta));
     onChange(WEIGHT_STEPS[next]);
   };

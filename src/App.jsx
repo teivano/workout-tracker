@@ -1,6 +1,6 @@
 // GARDE-FOU : ne jamais modifier ce fichier via create_or_update_file
 // Utiliser UNIQUEMENT push_files (les autres outils encodent mal l'UTF-8)
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import SessionList from "./components/SessionList";
 import ExerciseList from "./components/ExerciseList";
 import Timer from "./components/Timer";
@@ -126,6 +126,8 @@ export default function App() {
         name: orig.name + " (copie)",
         exercises: orig.exercises.map((ex) => ({ ...ex, sets: [] })),
         history: [],
+        // FIX #11 : copie du tableau muscles par valeur (évite partage de référence)
+        muscles: [...(orig.muscles || [])],
       });
     });
   };
@@ -152,23 +154,38 @@ export default function App() {
 
   const finishSession = () => {
     if (selectedSessionIndex === null) return;
-    let hasSet = false;
     const idx = selectedSessionIndex;
+
+    // FIX #5 : on construit le nouvel état AVANT d'appeler update()
+    // pour pouvoir passer l'objet à jour à setHistorySession sans dépendre
+    // du state React (qui n'est pas encore mis à jour au moment de l'appel).
+    const currentSession = sessions[idx];
+    const hasSet = currentSession.exercises.some((ex) => ex.sets.length > 0);
+
+    if (!hasSet) {
+      alert("Aucune série enregistrée.");
+      return;
+    }
+
+    const newEntry = {
+      date: new Date().toISOString(),
+      exercises: currentSession.exercises.map((ex) => ({ name: ex.name, sets: [...ex.sets] })),
+    };
+
+    // Objet session mis à jour, avec la nouvelle entrée history en tête
+    const updatedSession = {
+      ...currentSession,
+      history: [newEntry, ...(currentSession.history || [])],
+      exercises: currentSession.exercises.map((ex) => ({ ...ex, sets: [] })),
+    };
+
+    // Met à jour le state sessions
     update((s) => {
-      const session = s[idx];
-      hasSet = session.exercises.some((ex) => ex.sets.length > 0);
-      if (!hasSet) return;
-      session.history = [
-        {
-          date: new Date().toISOString(),
-          exercises: session.exercises.map((ex) => ({ name: ex.name, sets: [...ex.sets] })),
-        },
-        ...(session.history || []),
-      ];
-      session.exercises = session.exercises.map((ex) => ({ ...ex, sets: [] }));
+      s[idx] = updatedSession;
     });
-    if (!hasSet) { alert("Aucune série enregistrée."); return; }
-    setHistorySession(sessions[idx]);
+
+    // Passe l'objet DÉJÀ MIS À JOUR à historySession (pas le stale sessions[idx])
+    setHistorySession(updatedSession);
     setSelectedSessionIndex(null);
     setMode("history");
     setActiveExerciseName(null);
@@ -192,6 +209,13 @@ export default function App() {
     : mode === "history" && (historySession || selectedSession)
       ? (historySession || selectedSession).name
     : "🌴 Workout";
+
+  // FIX #15 : useCallback pour éviter que la référence change à chaque render
+  // et déclenche le useEffect de Timer inutilement en cascade.
+  const handleTimerUpdate = useCallback((pct, running) => {
+    setTimerPct(pct);
+    setTimerRunning(running);
+  }, []);
 
   return (
     <>
@@ -220,10 +244,7 @@ export default function App() {
       {sessionInProgress && (
         <Timer
           resetTrigger={resetTrigger}
-          onTimerUpdate={(pct, running) => {
-            setTimerPct(pct);
-            setTimerRunning(running);
-          }}
+          onTimerUpdate={handleTimerUpdate}
         />
       )}
 
