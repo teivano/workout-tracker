@@ -5,6 +5,7 @@ import Timer from "./components/Timer";
 import History from "./components/History";
 import Onboarding from "./components/Onboarding";
 import SessionPicker from "./components/SessionPicker";
+import Settings, { applyAccentColor } from "./components/Settings";
 
 const useIsDesktop = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
@@ -22,6 +23,12 @@ const migrateSessions = (s) =>
 export default function App() {
   const isDesktop = useIsDesktop();
 
+  // Applique la couleur d'accent sauvegardée au démarrage
+  useEffect(() => {
+    const saved = localStorage.getItem("accent_color") || "green";
+    applyAccentColor(saved);
+  }, []);
+
   const [showOnboarding, setShowOnboarding] = useState(
     () => !localStorage.getItem("onboarding_done")
   );
@@ -35,11 +42,9 @@ export default function App() {
 
   const [selectedSessionIndex, setSelectedSessionIndex] = useState(null);
   const [resetTrigger, setResetTrigger] = useState(false);
-  const [mode, setMode] = useState("manage");
+  const [mode, setMode] = useState("sessions");
   const [flashIndex, setFlashIndex] = useState(null);
-  // Nom de l'exercice actuellement ouvert (expanded) — pour la session bar
   const [activeExerciseName, setActiveExerciseName] = useState(null);
-  // Progression du timer pour la session bar (0-1)
   const [timerPct, setTimerPct] = useState(1);
   const [timerRunning, setTimerRunning] = useState(false);
 
@@ -129,7 +134,7 @@ export default function App() {
       const next = prev.filter((_, i) => i !== index);
       if (selectedSessionIndex === index) {
         setSelectedSessionIndex(null);
-        setMode("manage");
+        setMode("sessions");
       } else if (selectedSessionIndex > index) {
         setSelectedSessionIndex((i) => i - 1);
       }
@@ -160,7 +165,6 @@ export default function App() {
       session.exercises = session.exercises.map((ex) => ({ ...ex, sets: [] }));
     });
     if (!hasSet) { alert("Aucune série enregistrée."); return; }
-    // Reste sur la session pour voir l'historique, mais bascule en mode history
     setMode("history");
     setActiveExerciseName(null);
     setTimerRunning(false);
@@ -240,7 +244,7 @@ export default function App() {
               ))}
             </div>
             <div className="menu-bottom">
-              <button className="create-session-button" onClick={() => setMode("manage")}>
+              <button className="create-session-button" onClick={() => setMode("sessions")}>
                 + Gérer les séances
               </button>
               <div className="menu-footer">Avec amour © Teivano 2025</div>
@@ -249,7 +253,9 @@ export default function App() {
         )}
 
         <div className="app-container">
-          {mode === "manage" ? (
+          {mode === "settings" ? (
+            <Settings />
+          ) : mode === "sessions" ? (
             <SessionList
               sessions={sessions}
               addSession={addSession}
@@ -286,30 +292,24 @@ export default function App() {
             <div className="empty-state">
               <span>💪</span>
               <p>Sélectionne une séance<br />pour commencer</p>
-              <small>Va dans ⚙️ Gérer pour créer une séance</small>
+              <small>Va dans Séances pour créer une séance</small>
             </div>
           )}
         </div>
       </div>
 
-      {/* Session bar + Bottom nav — mobile uniquement */}
       {!isDesktop && (
         <>
-          {/* Barre de session : visible quand entraînement actif */}
           {sessionActive && (
             <div className="session-bar">
-              {/* Ticker : nom de l'exercice ouvert */}
               <div className="session-bar-ticker">
                 <span className={activeExerciseName ? "ticker-text" : "ticker-text ticker-muted"}>
                   {activeExerciseName || selectedSession?.name || "Séance en cours"}
                 </span>
               </div>
-              {/* Barre de progression du timer */}
               <div className="session-bar-progress">
                 <div
-                  className={`session-bar-fill ${
-                    timerRunning ? "session-bar-fill-running" : ""
-                  }`}
+                  className={`session-bar-fill ${timerRunning ? "session-bar-fill-running" : ""}`}
                   style={{ width: `${timerPct * 100}%` }}
                 />
               </div>
@@ -323,7 +323,9 @@ export default function App() {
               onClick={() => { if (selectedSession) setMode("history"); }}
               disabled={!selectedSession}
             >
-              <span className="bnav-icon">📊</span>
+              <div className="bnav-icon-wrap">
+                <span className="bnav-icon">📊</span>
+              </div>
               <span className="bnav-label">Historique</span>
             </button>
 
@@ -332,17 +334,32 @@ export default function App() {
               className={`bnav-btn bnav-center ${mode === "train" ? "active" : ""}`}
               onClick={() => setMode("train")}
             >
-              <span className="bnav-icon">🏋️</span>
+              <div className="bnav-icon-wrap">
+                <span className="bnav-icon">🏋️</span>
+              </div>
               <span className="bnav-label">Entraînement</span>
             </button>
 
-            {/* Gérer */}
+            {/* Séances (ex-Gérer) */}
             <button
-              className={`bnav-btn ${mode === "manage" ? "active" : ""}`}
-              onClick={() => setMode("manage")}
+              className={`bnav-btn ${mode === "sessions" ? "active" : ""}`}
+              onClick={() => setMode("sessions")}
             >
-              <span className="bnav-icon">⚙️</span>
-              <span className="bnav-label">Gérer</span>
+              <div className="bnav-icon-wrap">
+                <span className="bnav-icon">📋</span>
+              </div>
+              <span className="bnav-label">Séances</span>
+            </button>
+
+            {/* Réglages */}
+            <button
+              className={`bnav-btn ${mode === "settings" ? "active" : ""}`}
+              onClick={() => setMode("settings")}
+            >
+              <div className="bnav-icon-wrap">
+                <span className="bnav-icon">⚙️</span>
+              </div>
+              <span className="bnav-label">Réglages</span>
             </button>
           </nav>
         </>
