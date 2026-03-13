@@ -1,1 +1,360 @@
-aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlLCB1c2VFZmZlY3QgfSBmcm9tICJyZWFjdCI7CmltcG9ydCBTZXNzaW9uTGlzdCBmcm9tICIuL2NvbXBvbmVudHMvU2Vzc2lvbkxpc3QiOwppbXBvcnQgRXhlcmNpc2VMaXN0IGZyb20gIi4vY29tcG9uZW50cy9FeGVyY2lzZUxpc3QiOwppbXBvcnQgVGltZXIgZnJvbSAiLi9jb21wb25lbnRzL1RpbWVyIjsKaW1wb3J0IEhpc3RvcnkgZnJvbSAiLi9jb21wb25lbnRzL0hpc3RvcnkiOwppbXBvcnQgT25ib2FyZGluZyBmcm9tICIuL2NvbXBvbmVudHMvT25ib2FyZGluZyI7CmltcG9ydCBTZXNzaW9uUGlja2VyIGZyb20gIi4vY29tcG9uZW50cy9TZXNzaW9uUGlja2VyIjsKaW1wb3J0IFNldHRpbmdzLCB7IGFwcGx5QWNjZW50Q29sb3IgfSBmcm9tICIuL2NvbXBvbmVudHMvU2V0dGluZ3MiOwoKY29uc3QgdXNlSXNEZXNrdG9wID0gKCkgPT4gewogIGNvbnN0IFtpc0Rlc2t0b3AsIHNldElzRGVza3RvcF0gPSB1c2VTdGF0ZSh3aW5kb3cuaW5uZXJXaWR0aCA+PSAxMDI0KTsKICB1c2VFZmZlY3QoKCkgPT4gewogICAgY29uc3QgaGFuZGxlciA9ICgpID0+IHNldElzRGVza3RvcCh3aW5kb3cuaW5uZXJXaWR0aCA+PSAxMDI0KTsKICAgIHdpbmRvdy5hZGRFdmVudExpc3RlbmVyKCJyZXNpemUiLCBoYW5kbGVyKTsKICAgIHJldHVybiAoKSA9PiB3aW5kb3cucmVtb3ZlRXZlbnRMaXN0ZW5lcigicmVzaXplIiwgaGFuZGxlcik7CiAgfSwgW10pOwogIHJldHVybiBpc0Rlc2t0b3A7Cn07Cgpjb25zdCBtaWdyYXRlU2Vzc2lvbnMgPSAocykgPT4KICBzLm1hcCgoeCkgPT4gKHsgaGlzdG9yeTogW10sIG11c2NsZXM6IFtdLCAuLi54IH0pKTsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIEFwcCgpIHsKICBjb25zdCBpc0Rlc2t0b3AgPSB1c2VJc0Rlc2t0b3AoKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGNvbnN0IHNhdmVkID0gbG9jYWxTdG9yYWdlLmdldEl0ZW0oImFjY2VudF9jb2xvciIpIHx8ICJncmVlbiI7CiAgICBhcHBseUFjY2VudENvbG9yKHNhdmVkKTsKICB9LCBbXSk7CgogIGNvbnN0IFtzaG93T25ib2FyZGluZywgc2V0U2hvd09uYm9hcmRpbmddID0gdXNlU3RhdGUoCiAgICAoKSA9PiAhbG9jYWxTdG9yYWdlLmdldEl0ZW0oIm9uYm9hcmRpbmdfZG9uZSIpCiAgKTsKCiAgY29uc3QgW3Nlc3Npb25zLCBzZXRTZXNzaW9uc10gPSB1c2VTdGF0ZSgoKSA9PiB7CiAgICB0cnkgewogICAgICBjb25zdCBzYXZlZCA9IGxvY2FsU3RvcmFnZS5nZXRJdGVtKCJzZXNzaW9ucyIpOwogICAgICByZXR1cm4gc2F2ZWQgPyBtaWdyYXRlU2Vzc2lvbnMoSlNPTi5wYXJzZShzYXZlZCkpIDogW107CiAgICB9IGNhdGNoIHsgcmV0dXJuIFtdOyB9CiAgfSk7CgogIGNvbnN0IFtzZWxlY3RlZFNlc3Npb25JbmRleCwgc2V0U2VsZWN0ZWRTZXNzaW9uSW5kZXhdID0gdXNlU3RhdGUobnVsbCk7CiAgY29uc3QgW3Jlc2V0VHJpZ2dlciwgc2V0UmVzZXRUcmlnZ2VyXSA9IHVzZVN0YXRlKGZhbHNlKTsKICBjb25zdCBbbW9kZSwgc2V0TW9kZV0gPSB1c2VTdGF0ZSgic2Vzc2lvbnMiKTsKICBjb25zdCBbZmxhc2hJbmRleCwgc2V0Rmxhc2hJbmRleF0gPSB1c2VTdGF0ZShudWxsKTsKICBjb25zdCBbYWN0aXZlRXhlcmNpc2VOYW1lLCBzZXRBY3RpdmVFeGVyY2lzZU5hbWVdID0gdXNlU3RhdGUobnVsbCk7CiAgY29uc3QgW3RpbWVyUGN0LCBzZXRUaW1lclBjdF0gPSB1c2VTdGF0ZSgxKTsKICBjb25zdCBbdGltZXJSdW5uaW5nLCBzZXRUaW1lclJ1bm5pbmddID0gdXNlU3RhdGUoZmFsc2UpOwogIGNvbnN0IFtoaXN0b3J5U2Vzc2lvbiwgc2V0SGlzdG9yeVNlc3Npb25dID0gdXNlU3RhdGUobnVsbCk7CgogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbSgic2Vzc2lvbnMiLCBKU09OLnN0cmluZ2lmeShzZXNzaW9ucykpOwogIH0sIFtzZXNzaW9uc10pOwoKICBjb25zdCBzZWxlY3RlZFNlc3Npb24gPQogICAgc2VsZWN0ZWRTZXNzaW9uSW5kZXggIT09IG51bGwgPyBzZXNzaW9uc1tzZWxlY3RlZFNlc3Npb25JbmRleF0gOiBudWxsOwoKICBjb25zdCB1cGRhdGUgPSAoZm4pID0+CiAgICBzZXRTZXNzaW9ucygocHJldikgPT4gewogICAgICBjb25zdCBuZXh0ID0gWy4uLnByZXZdOwogICAgICBmbihuZXh0KTsKICAgICAgcmV0dXJuIG5leHQ7CiAgICB9KTsKCiAgY29uc3QgaGFuZGxlQWRkU2V0ID0gKGV4ZXJjaXNlSW5kZXgsIHdlaWdodCwgcmVwcykgPT4gewogICAgaWYgKHNlbGVjdGVkU2Vzc2lvbkluZGV4ID09PSBudWxsKSByZXR1cm47CiAgICB1cGRhdGUoKHMpID0+IHsKICAgICAgc1tzZWxlY3RlZFNlc3Npb25JbmRleF0uZXhlcmNpc2VzW2V4ZXJjaXNlSW5kZXhdLnNldHMucHVzaCh7CiAgICAgICAgd2VpZ2h0LCByZXBzLCB0aW1lc3RhbXA6IG5ldyBEYXRlKCkudG9JU09TdHJpbmcoKSwKICAgICAgfSk7CiAgICB9KTsKICAgIHNldFJlc2V0VHJpZ2dlcigocCkgPT4gIXApOwogICAgc2V0Rmxhc2hJbmRleChleGVyY2lzZUluZGV4KTsKICAgIHNldFRpbWVvdXQoKCkgPT4gc2V0Rmxhc2hJbmRleChudWxsKSwgNTAwKTsKICB9OwoKICBjb25zdCBkZWxldGVTZXQgPSAoZXhlcmNpc2VJbmRleCwgc2V0SW5kZXgpID0+IHsKICAgIGlmIChzZWxlY3RlZFNlc3Npb25JbmRleCA9PT0gbnVsbCkgcmV0dXJuOwogICAgdXBkYXRlKChzKSA9PiB7CiAgICAgIHNbc2VsZWN0ZWRTZXNzaW9uSW5kZXhdLmV4ZXJjaXNlc1tleGVyY2lzZUluZGV4XS5zZXRzLnNwbGljZShzZXRJbmRleCwgMSk7CiAgICB9KTsKICB9OwoKICBjb25zdCBhZGRTZXNzaW9uID0gKG5hbWUpID0+IHsKICAgIGlmICghbmFtZS50cmltKCkpIHJldHVybjsKICAgIHNldFNlc3Npb25zKChwcmV2KSA9PiBbCiAgICAgIHsgbmFtZSwgZXhlcmNpc2VzOiBbXSwgaGlzdG9yeTogW10sIG11c2NsZXM6IFtdIH0sCiAgICAgIC4uLnByZXYsCiAgICBdKTsKICB9OwoKICBjb25zdCBhZGRFeGVyY2lzZSA9IChzZXNzaW9uSW5kZXgsIGV4ZXJjaXNlTmFtZSkgPT4gewogICAgaWYgKCFleGVyY2lzZU5hbWUudHJpbSgpKSByZXR1cm47CiAgICB1cGRhdGUoKHMpID0+IHsgc1tzZXNzaW9uSW5kZXhdLmV4ZXJjaXNlcy5wdXNoKHsgbmFtZTogZXhlcmNpc2VOYW1lLCBzZXRzOiBbXSB9KTsgfSk7CiAgfTsKCiAgY29uc3QgZGVsZXRlRXhlcmNpc2UgPSAoc2Vzc2lvbkluZGV4LCBleGVyY2lzZUluZGV4KSA9PiB7CiAgICBpZiAoIXdpbmRvdy5jb25maXJtKCJTdXBwcmltZXIgY2V0IGV4ZXJjaWNlID8iKSkgcmV0dXJuOwogICAgdXBkYXRlKChzKSA9PiB7IHNbc2Vzc2lvbkluZGV4XS5leGVyY2lzZXMuc3BsaWNlKGV4ZXJjaXNlSW5kZXgsIDEpOyB9KTsKICB9OwoKICBjb25zdCBtb3ZlRXhlcmNpc2UgPSAoc2Vzc2lvbkluZGV4LCBleGVyY2lzZUluZGV4LCBkaXJlY3Rpb24pID0+IHsKICAgIHVwZGF0ZSgocykgPT4gewogICAgICBjb25zdCBleHMgPSBzW3Nlc3Npb25JbmRleF0uZXhlcmNpc2VzOwogICAgICBjb25zdCB0YXJnZXQgPSBleGVyY2lzZUluZGV4ICsgZGlyZWN0aW9uOwogICAgICBpZiAodGFyZ2V0ID49IDAgJiYgdGFyZ2V0IDwgZXhzLmxlbmd0aCkKICAgICAgICBbZXhzW2V4ZXJjaXNlSW5kZXhdLCBleHNbdGFyZ2V0XV0gPSBbZXhzW3RhcmdldF0sIGV4c1tleGVyY2lzZUluZGV4XV07CiAgICB9KTsKICB9OwoKICBjb25zdCByZW5hbWVTZXNzaW9uID0gKGluZGV4LCBuZXdOYW1lKSA9PiB7CiAgICB1cGRhdGUoKHMpID0+IHsgc1tpbmRleF0ubmFtZSA9IG5ld05hbWU7IH0pOwogIH07CgogIGNvbnN0IHNldE11c2NsZXNTZXNzaW9uID0gKGluZGV4LCBtdXNjbGVzKSA9PiB7CiAgICB1cGRhdGUoKHMpID0+IHsgc1tpbmRleF0ubXVzY2xlcyA9IG11c2NsZXM7IH0pOwogIH07CgogIGNvbnN0IGR1cGxpY2F0ZVNlc3Npb24gPSAoaW5kZXgpID0+IHsKICAgIHVwZGF0ZSgocykgPT4gewogICAgICBjb25zdCBvcmlnID0gc1tpbmRleF07CiAgICAgIHMuc3BsaWNlKGluZGV4ICsgMSwgMCwgewogICAgICAgIC4uLm9yaWcsCiAgICAgICAgbmFtZTogb3JpZy5uYW1lICsgIiAoY29waWUpIiwKICAgICAgICBleGVyY2lzZXM6IG9yaWcuZXhlcmNpc2VzLm1hcCgoZXgpID0+ICh7IC4uLmV4LCBzZXRzOiBbXSB9KSksCiAgICAgICAgaGlzdG9yeTogW10sCiAgICAgIH0pOwogICAgfSk7CiAgfTsKCiAgY29uc3QgZGVsZXRlU2Vzc2lvbiA9IChpbmRleCkgPT4gewogICAgaWYgKCF3aW5kb3cuY29uZmlybSgiU3VwcHJpbWVyIGNldHRlIHPDqWFuY2UgPyIpKSByZXR1cm47CiAgICBzZXRTZXNzaW9ucygocHJldikgPT4gewogICAgICBjb25zdCBuZXh0ID0gcHJldi5maWx0ZXIoKF8sIGkpID0+IGkgIT09IGluZGV4KTsKICAgICAgaWYgKHNlbGVjdGVkU2Vzc2lvbkluZGV4ID09PSBpbmRleCkgewogICAgICAgIHNldFNlbGVjdGVkU2Vzc2lvbkluZGV4KG51bGwpOwogICAgICAgIHNldE1vZGUoInNlc3Npb25zIik7CiAgICAgIH0gZWxzZSBpZiAoc2VsZWN0ZWRTZXNzaW9uSW5kZXggPiBpbmRleCkgewogICAgICAgIHNldFNlbGVjdGVkU2Vzc2lvbkluZGV4KChpKSA9PiBpIC0gMSk7CiAgICAgIH0KICAgICAgcmV0dXJuIG5leHQ7CiAgICB9KTsKICB9OwoKICBjb25zdCBzZWxlY3RTZXNzaW9uID0gKGluZGV4KSA9PiB7CiAgICBzZXRTZWxlY3RlZFNlc3Npb25JbmRleChpbmRleCk7CiAgICBzZXRBY3RpdmVFeGVyY2lzZU5hbWUobnVsbCk7CiAgICBzZXRNb2RlKCJ0cmFpbiIpOwogIH07CgogIGNvbnN0IGZpbmlzaFNlc3Npb24gPSAoKSA9PiB7CiAgICBpZiAoc2VsZWN0ZWRTZXNzaW9uSW5kZXggPT09IG51bGwpIHJldHVybjsKICAgIGxldCBoYXNTZXQgPSBmYWxzZTsKICAgIGNvbnN0IGlkeCA9IHNlbGVjdGVkU2Vzc2lvbkluZGV4OwogICAgdXBkYXRlKChzKSA9PiB7CiAgICAgIGNvbnN0IHNlc3Npb24gPSBzW2lkeF07CiAgICAgIGhhc1NldCA9IHNlc3Npb24uZXhlcmNpc2VzLnNvbWUoKGV4KSA9PiBleC5zZXRzLmxlbmd0aCA+IDApOwogICAgICBpZiAoIWhhc1NldCkgcmV0dXJuOwogICAgICBzZXNzaW9uLmhpc3RvcnkgPSBbCiAgICAgICAgewogICAgICAgICAgZGF0ZTogbmV3IERhdGUoKS50b0lTT1N0cmluZygpLAogICAgICAgICAgZXhlcmNpc2VzOiBzZXNzaW9uLmV4ZXJjaXNlcy5tYXAoKGV4KSA9PiAoeyBuYW1lOiBleC5uYW1lLCBzZXRzOiBbLi4uZXguc2V0c10gfSkpLAogICAgICAgIH0sCiAgICAgICAgLi4uKHNlc3Npb24uaGlzdG9yeSB8fCBbXSksCiAgICAgIF07CiAgICAgIHNlc3Npb24uZXhlcmNpc2VzID0gc2Vzc2lvbi5leGVyY2lzZXMubWFwKChleCkgPT4gKHsgLi4uZXgsIHNldHM6IFtdIH0pKTsKICAgIH0pOwogICAgaWYgKCFoYXNTZXQpIHsgYWxlcnQoIkF1Y3VuZSBzw6lyaWUgZW5yZWdpc3Ryw6llLiIpOyByZXR1cm47IH0KICAgIHNldEhpc3RvcnlTZXNzaW9uKHNlc3Npb25zW2lkeF0pOwogICAgc2V0U2VsZWN0ZWRTZXNzaW9uSW5kZXgobnVsbCk7CiAgICBzZXRNb2RlKCJoaXN0b3J5Iik7CiAgICBzZXRBY3RpdmVFeGVyY2lzZU5hbWUobnVsbCk7CiAgICBzZXRUaW1lclJ1bm5pbmcoZmFsc2UpOwogICAgc2V0VGltZXJQY3QoMSk7CiAgfTsKCiAgY29uc3QgaGFuZGxlT25ib2FyZGluZ0RvbmUgPSAoKSA9PiB7CiAgICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbSgib25ib2FyZGluZ19kb25lIiwgIjEiKTsKICAgIHNldFNob3dPbmJvYXJkaW5nKGZhbHNlKTsKICB9OwoKICBjb25zdCB0b3RhbFNldHNUb2RheSA9IHNlbGVjdGVkU2Vzc2lvbgogICAgPyBzZWxlY3RlZFNlc3Npb24uZXhlcmNpc2VzLnJlZHVjZSgodCwgZXgpID0+IHQgKyBleC5zZXRzLmxlbmd0aCwgMCkKICAgIDogMDsKCiAgY29uc3Qgc2Vzc2lvbkluUHJvZ3Jlc3MgPSBzZWxlY3RlZFNlc3Npb24gIT09IG51bGw7CgogIGNvbnN0IGhlYWRlclRpdGxlID0KICAgIG1vZGUgPT09ICJ0cmFpbiIgJiYgc2VsZWN0ZWRTZXNzaW9uID8gc2VsZWN0ZWRTZXNzaW9uLm5hbWUKICAgIDogbW9kZSA9PT0gImhpc3RvcnkiICYmIChoaXN0b3J5U2Vzc2lvbiB8fCBzZWxlY3RlZFNlc3Npb24pCiAgICAgID8gKGhpc3RvcnlTZXNzaW9uIHx8IHNlbGVjdGVkU2Vzc2lvbikubmFtZQogICAgOiAi8J+MtCBXb3Jrb3V0IjsKCiAgcmV0dXJuICgKICAgIDw+CiAgICAgIHtzaG93T25ib2FyZGluZyAmJiA8T25ib2FyZGluZyBvbkRvbmU9e2hhbmRsZU9uYm9hcmRpbmdEb25lfSAvPn0KCiAgICAgIDxoZWFkZXIgY2xhc3NOYW1lPSJhcHAtaGVhZGVyIj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iYXBwLXRpdGxlLWJsb2NrIj4KICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iYXBwLXRpdGxlIj57aGVhZGVyVGl0bGV9PC9zcGFuPgogICAgICAgICAge21vZGUgPT09ICJ0cmFpbiIgJiYgc2VsZWN0ZWRTZXNzaW9uICYmIHRvdGFsU2V0c1RvZGF5ID4gMCAmJiAoCiAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iaGVhZGVyLXNldHMtY291bnQiPgogICAgICAgICAgICAgIHt0b3RhbFNldHNUb2RheX0gc8Opcmlle3RvdGFsU2V0c1RvZGF5ID4gMSA/ICJzIiA6ICIifQogICAgICAgICAgICA8L3NwYW4+CiAgICAgICAgICApfQogICAgICAgIDwvZGl2PgogICAgICAgIHtpc0Rlc2t0b3AgJiYgKAogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImhlYWRlci1hY3Rpb25zIj4KICAgICAgICAgICAge21vZGUgPT09ICJ0cmFpbiIgJiYgc2VsZWN0ZWRTZXNzaW9uICYmICgKICAgICAgICAgICAgICA8YnV0dG9uIGNsYXNzTmFtZT0iaGVhZGVyLWljb24tYnRuIGZpbmlzaC1idG4iIG9uQ2xpY2s9e2ZpbmlzaFNlc3Npb259PgogICAgICAgICAgICAgICAg4pyFIFRlcm1pbmVyCiAgICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICAgICl9CiAgICAgICAgICA8L2Rpdj4KICAgICAgICApfQogICAgICA8L2hlYWRlcj4KCiAgICAgIHtzZXNzaW9uSW5Qcm9ncmVzcyAmJiAoCiAgICAgICAgPFRpbWVyCiAgICAgICAgICByZXNldFRyaWdnZXI9e3Jlc2V0VHJpZ2dlcn0KICAgICAgICAgIG9uVGltZXJVcGRhdGU9eyhwY3QsIHJ1bm5pbmcpID0+IHsKICAgICAgICAgICAgc2V0VGltZXJQY3QocGN0KTsKICAgICAgICAgICAgc2V0VGltZXJSdW5uaW5nKHJ1bm5pbmcpOwogICAgICAgICAgfX0KICAgICAgICAvPgogICAgICApfQoKICAgICAgPGRpdiBjbGFzc05hbWU9e2BhcHAtd3JhcHBlciAke2lzRGVza3RvcCA/ICJkZXNrdG9wIiA6ICIifWB9PgogICAgICAgIHtpc0Rlc2t0b3AgJiYgKAogICAgICAgICAgPGRpdiBjbGFzc05hbWU9InNpZGUtbWVudSBkZXNrdG9wLXZpc2libGUiPgogICAgICAgICAgICA8aDI+U8OpYW5jZXM8L2gyPgogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ic2Vzc2lvbi1saXN0Ij4KICAgICAgICAgICAgICB7c2Vzc2lvbnMubGVuZ3RoID09PSAwICYmICgKICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0ibWVudS1lbXB0eSI+QXVjdW5lIHPDqWFuY2Ug4oCUPGJyIC8+Y3LDqWUtZW4gdW5lICE8L3A+CiAgICAgICAgICAgICAgKX0KICAgICAgICAgICAgICB7c2Vzc2lvbnMubWFwKChzZXNzaW9uLCBpbmRleCkgPT4gKAogICAgICAgICAgICAgICAgPGJ1dHRvbgogICAgICAgICAgICAgICAgICBrZXk9e2luZGV4fQogICAgICAgICAgICAgICAgICBvbkNsaWNrPXsoKSA9PiBzZWxlY3RTZXNzaW9uKGluZGV4KX0KICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPXtzZWxlY3RlZFNlc3Npb25JbmRleCA9PT0gaW5kZXggPyAiYWN0aXZlIiA6ICIifQogICAgICAgICAgICAgICAgPgogICAgICAgICAgICAgICAgICA8c3Bhbj57c2Vzc2lvbi5uYW1lfTwvc3Bhbj4KICAgICAgICAgICAgICAgICAge3Nlc3Npb24uaGlzdG9yeT8ubGVuZ3RoID4gMCAmJiAoCiAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJzZXNzaW9uLWJhZGdlIj57c2Vzc2lvbi5oaXN0b3J5Lmxlbmd0aH08L3NwYW4+CiAgICAgICAgICAgICAgICAgICl9CiAgICAgICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgICAgICApKX0KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtZW51LWJvdHRvbSI+CiAgICAgICAgICAgICAgPGJ1dHRvbiBjbGFzc05hbWU9ImNyZWF0ZS1zZXNzaW9uLWJ1dHRvbiIgb25DbGljaz17KCkgPT4gc2V0TW9kZSgic2Vzc2lvbnMiKX0+CiAgICAgICAgICAgICAgICArIEfDqXJlciBsZXMgc8OpYW5jZXMKICAgICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibWVudS1mb290ZXIiPkF2ZWMgYW1vdXIgwqkgVGVpdmFubyAyMDI1PC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPC9kaXY+CiAgICAgICAgKX0KCiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImFwcC1jb250YWluZXIiPgogICAgICAgICAge21vZGUgPT09ICJzZXR0aW5ncyIgPyAoCiAgICAgICAgICAgIDxTZXR0aW5ncyAvPgogICAgICAgICAgKSA6IG1vZGUgPT09ICJzZXNzaW9ucyIgPyAoCiAgICAgICAgICAgIDxTZXNzaW9uTGlzdAogICAgICAgICAgICAgIHNlc3Npb25zPXtzZXNzaW9uc30KICAgICAgICAgICAgICBhZGRTZXNzaW9uPXthZGRTZXNzaW9ufQogICAgICAgICAgICAgIGRlbGV0ZVNlc3Npb249e2RlbGV0ZVNlc3Npb259CiAgICAgICAgICAgICAgYWRkRXhlcmNpc2U9e2FkZEV4ZXJjaXNlfQogICAgICAgICAgICAgIHJlbmFtZVNlc3Npb249e3JlbmFtZVNlc3Npb259CiAgICAgICAgICAgICAgZGVsZXRlRXhlcmNpc2U9e2RlbGV0ZUV4ZXJjaXNlfQogICAgICAgICAgICAgIG1vdmVFeGVyY2lzZT17bW92ZUV4ZXJjaXNlfQogICAgICAgICAgICAgIGR1cGxpY2F0ZVNlc3Npb249e2R1cGxpY2F0ZVNlc3Npb259CiAgICAgICAgICAgICAgc2V0TXVzY2xlc1Nlc3Npb249e3NldE11c2NsZXNTZXNzaW9ufQogICAgICAgICAgICAgIG9uU2VsZWN0U2Vzc2lvbj17c2VsZWN0U2Vzc2lvbn0KICAgICAgICAgICAgLz4KICAgICAgICAgICkgOiBtb2RlID09PSAiaGlzdG9yeSIgPyAoCiAgICAgICAgICAgIDxIaXN0b3J5IHNlc3Npb249e2hpc3RvcnlTZXNzaW9uIHx8IHNlbGVjdGVkU2Vzc2lvbn0gLz4KICAgICAgICAgICkgOiBtb2RlID09PSAidHJhaW4iICYmICFzZWxlY3RlZFNlc3Npb24gPyAoCiAgICAgICAgICAgIDxTZXNzaW9uUGlja2VyIHNlc3Npb25zPXtzZXNzaW9uc30gb25TZWxlY3Q9e3NlbGVjdFNlc3Npb259IC8+CiAgICAgICAgICApIDogc2VsZWN0ZWRTZXNzaW9uID8gKAogICAgICAgICAgICA8PgogICAgICAgICAgICAgIDxFeGVyY2lzZUxpc3QKICAgICAgICAgICAgICAgIGV4ZXJjaXNlcz17c2VsZWN0ZWRTZXNzaW9uLmV4ZXJjaXNlc30KICAgICAgICAgICAgICAgIGhpc3Rvcnk9e3NlbGVjdGVkU2Vzc2lvbi5oaXN0b3J5fQogICAgICAgICAgICAgICAgYWRkU2V0PXtoYW5kbGVBZGRTZXR9CiAgICAgICAgICAgICAgICBkZWxldGVTZXQ9e2RlbGV0ZVNldH0KICAgICAgICAgICAgICAgIGZsYXNoSW5kZXg9e2ZsYXNoSW5kZXh9CiAgICAgICAgICAgICAgICBvbkV4cGFuZGVkQ2hhbmdlPXtzZXRBY3RpdmVFeGVyY2lzZU5hbWV9CiAgICAgICAgICAgICAgLz4KICAgICAgICAgICAgICB7IWlzRGVza3RvcCAmJiAoCiAgICAgICAgICAgICAgICA8YnV0dG9uIGNsYXNzTmFtZT0iZmluaXNoLXNlc3Npb24tYnRuIiBvbkNsaWNrPXtmaW5pc2hTZXNzaW9ufT4KICAgICAgICAgICAgICAgICAg4pyFIFRlcm1pbmVyIGxhIHPDqWFuY2UKICAgICAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgICAgICl9CiAgICAgICAgICAgIDwvPgogICAgICAgICAgKSA6ICgKICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImVtcHR5LXN0YXRlIj4KICAgICAgICAgICAgICA8c3Bhbj7wn5KqPC9zcGFuPgogICAgICAgICAgICAgIDxwPlPDqWxlY3Rpb25uZSB1bmUgc8OpYW5jZTxiciAvPnBvdXIgY29tbWVuY2VyPC9wPgogICAgICAgICAgICAgIDxzbWFsbD5WYSBkYW5zIFPDqWFuY2VzIHBvdXIgY3LDqWVyIHVuZSBzw6lhbmNlPC9zbWFsbD4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICApfQogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KCiAgICAgIHshaXNEZXNrdG9wICYmICgKICAgICAgICA8PgogICAgICAgICAge3Nlc3Npb25JblByb2dyZXNzICYmICgKICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9InNlc3Npb24tYmFyIj4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ic2Vzc2lvbi1iYXItdGlja2VyIj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT17YWN0aXZlRXhlcmNpc2VOYW1lID8gInRpY2tlci10ZXh0IiA6ICJ0aWNrZXItdGV4dCB0aWNrZXItbXV0ZWQifT4KICAgICAgICAgICAgICAgICAge2FjdGl2ZUV4ZXJjaXNlTmFtZSB8fCBzZWxlY3RlZFNlc3Npb24/Lm5hbWUgfHwgIlPDqWFuY2UgZW4gY291cnMifQogICAgICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzZXNzaW9uLWJhci1wcm9ncmVzcyI+CiAgICAgICAgICAgICAgICA8ZGl2CiAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT17YHNlc3Npb24tYmFyLWZpbGwke3RpbWVyUnVubmluZyA/ICIgc2Vzc2lvbi1iYXItZmlsbC1ydW5uaW5nIiA6ICIifWB9CiAgICAgICAgICAgICAgICAgIHN0eWxlPXt7IHdpZHRoOiBgJHt0aW1lclBjdCAqIDEwMH0lYCB9fQogICAgICAgICAgICAgICAgLz4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICApfQoKICAgICAgICAgIDxuYXYgY2xhc3NOYW1lPSJib3R0b20tbmF2Ij4KICAgICAgICAgICAgPGJ1dHRvbgogICAgICAgICAgICAgIGNsYXNzTmFtZT17YGJuYXYtYnRuICR7bW9kZSA9PT0gImhpc3RvcnkiID8gImFjdGl2ZSIgOiAiIn1gfQogICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IHsgaWYgKHNlbGVjdGVkU2Vzc2lvbiB8fCBoaXN0b3J5U2Vzc2lvbikgc2V0TW9kZSgiaGlzdG9yeSIpOyB9fQogICAgICAgICAgICAgIGRpc2FibGVkPXshc2VsZWN0ZWRTZXNzaW9uICYmICFoaXN0b3J5U2Vzc2lvbn0KICAgICAgICAgICAgPgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJibmF2LWljb24td3JhcCI+PHNwYW4gY2xhc3NOYW1lPSJibmF2LWljb24iPvCfk4o8L3NwYW4+PC9kaXY+CiAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJibmF2LWxhYmVsIj5IaXN0b3JpcXVlPC9zcGFuPgogICAgICAgICAgICA8L2J1dHRvbj4KCiAgICAgICAgICAgIDxidXR0b24KICAgICAgICAgICAgICBjbGFzc05hbWU9e2BibmF2LWJ0biBibmF2LWNlbnRlciAke21vZGUgPT09ICJ0cmFpbiIgPyAiYWN0aXZlIiA6ICIifWB9CiAgICAgICAgICAgICAgb25DbGljaz17KCkgPT4gc2V0TW9kZSgidHJhaW4iKX0KICAgICAgICAgICAgPgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJibmF2LWljb24td3JhcCI+PHNwYW4gY2xhc3NOYW1lPSJibmF2LWljb24iPvCfj4vvuI88L3NwYW4+PC9kaXY+CiAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJibmF2LWxhYmVsIj5FbnRyYcOubmVtZW50PC9zcGFuPgogICAgICAgICAgICA8L2J1dHRvbj4KCiAgICAgICAgICAgIDxidXR0b24KICAgICAgICAgICAgICBjbGFzc05hbWU9e2BibmF2LWJ0biAke21vZGUgPT09ICJzZXNzaW9ucyIgPyAiYWN0aXZlIiA6ICIifWB9CiAgICAgICAgICAgICAgb25DbGljaz17KCkgPT4gc2V0TW9kZSgic2Vzc2lvbnMiKX0KICAgICAgICAgICAgPgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJibmF2LWljb24td3JhcCI+PHNwYW4gY2xhc3NOYW1lPSJibmF2LWljb24iPvCfk4s8L3NwYW4+PC9kaXY+CiAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJibmF2LWxhYmVsIj5Tw6lhbmNlczwvc3Bhbj4KICAgICAgICAgICAgPC9idXR0b24+CgogICAgICAgICAgICA8YnV0dG9uCiAgICAgICAgICAgICAgY2xhc3NOYW1lPXtgYm5hdi1idG4gJHttb2RlID09PSAic2V0dGluZ3MiID8gImFjdGl2ZSIgOiAiIn1gfQogICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IHNldE1vZGUoInNldHRpbmdzIil9CiAgICAgICAgICAgID4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iYm5hdi1pY29uLXdyYXAiPjxzcGFuIGNsYXNzTmFtZT0iYm5hdi1pY29uIj7impnvuI88L3NwYW4+PC9kaXY+CiAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJibmF2LWxhYmVsIj5Sw6lnbGFnZXM8L3NwYW4+CiAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgPC9uYXY+CiAgICAgICAgPC8+CiAgICAgICl9CiAgICA8Lz4KICApOwp9Cg==
+import React, { useState, useEffect } from "react";
+import SessionList from "./components/SessionList";
+import ExerciseList from "./components/ExerciseList";
+import Timer from "./components/Timer";
+import History from "./components/History";
+import Onboarding from "./components/Onboarding";
+import SessionPicker from "./components/SessionPicker";
+import Settings, { applyAccentColor } from "./components/Settings";
+
+const useIsDesktop = () => {
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+  useEffect(() => {
+    const handler = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return isDesktop;
+};
+
+const migrateSessions = (s) =>
+  s.map((x) => ({ history: [], muscles: [], ...x }));
+
+export default function App() {
+  const isDesktop = useIsDesktop();
+
+  useEffect(() => {
+    const saved = localStorage.getItem("accent_color") || "green";
+    applyAccentColor(saved);
+  }, []);
+
+  const [showOnboarding, setShowOnboarding] = useState(
+    () => !localStorage.getItem("onboarding_done")
+  );
+
+  const [sessions, setSessions] = useState(() => {
+    try {
+      const saved = localStorage.getItem("sessions");
+      return saved ? migrateSessions(JSON.parse(saved)) : [];
+    } catch { return []; }
+  });
+
+  const [selectedSessionIndex, setSelectedSessionIndex] = useState(null);
+  const [resetTrigger, setResetTrigger] = useState(false);
+  const [mode, setMode] = useState("sessions");
+  const [flashIndex, setFlashIndex] = useState(null);
+  const [activeExerciseName, setActiveExerciseName] = useState(null);
+  const [timerPct, setTimerPct] = useState(1);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [historySession, setHistorySession] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem("sessions", JSON.stringify(sessions));
+  }, [sessions]);
+
+  const selectedSession =
+    selectedSessionIndex !== null ? sessions[selectedSessionIndex] : null;
+
+  const update = (fn) =>
+    setSessions((prev) => {
+      const next = [...prev];
+      fn(next);
+      return next;
+    });
+
+  const handleAddSet = (exerciseIndex, weight, reps) => {
+    if (selectedSessionIndex === null) return;
+    update((s) => {
+      s[selectedSessionIndex].exercises[exerciseIndex].sets.push({
+        weight, reps, timestamp: new Date().toISOString(),
+      });
+    });
+    setResetTrigger((p) => !p);
+    setFlashIndex(exerciseIndex);
+    setTimeout(() => setFlashIndex(null), 500);
+  };
+
+  const deleteSet = (exerciseIndex, setIndex) => {
+    if (selectedSessionIndex === null) return;
+    update((s) => {
+      s[selectedSessionIndex].exercises[exerciseIndex].sets.splice(setIndex, 1);
+    });
+  };
+
+  const addSession = (name) => {
+    if (!name.trim()) return;
+    setSessions((prev) => [
+      { name, exercises: [], history: [], muscles: [] },
+      ...prev,
+    ]);
+  };
+
+  const addExercise = (sessionIndex, exerciseName) => {
+    if (!exerciseName.trim()) return;
+    update((s) => { s[sessionIndex].exercises.push({ name: exerciseName, sets: [] }); });
+  };
+
+  const deleteExercise = (sessionIndex, exerciseIndex) => {
+    if (!window.confirm("Supprimer cet exercice ?")) return;
+    update((s) => { s[sessionIndex].exercises.splice(exerciseIndex, 1); });
+  };
+
+  const moveExercise = (sessionIndex, exerciseIndex, direction) => {
+    update((s) => {
+      const exs = s[sessionIndex].exercises;
+      const target = exerciseIndex + direction;
+      if (target >= 0 && target < exs.length)
+        [exs[exerciseIndex], exs[target]] = [exs[target], exs[exerciseIndex]];
+    });
+  };
+
+  const renameSession = (index, newName) => {
+    update((s) => { s[index].name = newName; });
+  };
+
+  const setMusclesSession = (index, muscles) => {
+    update((s) => { s[index].muscles = muscles; });
+  };
+
+  const duplicateSession = (index) => {
+    update((s) => {
+      const orig = s[index];
+      s.splice(index + 1, 0, {
+        ...orig,
+        name: orig.name + " (copie)",
+        exercises: orig.exercises.map((ex) => ({ ...ex, sets: [] })),
+        history: [],
+      });
+    });
+  };
+
+  const deleteSession = (index) => {
+    if (!window.confirm("Supprimer cette séance ?")) return;
+    setSessions((prev) => {
+      const next = prev.filter((_, i) => i !== index);
+      if (selectedSessionIndex === index) {
+        setSelectedSessionIndex(null);
+        setMode("sessions");
+      } else if (selectedSessionIndex > index) {
+        setSelectedSessionIndex((i) => i - 1);
+      }
+      return next;
+    });
+  };
+
+  const selectSession = (index) => {
+    setSelectedSessionIndex(index);
+    setActiveExerciseName(null);
+    setMode("train");
+  };
+
+  const finishSession = () => {
+    if (selectedSessionIndex === null) return;
+    let hasSet = false;
+    const idx = selectedSessionIndex;
+    update((s) => {
+      const session = s[idx];
+      hasSet = session.exercises.some((ex) => ex.sets.length > 0);
+      if (!hasSet) return;
+      session.history = [
+        {
+          date: new Date().toISOString(),
+          exercises: session.exercises.map((ex) => ({ name: ex.name, sets: [...ex.sets] })),
+        },
+        ...(session.history || []),
+      ];
+      session.exercises = session.exercises.map((ex) => ({ ...ex, sets: [] }));
+    });
+    if (!hasSet) { alert("Aucune série enregistrée."); return; }
+    setHistorySession(sessions[idx]);
+    setSelectedSessionIndex(null);
+    setMode("history");
+    setActiveExerciseName(null);
+    setTimerRunning(false);
+    setTimerPct(1);
+  };
+
+  const handleOnboardingDone = () => {
+    localStorage.setItem("onboarding_done", "1");
+    setShowOnboarding(false);
+  };
+
+  const totalSetsToday = selectedSession
+    ? selectedSession.exercises.reduce((t, ex) => t + ex.sets.length, 0)
+    : 0;
+
+  const sessionInProgress = selectedSession !== null;
+
+  const headerTitle =
+    mode === "train" && selectedSession ? selectedSession.name
+    : mode === "history" && (historySession || selectedSession)
+      ? (historySession || selectedSession).name
+    : "🌴 Workout";
+
+  return (
+    <>
+      {showOnboarding && <Onboarding onDone={handleOnboardingDone} />}
+
+      <header className="app-header">
+        <div className="app-title-block">
+          <span className="app-title">{headerTitle}</span>
+          {mode === "train" && selectedSession && totalSetsToday > 0 && (
+            <span className="header-sets-count">
+              {totalSetsToday} série{totalSetsToday > 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
+        {isDesktop && (
+          <div className="header-actions">
+            {mode === "train" && selectedSession && (
+              <button className="header-icon-btn finish-btn" onClick={finishSession}>
+                ✅ Terminer
+              </button>
+            )}
+          </div>
+        )}
+      </header>
+
+      {sessionInProgress && (
+        <Timer
+          resetTrigger={resetTrigger}
+          onTimerUpdate={(pct, running) => {
+            setTimerPct(pct);
+            setTimerRunning(running);
+          }}
+        />
+      )}
+
+      <div className={`app-wrapper ${isDesktop ? "desktop" : ""}`}>
+        {isDesktop && (
+          <div className="side-menu desktop-visible">
+            <h2>Séances</h2>
+            <div className="session-list">
+              {sessions.length === 0 && (
+                <p className="menu-empty">Aucune séance —<br />crée-en une !</p>
+              )}
+              {sessions.map((session, index) => (
+                <button
+                  key={index}
+                  onClick={() => selectSession(index)}
+                  className={selectedSessionIndex === index ? "active" : ""}
+                >
+                  <span>{session.name}</span>
+                  {session.history?.length > 0 && (
+                    <span className="session-badge">{session.history.length}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+            <div className="menu-bottom">
+              <button className="create-session-button" onClick={() => setMode("sessions")}>
+                + Gérer les séances
+              </button>
+              <div className="menu-footer">Avec amour © Teivano 2025</div>
+            </div>
+          </div>
+        )}
+
+        <div className="app-container">
+          {mode === "settings" ? (
+            <Settings />
+          ) : mode === "sessions" ? (
+            <SessionList
+              sessions={sessions}
+              addSession={addSession}
+              deleteSession={deleteSession}
+              addExercise={addExercise}
+              renameSession={renameSession}
+              deleteExercise={deleteExercise}
+              moveExercise={moveExercise}
+              duplicateSession={duplicateSession}
+              setMusclesSession={setMusclesSession}
+              onSelectSession={selectSession}
+            />
+          ) : mode === "history" ? (
+            <History session={historySession || selectedSession} />
+          ) : mode === "train" && !selectedSession ? (
+            <SessionPicker sessions={sessions} onSelect={selectSession} />
+          ) : selectedSession ? (
+            <>
+              <ExerciseList
+                exercises={selectedSession.exercises}
+                history={selectedSession.history}
+                addSet={handleAddSet}
+                deleteSet={deleteSet}
+                flashIndex={flashIndex}
+                onExpandedChange={setActiveExerciseName}
+              />
+              {!isDesktop && (
+                <button className="finish-session-btn" onClick={finishSession}>
+                  ✅ Terminer la séance
+                </button>
+              )}
+            </>
+          ) : (
+            <div className="empty-state">
+              <span>💪</span>
+              <p>Sélectionne une séance<br />pour commencer</p>
+              <small>Va dans Séances pour créer une séance</small>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {!isDesktop && (
+        <>
+          {sessionInProgress && (
+            <div className="session-bar">
+              <div className="session-bar-ticker">
+                <span className={activeExerciseName ? "ticker-text" : "ticker-text ticker-muted"}>
+                  {activeExerciseName || selectedSession?.name || "Séance en cours"}
+                </span>
+              </div>
+              <div className="session-bar-progress">
+                <div
+                  className={`session-bar-fill${timerRunning ? " session-bar-fill-running" : ""}`}
+                  style={{ width: `${timerPct * 100}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          <nav className="bottom-nav">
+            <button
+              className={`bnav-btn ${mode === "history" ? "active" : ""}`}
+              onClick={() => { if (selectedSession || historySession) setMode("history"); }}
+              disabled={!selectedSession && !historySession}
+            >
+              <div className="bnav-icon-wrap"><span className="bnav-icon">📊</span></div>
+              <span className="bnav-label">Historique</span>
+            </button>
+
+            <button
+              className={`bnav-btn bnav-center ${mode === "train" ? "active" : ""}`}
+              onClick={() => setMode("train")}
+            >
+              <div className="bnav-icon-wrap"><span className="bnav-icon">🏋️</span></div>
+              <span className="bnav-label">Entraînement</span>
+            </button>
+
+            <button
+              className={`bnav-btn ${mode === "sessions" ? "active" : ""}`}
+              onClick={() => setMode("sessions")}
+            >
+              <div className="bnav-icon-wrap"><span className="bnav-icon">📋</span></div>
+              <span className="bnav-label">Séances</span>
+            </button>
+
+            <button
+              className={`bnav-btn ${mode === "settings" ? "active" : ""}`}
+              onClick={() => setMode("settings")}
+            >
+              <div className="bnav-icon-wrap"><span className="bnav-icon">⚙️</span></div>
+              <span className="bnav-label">Réglages</span>
+            </button>
+          </nav>
+        </>
+      )}
+    </>
+  );
+}
