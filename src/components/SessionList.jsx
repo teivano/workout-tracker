@@ -16,6 +16,7 @@ const MUSCLES = [
   { id: "quadriceps",   label: "Quadriceps" },
   { id: "trapezes",     label: "Trapèzes" },
   { id: "triceps",      label: "Triceps" },
+  { id: "autres",       label: "Autres" },
 ];
 
 const EXERCISES_BY_MUSCLE = {
@@ -33,6 +34,7 @@ const EXERCISES_BY_MUSCLE = {
   fessiers:     ["Hip thrust", "Soulevé de terre sumo", "Fentes bulgares", "Abduction hanche machine", "Kick-back câble", "Squat sumo", "Step up", "Glute bridge"],
   mollets:      ["Mollets debout", "Mollets assis", "Leg press mollets", "Mollets unijambistes", "Saut à la corde", "Tibia raises"],
   adducteurs:   ["Adduction machine", "Sumo squat", "Fentes latérales", "Câble adduction", "Copenhagen plank", "Butterfly machine"],
+  autres:       [],
 };
 
 function DumbbellEmptySVG() {
@@ -108,10 +110,11 @@ function MuscleSelector({ selected, onChange }) {
             </button>
             {open && (
               <div ref={dropRef} className="muscle-dropdown" style={dropPos}>
-                {remaining.map((m) => (
+                {remaining.map((m, i) => (
                   <button
                     key={m.id}
-                    className="muscle-dropdown-item"
+                    className={`muscle-dropdown-item${m.id === "autres" ? " muscle-dropdown-item-autres" : ""}`}
+                    style={m.id === "autres" && i > 0 ? { borderTop: "1px solid rgba(255,255,255,0.07)", marginTop: 4 } : {}}
                     onPointerDown={(e) => e.preventDefault()}
                     onClick={() => toggle(m.id)}
                     type="button"
@@ -176,20 +179,17 @@ export default function SessionList({
 
   const toggleExpand = (index) => {
     if (expandedIndex === index) {
-      // Fermeture
       setExpandedIndex(null);
       setNewSessionIndex(null);
     } else {
-      // Ouverture uniquement si au moins 1 muscle selectionne
       const muscles = sessions[index]?.muscles || [];
-      if (muscles.length === 0) return; // bloquer silencieusement — le bouton indique deja quoi faire
+      if (muscles.length === 0) return;
       setExpandedIndex(index);
     }
   };
 
   const handleMusclesChange = (index, muscles) => {
     setMusclesSession(index, muscles);
-    // Ouvrir automatiquement au premier muscle ajoute sur une seance vide
     if (muscles.length > 0 && sessions[index]?.exercises?.length === 0) {
       setExpandedIndex(index);
     }
@@ -202,7 +202,6 @@ export default function SessionList({
     setTimeout(() => setSavedIndex(null), 1800);
   };
 
-  // Empty state
   if (sessions.length === 0 && !showInput) {
     return (
       <div className="session-list-page">
@@ -259,6 +258,7 @@ export default function SessionList({
         const hasMuscles = muscles.length > 0;
         const seen = new Set(session.exercises.map((e) => e.name));
         const muscleGroups = muscles
+          .filter((id) => id !== "autres")
           .map((id) => ({
             id,
             label: MUSCLES.find((m) => m.id === id)?.label || id,
@@ -358,7 +358,6 @@ export default function SessionList({
               </div>
             )}
 
-            {/* Bouton expand — indique quoi faire si pas de muscle */}
             <button
               className={`session-expand-btn ${isExpanded ? "open" : ""}${!hasMuscles ? " session-expand-btn-hint" : ""}`}
               onClick={() => toggleExpand(index)}
