@@ -9,6 +9,16 @@ const formatDate = (iso) =>
 const formatTime = (iso) =>
   new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 
+// Formate une durée en secondes → "42 min" ou "1h 05"
+// Retourne null si durationSeconds est null/undefined (anciennes entrées sans suivi)
+const formatDuration = (seconds) => {
+  if (!seconds || seconds <= 0) return null;
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (h > 0) return `${h}h ${String(m).padStart(2, "0")}`;
+  return `${m} min`;
+};
+
 const totalVolume = (exercises) =>
   exercises.reduce((t, ex) => t + ex.sets.reduce((s, set) => s + set.weight * set.reps, 0), 0);
 
@@ -18,7 +28,6 @@ const totalSets = (exercises) =>
 export default function History({ session, sessions }) {
   const [expandedIndex, setExpandedIndex] = useState(0);
 
-  // Aucune session sélectionnée ET aucun historique dans aucune séance
   if (!session) {
     const hasAnyHistory = sessions?.some((s) => s.history?.length > 0);
     return (
@@ -46,6 +55,7 @@ export default function History({ session, sessions }) {
       {session.history.map((entry, index) => {
         const vol = totalVolume(entry.exercises);
         const sets = totalSets(entry.exercises);
+        const duration = formatDuration(entry.durationSeconds);
         const isExpanded = expandedIndex === index;
         return (
           <div key={index} className={`history-card ${isExpanded ? "expanded" : ""}`}
@@ -56,6 +66,7 @@ export default function History({ session, sessions }) {
                 <span className="history-time">{formatTime(entry.date)}</span>
               </div>
               <div className="history-meta">
+                {duration && <span className="history-chip history-chip-duration">⏱ {duration}</span>}
                 <span className="history-chip">{sets} série{sets > 1 ? "s" : ""}</span>
                 {vol > 0 && <span className="history-chip">{vol.toLocaleString()} kg</span>}
                 <span className="history-chevron">{isExpanded ? "▲" : "▼"}</span>

@@ -1,6 +1,6 @@
 // GARDE-FOU : ne jamais modifier ce fichier via create_or_update_file
 // Utiliser UNIQUEMENT push_files (les autres outils encodent mal l'UTF-8)
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import SessionList from "./components/SessionList";
 import ExerciseList from "./components/ExerciseList";
 import Timer from "./components/Timer";
@@ -49,6 +49,9 @@ export default function App() {
   const [timerPct, setTimerPct] = useState(1);
   const [timerRunning, setTimerRunning] = useState(false);
   const [historySession, setHistorySession] = useState(null);
+
+  // Horodatage du début de séance — pour calculer la durée totale à la fin
+  const sessionStartRef = useRef(null);
 
   useEffect(() => {
     localStorage.setItem("sessions", JSON.stringify(sessions));
@@ -126,7 +129,6 @@ export default function App() {
         name: orig.name + " (copie)",
         exercises: orig.exercises.map((ex) => ({ ...ex, sets: [] })),
         history: [],
-        // FIX #11 : copie du tableau muscles par valeur (évite partage de référence)
         muscles: [...(orig.muscles || [])],
       });
     });
@@ -150,15 +152,14 @@ export default function App() {
     setSelectedSessionIndex(index);
     setActiveExerciseName(null);
     setMode("train");
+    // Enregistre l'heure de début de séance
+    sessionStartRef.current = Date.now();
   };
 
   const finishSession = () => {
     if (selectedSessionIndex === null) return;
     const idx = selectedSessionIndex;
 
-    // FIX #5 : on construit le nouvel état AVANT d'appeler update()
-    // pour pouvoir passer l'objet à jour à setHistorySession sans dépendre
-    // du state React (qui n'est pas encore mis à jour au moment de l'appel).
     const currentSession = sessions[idx];
     const hasSet = currentSession.exercises.some((ex) => ex.sets.length > 0);
 
@@ -167,24 +168,27 @@ export default function App() {
       return;
     }
 
+    // Calcule la durée en secondes depuis le début de séance
+    const durationSeconds = sessionStartRef.current
+      ? Math.round((Date.now() - sessionStartRef.current) / 1000)
+      : null;
+    sessionStartRef.current = null;
+
     const newEntry = {
       date: new Date().toISOString(),
+      // durationSeconds : null pour les anciennes entrées sans suivi (rétro-compat)
+      durationSeconds,
       exercises: currentSession.exercises.map((ex) => ({ name: ex.name, sets: [...ex.sets] })),
     };
 
-    // Objet session mis à jour, avec la nouvelle entrée history en tête
     const updatedSession = {
       ...currentSession,
       history: [newEntry, ...(currentSession.history || [])],
       exercises: currentSession.exercises.map((ex) => ({ ...ex, sets: [] })),
     };
 
-    // Met à jour le state sessions
-    update((s) => {
-      s[idx] = updatedSession;
-    });
+    update((s) => { s[idx] = updatedSession; });
 
-    // Passe l'objet DÉJÀ MIS À JOUR à historySession (pas le stale sessions[idx])
     setHistorySession(updatedSession);
     setSelectedSessionIndex(null);
     setMode("history");
@@ -210,8 +214,6 @@ export default function App() {
       ? (historySession || selectedSession).name
     : "🌴 Workout";
 
-  // FIX #15 : useCallback pour éviter que la référence change à chaque render
-  // et déclenche le useEffect de Timer inutilement en cascade.
   const handleTimerUpdate = useCallback((pct, running) => {
     setTimerPct(pct);
     setTimerRunning(running);
