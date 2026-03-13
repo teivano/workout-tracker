@@ -1,24 +1,22 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-// ─── Muscles disponibles ───────────────────────────────────────────────────
 const MUSCLES = [
-  { id: "pectoraux",       label: "Pectoraux",         emoji: "🫁" },
-  { id: "epaules",         label: "Épaules",            emoji: "🔵" },
-  { id: "grand_dorsal",    label: "Grand dorsal",       emoji: "🔙" },
-  { id: "trapezes",        label: "Trapèzes",           emoji: "🔝" },
-  { id: "biceps",          label: "Biceps",             emoji: "💪" },
-  { id: "triceps",         label: "Triceps",            emoji: "💪" },
-  { id: "avant_bras",      label: "Avant-bras",         emoji: "🦾" },
-  { id: "abdominaux",      label: "Abdominaux",         emoji: "🎯" },
-  { id: "obliques",        label: "Obliques",           emoji: "↔️" },
-  { id: "quadriceps",      label: "Quadriceps",         emoji: "🦵" },
-  { id: "ischio",          label: "Ischio-jambiers",    emoji: "🦵" },
-  { id: "fessiers",        label: "Fessiers",           emoji: "🍑" },
-  { id: "mollets",         label: "Mollets",            emoji: "🦶" },
-  { id: "adducteurs",      label: "Adducteurs",         emoji: "🔀" },
+  { id: "pectoraux",    label: "Pectoraux" },
+  { id: "epaules",      label: "Épaules" },
+  { id: "grand_dorsal", label: "Grand dorsal" },
+  { id: "trapezes",     label: "Trapèzes" },
+  { id: "biceps",       label: "Biceps" },
+  { id: "triceps",      label: "Triceps" },
+  { id: "avant_bras",   label: "Avant-bras" },
+  { id: "abdominaux",   label: "Abdominaux" },
+  { id: "obliques",     label: "Obliques" },
+  { id: "quadriceps",   label: "Quadriceps" },
+  { id: "ischio",       label: "Ischio-jambiers" },
+  { id: "fessiers",     label: "Fessiers" },
+  { id: "mollets",      label: "Mollets" },
+  { id: "adducteurs",   label: "Adducteurs" },
 ];
 
-// ─── Exercices par muscle ──────────────────────────────────────────────────
 const EXERCISES_BY_MUSCLE = {
   pectoraux:    ["Développé couché", "Développé incliné", "Développé décliné", "Écarté poulie", "Écarté haltères", "Pompes", "Dips pectoraux", "Pec deck machine"],
   epaules:      ["Développé militaire", "Développé Arnold", "Élévations latérales", "Élévations frontales", "Oiseau / Face pull", "Rowing menton", "Shrugs haltères", "Développé haltères assis"],
@@ -36,31 +34,57 @@ const EXERCISES_BY_MUSCLE = {
   adducteurs:   ["Adduction machine", "Sumo squat", "Fentes latérales", "Câble adduction", "Copenhagen plank", "Butterfly machine"],
 };
 
-// ─── Composant dropdown muscles ────────────────────────────────────────────
-function MuscleSelector({ selected, onChange }) {
+// Dropdown qui s'affiche en position fixed pour ne pas être coupé par overflow:hidden
+function MuscleSelector({ selected, onChange, cardRef }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+  const [dropdownStyle, setDropdownStyle] = useState({});
+  const btnRef = useRef(null);
 
   useEffect(() => {
+    if (!open) return;
     const handler = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+      if (btnRef.current && !btnRef.current.contains(e.target)) setOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  }, [open]);
+
+  const handleOpen = () => {
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const dropH = Math.min(220, 14 * 38); // approx max height
+      if (spaceBelow < dropH) {
+        // Ouvrir vers le haut
+        setDropdownStyle({
+          position: "fixed",
+          left: rect.left,
+          bottom: window.innerHeight - rect.top + 4,
+          minWidth: 160,
+          zIndex: 3000,
+        });
+      } else {
+        setDropdownStyle({
+          position: "fixed",
+          left: rect.left,
+          top: rect.bottom + 4,
+          minWidth: 160,
+          zIndex: 3000,
+        });
+      }
+    }
+    setOpen((o) => !o);
+  };
 
   const toggle = (id) => {
-    if (selected.includes(id)) {
-      onChange(selected.filter((m) => m !== id));
-    } else {
-      onChange([...selected, id]);
-    }
+    onChange(selected.includes(id) ? selected.filter((m) => m !== id) : [...selected, id]);
+    setOpen(false);
   };
 
   const remaining = MUSCLES.filter((m) => !selected.includes(m.id));
 
   return (
-    <div className="muscle-selector" ref={ref}>
+    <div className="muscle-selector">
       <div className="muscle-selector-label">Muscle(s) :</div>
       <div className="muscle-tags-row">
         {selected.map((id) => {
@@ -68,32 +92,22 @@ function MuscleSelector({ selected, onChange }) {
           return (
             <span key={id} className="muscle-tag">
               {m?.label}
-              <button
-                className="muscle-tag-remove"
-                onClick={() => toggle(id)}
-                type="button"
-              >
-                ×
-              </button>
+              <button className="muscle-tag-remove" onClick={() => toggle(id)} type="button">×</button>
             </span>
           );
         })}
         {remaining.length > 0 && (
-          <div className="muscle-add-wrap">
-            <button
-              className="muscle-add-btn"
-              onClick={() => setOpen((o) => !o)}
-              type="button"
-            >
+          <div style={{ position: "relative" }}>
+            <button ref={btnRef} className="muscle-add-btn" onClick={handleOpen} type="button">
               + Ajouter
             </button>
             {open && (
-              <div className="muscle-dropdown">
+              <div className="muscle-dropdown" style={dropdownStyle}>
                 {remaining.map((m) => (
                   <button
                     key={m.id}
                     className="muscle-dropdown-item"
-                    onClick={() => { toggle(m.id); setOpen(false); }}
+                    onClick={() => toggle(m.id)}
                     type="button"
                   >
                     {m.label}
@@ -109,16 +123,9 @@ function MuscleSelector({ selected, onChange }) {
 }
 
 export default function SessionList({
-  sessions,
-  addSession,
-  deleteSession,
-  addExercise,
-  renameSession,
-  deleteExercise,
-  moveExercise,
-  duplicateSession,
-  setMusclesSession,
-  onSelectSession,
+  sessions, addSession, deleteSession, addExercise,
+  renameSession, deleteExercise, moveExercise,
+  duplicateSession, setMusclesSession, onSelectSession,
 }) {
   const [sessionInput, setSessionInput] = useState("");
   const [exerciseInputs, setExerciseInputs] = useState({});
@@ -139,8 +146,7 @@ export default function SessionList({
   };
 
   const handleAddExercise = (sessionIndex, name) => {
-    const val =
-      name !== undefined ? name : exerciseInputs[sessionIndex] || "";
+    const val = name !== undefined ? name : exerciseInputs[sessionIndex] || "";
     if (val.trim()) {
       addExercise(sessionIndex, val.trim());
       if (name === undefined)
@@ -149,9 +155,8 @@ export default function SessionList({
   };
 
   const confirmRename = (index) => {
-    if (renameValue.trim() && renameValue.length <= 30) {
+    if (renameValue.trim() && renameValue.length <= 30)
       renameSession(index, renameValue.trim());
-    }
     setRenamingIndex(null);
   };
 
@@ -162,44 +167,32 @@ export default function SessionList({
     <div className="session-list-page">
       <p className="session-page-title">Mes séances</p>
 
-      {/* ── Création rapide ── */}
       <div className="input-row">
         <input
           type="text"
           className="session-input"
           value={sessionInput}
-          onChange={(e) => {
-            if (e.target.value.length <= 30) setSessionInput(e.target.value);
-          }}
+          onChange={(e) => { if (e.target.value.length <= 30) setSessionInput(e.target.value); }}
           onKeyDown={(e) => e.key === "Enter" && handleAddSession()}
           placeholder="Ex : Pecs épaules, Fessiers mollets…"
         />
-        <button className="add-button" onClick={handleAddSession}>
-          +
-        </button>
+        <button className="add-button" onClick={handleAddSession}>+</button>
       </div>
 
-      {/* ── Liste des séances ── */}
       {sessions.map((session, index) => {
         const muscles = session.muscles || [];
         const isExpanded = expandedIndex === index;
-
-        // Exercices suggérés = union de tous les muscles sélectionnés, sans doublons
-        const suggestedExercises = [];
         const seen = new Set(session.exercises.map((e) => e.name));
         const muscleGroups = muscles
           .map((id) => ({
             id,
             label: MUSCLES.find((m) => m.id === id)?.label || id,
-            exercises: (EXERCISES_BY_MUSCLE[id] || []).filter(
-              (name) => !seen.has(name)
-            ),
+            exercises: (EXERCISES_BY_MUSCLE[id] || []).filter((n) => !seen.has(n)),
           }))
           .filter((g) => g.exercises.length > 0);
 
         return (
           <div key={index} className="session-item">
-            {/* ── Header carte ── */}
             <div className="session-header">
               <div className="session-header-left">
                 {renamingIndex === index ? (
@@ -217,77 +210,32 @@ export default function SessionList({
                 ) : (
                   <h3 onClick={() => toggleExpand(index)}>{session.name}</h3>
                 )}
-
-                {/* Sélecteur muscles inline */}
                 <MuscleSelector
                   selected={muscles}
                   onChange={(m) => setMusclesSession(index, m)}
                 />
               </div>
-
-              {/* Actions */}
               <div className="session-actions">
-                <button
-                  className="session-play-btn"
-                  title="Démarrer"
-                  onClick={() => onSelectSession(index)}
-                >
-                  ▶
-                </button>
-                <button
-                  className="duplicate-btn"
-                  title="Dupliquer"
-                  onClick={() => duplicateSession(index)}
-                >
-                  ⧉
-                </button>
-                <button
-                  className="rename-btn"
-                  title="Renommer"
-                  onClick={() => {
-                    setRenamingIndex(index);
-                    setRenameValue(session.name);
-                  }}
-                >
-                  ✏️
-                </button>
-                <button
-                  className="delete-session"
-                  onClick={() => deleteSession(index)}
-                >
-                  ❌
-                </button>
+                <button className="session-play-btn" title="Démarrer" onClick={() => onSelectSession(index)}>▶</button>
+                <button className="duplicate-btn" title="Dupliquer" onClick={() => duplicateSession(index)}>⧉</button>
+                <button className="rename-btn" title="Renommer" onClick={() => { setRenamingIndex(index); setRenameValue(session.name); }}>✏️</button>
+                <button className="delete-session" onClick={() => deleteSession(index)}>❌</button>
               </div>
             </div>
 
-            {/* ── Accordéon exercices ── */}
             {isExpanded && (
               <div className="session-exercises">
-                {/* Champ texte libre */}
                 <div className="input-row" style={{ marginBottom: 6 }}>
                   <input
                     type="text"
                     value={exerciseInputs[index] || ""}
-                    onChange={(e) =>
-                      setExerciseInputs((prev) => ({
-                        ...prev,
-                        [index]: e.target.value,
-                      }))
-                    }
-                    onKeyDown={(e) =>
-                      e.key === "Enter" && handleAddExercise(index)
-                    }
+                    onChange={(e) => setExerciseInputs((prev) => ({ ...prev, [index]: e.target.value }))}
+                    onKeyDown={(e) => e.key === "Enter" && handleAddExercise(index)}
                     placeholder="Exercice personnalisé…"
                   />
-                  <button
-                    className="add-button"
-                    onClick={() => handleAddExercise(index)}
-                  >
-                    +
-                  </button>
+                  <button className="add-button" onClick={() => handleAddExercise(index)}>+</button>
                 </div>
 
-                {/* Chips groupées par muscle */}
                 {muscleGroups.length > 0 && (
                   <div className="biblio-groups">
                     {muscleGroups.map((g) => (
@@ -295,13 +243,7 @@ export default function SessionList({
                         <p className="biblio-group-label">{g.label}</p>
                         <div className="biblio-suggestions">
                           {g.exercises.map((name) => (
-                            <button
-                              key={name}
-                              className="biblio-chip"
-                              onClick={() => handleAddExercise(index, name)}
-                            >
-                              {name}
-                            </button>
+                            <button key={name} className="biblio-chip" onClick={() => handleAddExercise(index, name)}>{name}</button>
                           ))}
                         </div>
                       </div>
@@ -309,7 +251,6 @@ export default function SessionList({
                   </div>
                 )}
 
-                {/* Exercices ajoutés */}
                 {session.exercises.length === 0 ? (
                   <p className="no-exercises">Aucun exercice — ajoute-en un !</p>
                 ) : (
@@ -317,28 +258,11 @@ export default function SessionList({
                     {session.exercises.map((ex, i) => (
                       <span key={i} className="exercise-tag">
                         <span className="exercise-tag-arrows">
-                          <button
-                            className="tag-arrow-btn"
-                            disabled={i === 0}
-                            onClick={() => moveExercise(index, i, -1)}
-                          >
-                            ↑
-                          </button>
-                          <button
-                            className="tag-arrow-btn"
-                            disabled={i === session.exercises.length - 1}
-                            onClick={() => moveExercise(index, i, 1)}
-                          >
-                            ↓
-                          </button>
+                          <button className="tag-arrow-btn" disabled={i === 0} onClick={() => moveExercise(index, i, -1)}>↑</button>
+                          <button className="tag-arrow-btn" disabled={i === session.exercises.length - 1} onClick={() => moveExercise(index, i, 1)}>↓</button>
                         </span>
                         <span className="exercise-tag-name">{ex.name}</span>
-                        <button
-                          className="exercise-tag-delete"
-                          onClick={() => deleteExercise(index, i)}
-                        >
-                          ×
-                        </button>
+                        <button className="exercise-tag-delete" onClick={() => deleteExercise(index, i)}>×</button>
                       </span>
                     ))}
                   </div>
@@ -346,16 +270,11 @@ export default function SessionList({
               </div>
             )}
 
-            {/* Bouton expand */}
             <button
               className={`session-expand-btn ${isExpanded ? "open" : ""}`}
               onClick={() => toggleExpand(index)}
             >
-              {isExpanded
-                ? "▲ Réduire"
-                : `▼ ${session.exercises.length} exercice${
-                    session.exercises.length !== 1 ? "s" : ""
-                  }`}
+              {isExpanded ? "▲ Réduire" : `▼ ${session.exercises.length} exercice${session.exercises.length !== 1 ? "s" : ""}`}
             </button>
           </div>
         );

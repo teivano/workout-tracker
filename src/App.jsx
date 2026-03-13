@@ -4,6 +4,7 @@ import ExerciseList from "./components/ExerciseList";
 import Timer from "./components/Timer";
 import History from "./components/History";
 import Onboarding from "./components/Onboarding";
+import SessionPicker from "./components/SessionPicker";
 
 const useIsDesktop = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
@@ -29,14 +30,14 @@ export default function App() {
     try {
       const saved = localStorage.getItem("sessions");
       return saved ? migrateSessions(JSON.parse(saved)) : [];
-    } catch {
-      return [];
-    }
+    } catch { return []; }
   });
 
   const [selectedSessionIndex, setSelectedSessionIndex] = useState(null);
   const [resetTrigger, setResetTrigger] = useState(false);
-  const [mode, setMode] = useState("manage"); // "train" | "history" | "manage"
+  // mode: "train" | "history" | "manage"
+  // "train" avec selectedSessionIndex===null = SessionPicker
+  const [mode, setMode] = useState("manage");
   const [flashIndex, setFlashIndex] = useState(null);
 
   useEffect(() => {
@@ -57,9 +58,7 @@ export default function App() {
     if (selectedSessionIndex === null) return;
     update((s) => {
       s[selectedSessionIndex].exercises[exerciseIndex].sets.push({
-        weight,
-        reps,
-        timestamp: new Date().toISOString(),
+        weight, reps, timestamp: new Date().toISOString(),
       });
     });
     setResetTrigger((p) => !p);
@@ -76,24 +75,17 @@ export default function App() {
 
   const addSession = (name) => {
     if (!name.trim()) return;
-    setSessions((prev) => [
-      ...prev,
-      { name, exercises: [], history: [], muscles: [] },
-    ]);
+    setSessions((prev) => [...prev, { name, exercises: [], history: [], muscles: [] }]);
   };
 
   const addExercise = (sessionIndex, exerciseName) => {
     if (!exerciseName.trim()) return;
-    update((s) => {
-      s[sessionIndex].exercises.push({ name: exerciseName, sets: [] });
-    });
+    update((s) => { s[sessionIndex].exercises.push({ name: exerciseName, sets: [] }); });
   };
 
   const deleteExercise = (sessionIndex, exerciseIndex) => {
     if (!window.confirm("Supprimer cet exercice ?")) return;
-    update((s) => {
-      s[sessionIndex].exercises.splice(exerciseIndex, 1);
-    });
+    update((s) => { s[sessionIndex].exercises.splice(exerciseIndex, 1); });
   };
 
   const moveExercise = (sessionIndex, exerciseIndex, direction) => {
@@ -106,15 +98,11 @@ export default function App() {
   };
 
   const renameSession = (index, newName) => {
-    update((s) => {
-      s[index].name = newName;
-    });
+    update((s) => { s[index].name = newName; });
   };
 
   const setMusclesSession = (index, muscles) => {
-    update((s) => {
-      s[index].muscles = muscles;
-    });
+    update((s) => { s[index].muscles = muscles; });
   };
 
   const duplicateSession = (index) => {
@@ -158,19 +146,13 @@ export default function App() {
       session.history = [
         {
           date: new Date().toISOString(),
-          exercises: session.exercises.map((ex) => ({
-            name: ex.name,
-            sets: [...ex.sets],
-          })),
+          exercises: session.exercises.map((ex) => ({ name: ex.name, sets: [...ex.sets] })),
         },
         ...(session.history || []),
       ];
       session.exercises = session.exercises.map((ex) => ({ ...ex, sets: [] }));
     });
-    if (!hasSet) {
-      alert("Aucune série enregistrée.");
-      return;
-    }
+    if (!hasSet) { alert("Aucune série enregistrée."); return; }
     setMode("history");
   };
 
@@ -183,14 +165,13 @@ export default function App() {
     ? selectedSession.exercises.reduce((t, ex) => t + ex.sets.length, 0)
     : 0;
 
+  // Timer bulle : visible seulement pendant l'entraînement actif
   const showTimer = mode === "train" && !!selectedSession;
 
   const headerTitle =
-    mode === "train" && selectedSession
-      ? selectedSession.name
-      : mode === "history" && selectedSession
-      ? selectedSession.name
-      : "🌴 Workout";
+    mode === "train" && selectedSession ? selectedSession.name
+    : mode === "history" && selectedSession ? selectedSession.name
+    : "🌴 Workout";
 
   return (
     <>
@@ -208,10 +189,7 @@ export default function App() {
         {isDesktop && (
           <div className="header-actions">
             {mode === "train" && selectedSession && (
-              <button
-                className="header-icon-btn finish-btn"
-                onClick={finishSession}
-              >
+              <button className="header-icon-btn finish-btn" onClick={finishSession}>
                 ✅ Terminer
               </button>
             )}
@@ -219,6 +197,7 @@ export default function App() {
         )}
       </header>
 
+      {/* Bulle timer — fixed, coin bas-droite, au-dessus bottom nav */}
       {showTimer && <Timer resetTrigger={resetTrigger} />}
 
       <div className={`app-wrapper ${isDesktop ? "desktop" : ""}`}>
@@ -243,10 +222,7 @@ export default function App() {
               ))}
             </div>
             <div className="menu-bottom">
-              <button
-                className="create-session-button"
-                onClick={() => setMode("manage")}
-              >
+              <button className="create-session-button" onClick={() => setMode("manage")}>
                 + Gérer les séances
               </button>
               <div className="menu-footer">Avec amour © Teivano 2025</div>
@@ -270,6 +246,9 @@ export default function App() {
             />
           ) : mode === "history" && selectedSession ? (
             <History session={selectedSession} />
+          ) : mode === "train" && !selectedSession ? (
+            // Aucune séance sélectionnée → picker
+            <SessionPicker sessions={sessions} onSelect={selectSession} />
           ) : selectedSession ? (
             <>
               <ExerciseList
@@ -295,24 +274,28 @@ export default function App() {
         </div>
       </div>
 
+      {/* Bottom nav mobile — ordre : Historique | Entraînement | Gérer */}
       {!isDesktop && (
         <nav className="bottom-nav">
           <button
-            className={`bnav-btn ${mode === "train" ? "active" : ""}`}
-            onClick={() => { if (selectedSession) setMode("train"); }}
-            disabled={!selectedSession}
-          >
-            <span className="bnav-icon">🏋️</span>
-            <span className="bnav-label">Entraînement</span>
-          </button>
-          <button
             className={`bnav-btn ${mode === "history" ? "active" : ""}`}
-            onClick={() => { if (selectedSession) setMode("history"); }}
+            onClick={() => {
+              if (selectedSession) setMode("history");
+            }}
             disabled={!selectedSession}
           >
             <span className="bnav-icon">📊</span>
             <span className="bnav-label">Historique</span>
           </button>
+
+          <button
+            className={`bnav-btn bnav-center ${mode === "train" ? "active" : ""}`}
+            onClick={() => setMode("train")}
+          >
+            <span className="bnav-icon">🏋️</span>
+            <span className="bnav-label">Entraînement</span>
+          </button>
+
           <button
             className={`bnav-btn ${mode === "manage" ? "active" : ""}`}
             onClick={() => setMode("manage")}

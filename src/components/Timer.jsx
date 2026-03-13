@@ -2,19 +2,31 @@ import React, { useState, useEffect, useRef } from "react";
 
 const DEFAULT_REST = 75;
 
+// Contexte audio partagé — créé au premier interact pour contourner l'autoplay mobile
+let sharedAudioCtx = null;
+function getAudioCtx() {
+  if (!sharedAudioCtx || sharedAudioCtx.state === "closed") {
+    sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return sharedAudioCtx;
+}
+
 function playBeep() {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    gain.gain.setValueAtTime(0.6, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 1.2);
+    const ctx = getAudioCtx();
+    const resume = ctx.state === "suspended" ? ctx.resume() : Promise.resolve();
+    resume.then(() => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      gain.gain.setValueAtTime(0.7, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.4);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 1.4);
+    });
   } catch (e) {}
 }
 
@@ -30,28 +42,25 @@ export default function Timer({ resetTrigger }) {
   const [isRunning, setIsRunning] = useState(false);
   const prevTrigger = useRef(resetTrigger);
 
+  // Demande permission notif au montage
   useEffect(() => {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
   }, []);
 
-  const adjustDuration = (amount) => {
-    setRestDuration((prev) => {
-      const next = Math.max(10, prev + amount);
-      if (!isRunning) setTimeLeft(next);
-      return next;
-    });
-  };
-
+  // Réinitialise et démarre automatiquement quand une série est ajoutée
   useEffect(() => {
     if (resetTrigger !== prevTrigger.current) {
       prevTrigger.current = resetTrigger;
+      // On réveille le contexte audio dès le premier ajout de série
+      try { getAudioCtx().resume(); } catch (e) {}
       setTimeLeft(restDuration);
       setIsRunning(true);
     }
   }, [resetTrigger, restDuration]);
 
+  // Décompte
   useEffect(() => {
     if (!isRunning) return;
     const interval = setInterval(() => {
@@ -70,58 +79,68 @@ export default function Timer({ resetTrigger }) {
     return () => clearInterval(interval);
   }, [isRunning]);
 
+  const adjustDuration = (amount) => {
+    setRestDuration((prev) => {
+      const next = Math.max(10, prev + amount);
+      if (!isRunning) setTimeLeft(next);
+      return next;
+    });
+  };
+
+  const handlePlayStop = () => {
+    // On réveille le ctx audio au clic utilisateur pour garantir le son
+    try { getAudioCtx().resume(); } catch (e) {}
+    if (isRunning) {
+      setIsRunning(false);
+      setTimeLeft(restDuration);
+    } else {
+      setIsRunning(true);
+    }
+  };
+
   const pct = restDuration > 0 ? timeLeft / restDuration : 0;
-  const radius = 22;
+  const radius = 28;
   const circ = 2 * Math.PI * radius;
   const dash = circ * pct;
-  const isDone = timeLeft === 0;
-  const isIdle = !isRunning && !isDone && timeLeft === restDuration;
+  const isDone = timeLeft === 0 && !isRunning;
+  const isIdle = !isRunning && timeLeft === restDuration;
 
   const formatTime = (s) =>
     `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
   return (
-    <div className={`timer-sticky ${isIdle ? "timer-idle" : ""} ${isDone ? "timer-done" : ""}`}>
-      {/* Anneau compact */}
-      <div className="timer-ring-sm">
-        <svg width="52" height="52" viewBox="0 0 52 52">
-          <circle cx="26" cy="26" r={radius} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="4" />
-          <circle
-            cx="26" cy="26" r={radius} fill="none"
+    <div className={`timer-bubble ${
+      isIdle ? "timer-bubble-idle" : ""
+    } ${
+      isDone ? "timer-bubble-done" : ""
+    } ${
+      isRunning ? "timer-bubble-running" : ""
+    }`}>
+      {/* Anneau SVG */}
+      <div className="timer-bubble-ring" onClick={handlePlayStop} title={isRunning ? "Arrêter" : "Démarrer"}>
+        <svg width="72" height="72" viewBox="0 0 72 72">
+          {/* Fond */}
+          <circle cx="36" cy="36" r={radius} fill="none"
+            stroke="rgba(255,255,255,0.08)" strokeWidth="5" />
+          {/* Progression */}
+          <circle cx="36" cy="36" r={radius} fill="none"
             stroke={isDone ? "#ff4444" : "#28a745"}
-            strokeWidth="4"
+            strokeWidth="5"
             strokeDasharray={`${dash} ${circ}`}
             strokeLinecap="round"
-            transform="rotate(-90 26 26)"
+            transform="rotate(-90 36 36)"
             style={{ transition: "stroke-dasharray 0.9s linear, stroke 0.3s" }}
           />
         </svg>
-        <span className={`timer-display-sm ${isDone ? "timer-zero" : ""}`}>
+        <span className={`timer-bubble-time ${isDone ? "timer-bubble-time-done" : ""}`}>
           {formatTime(timeLeft)}
         </span>
       </div>
 
-      {/* Contrôles inline */}
-      <div className="timer-controls-sm">
-        <button className="timer-adj-sm" onClick={() => adjustDuration(-15)}>−15s</button>
-        <button
-          className="timer-adj-sm timer-play-sm"
-          onClick={() => {
-            if (isRunning) { setIsRunning(false); setTimeLeft(restDuration); }
-            else setIsRunning(true);
-          }}
-        >
-          {isRunning ? "⏹" : "▶"}
-        </button>
-        <button className="timer-adj-sm" onClick={() => adjustDuration(15)}>+15s</button>
-      </div>
-
-      {/* Barre de progression sous le bandeau */}
-      <div className="timer-progress-bar">
-        <div
-          className={`timer-progress-fill ${isDone ? "timer-progress-done" : ""}`}
-          style={{ width: `${pct * 100}%`, transition: "width 0.9s linear" }}
-        />
+      {/* Boutons ±15s */}
+      <div className="timer-bubble-adj">
+        <button className="timer-bubble-btn" onClick={() => adjustDuration(-15)}>−15s</button>
+        <button className="timer-bubble-btn" onClick={() => adjustDuration(15)}>+15s</button>
       </div>
     </div>
   );
