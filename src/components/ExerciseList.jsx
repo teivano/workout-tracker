@@ -56,26 +56,29 @@ function DeltaBadge({ currentSets, lastSets }) {
   );
 }
 
-export default function ExerciseList({ exercises, history, addSet, deleteSet, flashIndex }) {
+export default function ExerciseList({ exercises, history, addSet, deleteSet, flashIndex, onExpandedChange }) {
   const [expandedIndex, setExpandedIndex] = useState(exercises.length > 0 ? 0 : null);
   const [weights, setWeights] = useState({});
   const [reps, setReps] = useState({});
   const [animating, setAnimating] = useState({});
   const prevExercisesLen = useRef(exercises.length);
-
-  // Refs sur le formulaire de saisie de chaque exercice pour l'auto-scroll
   const inputRefs = useRef({});
-
-  // Tracker le total de sets pour détecter un ajout
   const prevTotalSets = useRef(
     exercises.reduce((t, ex) => t + ex.sets.length, 0)
   );
 
-  // Auto-scroll : scroll vers le formulaire de l'exercice actif après ajout de série
+  // Notifie le parent du nom de l'exercice expanded
+  useEffect(() => {
+    if (onExpandedChange) {
+      const name = expandedIndex !== null ? exercises[expandedIndex]?.name ?? null : null;
+      onExpandedChange(name);
+    }
+  }, [expandedIndex, exercises, onExpandedChange]);
+
+  // Auto-scroll vers le formulaire de saisie après ajout de série
   useEffect(() => {
     const total = exercises.reduce((t, ex) => t + ex.sets.length, 0);
     if (total > prevTotalSets.current && expandedIndex !== null) {
-      // Petit délai pour laisser le DOM se mettre à jour
       setTimeout(() => {
         inputRefs.current[expandedIndex]?.scrollIntoView({
           behavior: "smooth",
@@ -127,10 +130,7 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
         const isExpanded = expandedIndex === index;
         const lastData = getLastSessionSets(history, exercise.name);
         return (
-          <li
-            key={index}
-            className={`exercise-item ${animating[index] ? "flash" : ""}`}
-          >
+          <li key={index} className={`exercise-item ${animating[index] ? "flash" : ""}`}>
             <div className="exercise-header" onClick={() => setExpandedIndex(isExpanded ? null : index)}>
               <div className="exercise-header-left">
                 <span className="exercise-name">{exercise.name}</span>
@@ -173,7 +173,6 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
               </div>
             )}
 
-            {/* Formulaire de saisie — ref pour l'auto-scroll */}
             {isExpanded && (
               <div
                 className="set-inputs"

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 
 const DEFAULT_REST = 75;
 
-// Contexte audio partagé — créé au premier interact pour contourner l'autoplay mobile
 let sharedAudioCtx = null;
 function getAudioCtx() {
   if (!sharedAudioCtx || sharedAudioCtx.state === "closed") {
@@ -36,31 +35,35 @@ function sendNotification() {
   }
 }
 
-export default function Timer({ resetTrigger }) {
+export default function Timer({ resetTrigger, onTimerUpdate }) {
   const [restDuration, setRestDuration] = useState(DEFAULT_REST);
   const [timeLeft, setTimeLeft] = useState(DEFAULT_REST);
   const [isRunning, setIsRunning] = useState(false);
   const prevTrigger = useRef(resetTrigger);
 
-  // Demande permission notif au montage
+  // Notifie le parent du % restant et de l'état running
+  useEffect(() => {
+    if (onTimerUpdate) {
+      const pct = restDuration > 0 ? timeLeft / restDuration : 1;
+      onTimerUpdate(pct, isRunning);
+    }
+  }, [timeLeft, isRunning, restDuration, onTimerUpdate]);
+
   useEffect(() => {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
   }, []);
 
-  // Réinitialise et démarre automatiquement quand une série est ajoutée
   useEffect(() => {
     if (resetTrigger !== prevTrigger.current) {
       prevTrigger.current = resetTrigger;
-      // On réveille le contexte audio dès le premier ajout de série
       try { getAudioCtx().resume(); } catch (e) {}
       setTimeLeft(restDuration);
       setIsRunning(true);
     }
   }, [resetTrigger, restDuration]);
 
-  // Décompte
   useEffect(() => {
     if (!isRunning) return;
     const interval = setInterval(() => {
@@ -88,7 +91,6 @@ export default function Timer({ resetTrigger }) {
   };
 
   const handlePlayStop = () => {
-    // On réveille le ctx audio au clic utilisateur pour garantir le son
     try { getAudioCtx().resume(); } catch (e) {}
     if (isRunning) {
       setIsRunning(false);
@@ -116,13 +118,10 @@ export default function Timer({ resetTrigger }) {
     } ${
       isRunning ? "timer-bubble-running" : ""
     }`}>
-      {/* Anneau SVG */}
-      <div className="timer-bubble-ring" onClick={handlePlayStop} title={isRunning ? "Arrêter" : "Démarrer"}>
+      <div className="timer-bubble-ring" onClick={handlePlayStop}>
         <svg width="72" height="72" viewBox="0 0 72 72">
-          {/* Fond */}
           <circle cx="36" cy="36" r={radius} fill="none"
             stroke="rgba(255,255,255,0.08)" strokeWidth="5" />
-          {/* Progression */}
           <circle cx="36" cy="36" r={radius} fill="none"
             stroke={isDone ? "#ff4444" : "#28a745"}
             strokeWidth="5"
@@ -136,8 +135,6 @@ export default function Timer({ resetTrigger }) {
           {formatTime(timeLeft)}
         </span>
       </div>
-
-      {/* Boutons ±15s */}
       <div className="timer-bubble-adj">
         <button className="timer-bubble-btn" onClick={() => adjustDuration(-15)}>−15s</button>
         <button className="timer-bubble-btn" onClick={() => adjustDuration(15)}>+15s</button>
