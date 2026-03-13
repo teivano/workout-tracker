@@ -1,1 +1,163 @@
-aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlIH0gZnJvbSAicmVhY3QiOwppbXBvcnQgeyBBUFBfVkVSU0lPTiB9IGZyb20gIi4uL3ZlcnNpb24uanMiOwoKY29uc3QgUEFMRVRURSA9IFsKICB7IGlkOiAiZ3JlZW4iLCAgbGFiZWw6ICJWZXJ0IiwgICBhY2NlbnQ6ICIjMjhhNzQ1IiwgZGltOiAicmdiYSg0MCwxNjcsNjksMC4xOCkiLCAgIGJvcmRlcjogInJnYmEoNDAsMTY3LDY5LDAuMykiLCAgIHRleHQ6ICIjNGNkYjc4IiB9LAogIHsgaWQ6ICJibHVlIiwgICBsYWJlbDogIkJsZXUiLCAgIGFjY2VudDogIiMyMTk2ZjMiLCBkaW06ICJyZ2JhKDMzLDE1MCwyNDMsMC4xOCkiLCAgYm9yZGVyOiAicmdiYSgzMywxNTAsMjQzLDAuMykiLCAgdGV4dDogIiM2NGI4ZmYiIH0sCiAgeyBpZDogInZpb2xldCIsIGxhYmVsOiAiVmlvbGV0IiwgYWNjZW50OiAiIzljMjdiMCIsIGRpbTogInJnYmEoMTU2LDM5LDE3NiwwLjE4KSIsICBib3JkZXI6ICJyZ2JhKDE1NiwzOSwxNzYsMC4zKSIsICB0ZXh0OiAiI2NlN2RlOCIgfSwKICB7IGlkOiAib3JhbmdlIiwgbGFiZWw6ICJPcmFuZ2UiLCBhY2NlbnQ6ICIjZmY3MDQzIiwgZGltOiAicmdiYSgyNTUsMTEyLDY3LDAuMTgpIiwgIGJvcmRlcjogInJnYmEoMjU1LDExMiw2NywwLjMpIiwgIHRleHQ6ICIjZmY5YTc4IiB9LAogIHsgaWQ6ICJyZWQiLCAgICBsYWJlbDogIlJvdWdlIiwgIGFjY2VudDogIiNlNTM5MzUiLCBkaW06ICJyZ2JhKDIyOSw1Nyw1MywwLjE4KSIsICAgYm9yZGVyOiAicmdiYSgyMjksNTcsNTMsMC4zKSIsICAgdGV4dDogIiNmZjZiNmIiIH0sCiAgeyBpZDogImN5YW4iLCAgIGxhYmVsOiAiQ3lhbiIsICAgYWNjZW50OiAiIzAwYmNkNCIsIGRpbTogInJnYmEoMCwxODgsMjEyLDAuMTgpIiwgICBib3JkZXI6ICJyZ2JhKDAsMTg4LDIxMiwwLjMpIiwgICB0ZXh0OiAiIzRkZDllZCIgfSwKICB7IGlkOiAicGluayIsICAgbGFiZWw6ICJSb3NlIiwgICBhY2NlbnQ6ICIjZTkxZTYzIiwgZGltOiAicmdiYSgyMzMsMzAsOTksMC4xOCkiLCAgIGJvcmRlcjogInJnYmEoMjMzLDMwLDk5LDAuMykiLCAgIHRleHQ6ICIjZjA2MjkyIiB9LApdOwoKY29uc3QgUkVTVF9PUFRJT05TID0gWwogIHsgdmFsdWU6IDMwLCAgbGFiZWw6ICIzMCBzIiB9LAogIHsgdmFsdWU6IDQ1LCAgbGFiZWw6ICI0NSBzIiB9LAogIHsgdmFsdWU6IDYwLCAgbGFiZWw6ICIxIG1pbiIgfSwKICB7IHZhbHVlOiA3NSwgIGxhYmVsOiAiMSBtaW4gMTUiIH0sCiAgeyB2YWx1ZTogOTAsICBsYWJlbDogIjEgbWluIDMwIiB9LAogIHsgdmFsdWU6IDEyMCwgbGFiZWw6ICIyIG1pbiIgfSwKICB7IHZhbHVlOiAxNTAsIGxhYmVsOiAiMiBtaW4gMzAiIH0sCiAgeyB2YWx1ZTogMTgwLCBsYWJlbDogIjMgbWluIiB9LAogIHsgdmFsdWU6IDI0MCwgbGFiZWw6ICI0IG1pbiIgfSwKICB7IHZhbHVlOiAzMDAsIGxhYmVsOiAiNSBtaW4iIH0sCl07CgpleHBvcnQgZnVuY3Rpb24gYXBwbHlBY2NlbnRDb2xvcihjb2xvcklkKSB7CiAgY29uc3QgYyA9IFBBTEVUVEUuZmluZChwID0+IHAuaWQgPT09IGNvbG9ySWQpIHx8IFBBTEVUVEVbMF07CiAgY29uc3QgciA9IGRvY3VtZW50LmRvY3VtZW50RWxlbWVudC5zdHlsZTsKICByLnNldFByb3BlcnR5KCItLWFjY2VudCIsICAgICAgICBjLmFjY2VudCk7CiAgci5zZXRQcm9wZXJ0eSgiLS1hY2NlbnQtZGltIiwgICAgYy5kaW0pOwogIHIuc2V0UHJvcGVydHkoIi0tYWNjZW50LWJvcmRlciIsIGMuYm9yZGVyKTsKICByLnNldFByb3BlcnR5KCItLWFjY2VudC10ZXh0IiwgICBjLnRleHQpOwp9CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBTZXR0aW5ncygpIHsKICBjb25zdCBbYWNjZW50SWQsIHNldEFjY2VudElkXSA9IHVzZVN0YXRlKAogICAgKCkgPT4gbG9jYWxTdG9yYWdlLmdldEl0ZW0oImFjY2VudF9jb2xvciIpIHx8ICJncmVlbiIKICApOwogIGNvbnN0IFtyZXN0RHVyYXRpb24sIHNldFJlc3REdXJhdGlvbl0gPSB1c2VTdGF0ZSgoKSA9PiB7CiAgICBjb25zdCBzYXZlZCA9IHBhcnNlSW50KGxvY2FsU3RvcmFnZS5nZXRJdGVtKCJyZXN0X2R1cmF0aW9uIiksIDEwKTsKICAgIHJldHVybiAhaXNOYU4oc2F2ZWQpICYmIHNhdmVkID49IDEwID8gc2F2ZWQgOiA3NTsKICB9KTsKICBjb25zdCBbY29uZmlybVJlc2V0LCBzZXRDb25maXJtUmVzZXRdID0gdXNlU3RhdGUoZmFsc2UpOwoKICBjb25zdCBoYW5kbGVDb2xvckNoYW5nZSA9IChpZCkgPT4gewogICAgc2V0QWNjZW50SWQoaWQpOwogICAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oImFjY2VudF9jb2xvciIsIGlkKTsKICAgIGFwcGx5QWNjZW50Q29sb3IoaWQpOwogIH07CgogIGNvbnN0IGhhbmRsZVJlc3RDaGFuZ2UgPSAodmFsKSA9PiB7CiAgICBjb25zdCB2ID0gcGFyc2VJbnQodmFsLCAxMCk7CiAgICBzZXRSZXN0RHVyYXRpb24odik7CiAgICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbSgicmVzdF9kdXJhdGlvbiIsIFN0cmluZyh2KSk7CiAgfTsKCiAgY29uc3QgaGFuZGxlUmVzZXQgPSAoKSA9PiB7CiAgICBpZiAoIWNvbmZpcm1SZXNldCkgeyBzZXRDb25maXJtUmVzZXQodHJ1ZSk7IHJldHVybjsgfQogICAgbG9jYWxTdG9yYWdlLmNsZWFyKCk7CiAgICB3aW5kb3cubG9jYXRpb24ucmVsb2FkKCk7CiAgfTsKCiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJzZXR0aW5ncy1wYWdlIj4KCiAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT0ic2V0dGluZ3Mtc2VjdGlvbiI+CiAgICAgICAgPHAgY2xhc3NOYW1lPSJzZXR0aW5ncy1zZWN0aW9uLXRpdGxlIj5Db21wdGU8L3A+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9InNldHRpbmdzLWNhcmQgc2V0dGluZ3MtYWNjb3VudC1jYXJkIj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzZXR0aW5ncy1hY2NvdW50LXN0YXR1cyI+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0ic2V0dGluZ3Mtc3RhdHVzLWRvdCBvZmZsaW5lIiAvPgogICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9InNldHRpbmdzLXN0YXR1cy1sYWJlbCI+TW9kZSBob3JzLWxpZ25lIMK3IGRvbm7DqWVzIGxvY2FsZXM8L3NwYW4+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDxidXR0b24gY2xhc3NOYW1lPSJzZXR0aW5ncy1nb29nbGUtYnRuIiBkaXNhYmxlZD4KICAgICAgICAgICAgPHN2ZyBjbGFzc05hbWU9InNldHRpbmdzLWdvb2dsZS1pY29uIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICAgICAgICAgICAgPHBhdGggZD0iTTIyLjU2IDEyLjI1YzAtLjc4LS4wNy0xLjUzLS4yLTIuMjVIMTJ2NC4yNmg1LjkyYy0uMjYgMS4zNy0xLjA0IDIuNTMtMi4yMSAzLjMxdjIuNzdoMy41N2MyLjA4LTEuOTIgMy4yOC00Ljc0IDMuMjgtOC4wOXoiIGZpbGw9IiM0Mjg1RjQiLz4KICAgICAgICAgICAgICA8cGF0aCBkPSJNMTIgMjNjMi45NyAwIDUuNDYtLjk4IDcuMjgtMi42NmwtMy41Ny0yLjc3Yy0uOTguNjYtMi4yMyAxLjA2LTMuNzEgMS4wNi0yLjg2IDAtNS4yOS0xLjkzLTYuMTYtNC41M0gyLjE4djIuODRDMy45OSAyMC41MyA3LjcgMjMgMTIgMjN6IiBmaWxsPSIjMzRBODUzIi8+CiAgICAgICAgICAgICAgPHBhdGggZD0iTTUuODQgMTQuMDljLS4yMi0uNjYtLjM1LTEuMzYtLjM1LTIuMDlzLjEzLTEuNDMuMzUtMi4wOVY3LjA3SDIuMThDMS40MyA4LjU1IDEgMTAuMjIgMSAxMnMuNDMgMy40NSAxLjE4IDQuOTNsMy42Ni0yLjg0eiIgZmlsbD0iI0ZCQkMwNSIvPgogICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMiA1LjM4YzEuNjIgMCAzLjA2LjU2IDQuMjEgMS42NGwzLjE1LTMuMTVDMTcuNDUgMi4wOSAxNC45NyAxIDEyIDEgNy43IDEgMy45OSAzLjQ3IDIuMTggNy4wN2wzLjY2IDIuODRjLjg3LTIuNiAzLjMtNC41MyA2LjE2LTQuNTN6IiBmaWxsPSIjRUE0MzM1Ii8+CiAgICAgICAgICAgIDwvc3ZnPgogICAgICAgICAgICA8c3Bhbj5Db250aW51ZXIgYXZlYyBHb29nbGU8L3NwYW4+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0ic2V0dGluZ3Mtc29vbi1iYWRnZSI+QmllbnTDtHQ8L3NwYW4+CiAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgIDxwIGNsYXNzTmFtZT0ic2V0dGluZ3MtYWNjb3VudC1oaW50Ij4KICAgICAgICAgICAgTGEgc3luY2hyb25pc2F0aW9uIGVuIGxpZ25lIChtdWx0aS1hcHBhcmVpbHMsIHNhdXZlZ2FyZGUgY2xvdWQpIGFycml2ZXJhIHByb2NoYWluZW1lbnQuCiAgICAgICAgICAgIFRlcyBkb25uw6llcyBsb2NhbGVzIHNlcm9udCBtaWdyw6llcyBhdXRvbWF0aXF1ZW1lbnQuCiAgICAgICAgICA8L3A+CiAgICAgICAgPC9kaXY+CiAgICAgIDwvc2VjdGlvbj4KCiAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT0ic2V0dGluZ3Mtc2VjdGlvbiI+CiAgICAgICAgPHAgY2xhc3NOYW1lPSJzZXR0aW5ncy1zZWN0aW9uLXRpdGxlIj5FbnRyYcOubmVtZW50PC9wPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzZXR0aW5ncy1jYXJkIj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzZXR0aW5ncy1yb3ciPgogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ic2V0dGluZ3Mtcm93LWxhYmVsIj4KICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9InNldHRpbmdzLXJvdy10aXRsZSI+RHVyw6llIGRlIHJlcG9zPC9zcGFuPgogICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0ic2V0dGluZ3Mtcm93LXN1YiI+VGVtcHMgZW50cmUgY2hhcXVlIHPDqXJpZTwvc3Bhbj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxzZWxlY3QKICAgICAgICAgICAgICBjbGFzc05hbWU9InNldHRpbmdzLXNlbGVjdCIKICAgICAgICAgICAgICB2YWx1ZT17cmVzdER1cmF0aW9ufQogICAgICAgICAgICAgIG9uQ2hhbmdlPXsoZSkgPT4gaGFuZGxlUmVzdENoYW5nZShlLnRhcmdldC52YWx1ZSl9CiAgICAgICAgICAgID4KICAgICAgICAgICAgICB7UkVTVF9PUFRJT05TLm1hcChvID0+ICgKICAgICAgICAgICAgICAgIDxvcHRpb24ga2V5PXtvLnZhbHVlfSB2YWx1ZT17by52YWx1ZX0+e28ubGFiZWx9PC9vcHRpb24+CiAgICAgICAgICAgICAgKSl9CiAgICAgICAgICAgIDwvc2VsZWN0PgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CiAgICAgIDwvc2VjdGlvbj4KCiAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT0ic2V0dGluZ3Mtc2VjdGlvbiI+CiAgICAgICAgPHAgY2xhc3NOYW1lPSJzZXR0aW5ncy1zZWN0aW9uLXRpdGxlIj5Db3VsZXVyIGQnYWNjZW50dWF0aW9uPC9wPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzZXR0aW5ncy1jYXJkIj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzZXR0aW5ncy1wYWxldHRlIj4KICAgICAgICAgICAge1BBTEVUVEUubWFwKGMgPT4gKAogICAgICAgICAgICAgIDxidXR0b24KICAgICAgICAgICAgICAgIGtleT17Yy5pZH0KICAgICAgICAgICAgICAgIGNsYXNzTmFtZT17YHBhbGV0dGUtc3dhdGNoICR7YWNjZW50SWQgPT09IGMuaWQgPyAic2VsZWN0ZWQiIDogIiJ9YH0KICAgICAgICAgICAgICAgIHN0eWxlPXt7ICItLXN3YXRjaCI6IGMuYWNjZW50IH19CiAgICAgICAgICAgICAgICBvbkNsaWNrPXsoKSA9PiBoYW5kbGVDb2xvckNoYW5nZShjLmlkKX0KICAgICAgICAgICAgICAgIHRpdGxlPXtjLmxhYmVsfQogICAgICAgICAgICAgICAgdHlwZT0iYnV0dG9uIgogICAgICAgICAgICAgID4KICAgICAgICAgICAgICAgIHthY2NlbnRJZCA9PT0gYy5pZCAmJiA8c3BhbiBjbGFzc05hbWU9InBhbGV0dGUtY2hlY2siPuKckzwvc3Bhbj59CiAgICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICAgICkpfQogICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8cCBjbGFzc05hbWU9InNldHRpbmdzLXBhbGV0dGUtbGFiZWwiPgogICAgICAgICAgICB7UEFMRVRURS5maW5kKHAgPT4gcC5pZCA9PT0gYWNjZW50SWQpPy5sYWJlbH0KICAgICAgICAgIDwvcD4KICAgICAgICA8L2Rpdj4KICAgICAgPC9zZWN0aW9uPgoKICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPSJzZXR0aW5ncy1zZWN0aW9uIj4KICAgICAgICA8cCBjbGFzc05hbWU9InNldHRpbmdzLXNlY3Rpb24tdGl0bGUiPkRvbm7DqWVzPC9wPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzZXR0aW5ncy1jYXJkIj4KICAgICAgICAgIDxwIGNsYXNzTmFtZT0ic2V0dGluZ3MtaGludCI+CiAgICAgICAgICAgIFN1cHByaW1lIHRvdXRlcyB0ZXMgc8OpYW5jZXMsIHRvbiBoaXN0b3JpcXVlIGV0IHRlcyBwcsOpZsOpcmVuY2VzLgogICAgICAgICAgICBDZXR0ZSBhY3Rpb24gZXN0IGlycsOpdmVyc2libGUuCiAgICAgICAgICA8L3A+CiAgICAgICAgICB7Y29uZmlybVJlc2V0ID8gKAogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ic2V0dGluZ3MtY29uZmlybS1yb3ciPgogICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0ic2V0dGluZ3MtY29uZmlybS1sYWJlbCI+VHUgZXMgc8O7ciA/PC9zcGFuPgogICAgICAgICAgICAgIDxidXR0b24gY2xhc3NOYW1lPSJzZXR0aW5ncy1idG4gc2V0dGluZ3MtYnRuLWRhbmdlciIgb25DbGljaz17aGFuZGxlUmVzZXR9PgogICAgICAgICAgICAgICAgT3VpLCB0b3V0IGVmZmFjZXIKICAgICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgICAgICA8YnV0dG9uIGNsYXNzTmFtZT0ic2V0dGluZ3MtYnRuIHNldHRpbmdzLWJ0bi1naG9zdCIgb25DbGljaz17KCkgPT4gc2V0Q29uZmlybVJlc2V0KGZhbHNlKX0+CiAgICAgICAgICAgICAgICBBbm51bGVyCiAgICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgKSA6ICgKICAgICAgICAgICAgPGJ1dHRvbiBjbGFzc05hbWU9InNldHRpbmdzLWJ0biBzZXR0aW5ncy1idG4tZGFuZ2VyLW91dGxpbmUiIG9uQ2xpY2s9e2hhbmRsZVJlc2V0fT4KICAgICAgICAgICAgICDwn5eRIFLDqWluaXRpYWxpc2VyIGwnYXBwbGljYXRpb24KICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICApfQogICAgICAgIDwvZGl2PgogICAgICA8L3NlY3Rpb24+CgogICAgICA8cCBjbGFzc05hbWU9InNldHRpbmdzLXZlcnNpb24iPldvcmtvdXQgVHJhY2tlciDCtyB2e0FQUF9WRVJTSU9OfTwvcD4KICAgIDwvZGl2PgogICk7Cn0K
+import React, { useState } from "react";
+import { APP_VERSION } from "../version.js";
+
+const PALETTE = [
+  { id: "green",  label: "Vert",   accent: "#28a745", dim: "rgba(40,167,69,0.18)",   border: "rgba(40,167,69,0.3)",   text: "#4cdb78" },
+  { id: "blue",   label: "Bleu",   accent: "#2196f3", dim: "rgba(33,150,243,0.18)",  border: "rgba(33,150,243,0.3)",  text: "#64b8ff" },
+  { id: "violet", label: "Violet", accent: "#9c27b0", dim: "rgba(156,39,176,0.18)",  border: "rgba(156,39,176,0.3)",  text: "#ce7de8" },
+  { id: "orange", label: "Orange", accent: "#ff7043", dim: "rgba(255,112,67,0.18)",  border: "rgba(255,112,67,0.3)",  text: "#ff9a78" },
+  { id: "red",    label: "Rouge",  accent: "#e53935", dim: "rgba(229,57,53,0.18)",   border: "rgba(229,57,53,0.3)",   text: "#ff6b6b" },
+  { id: "cyan",   label: "Cyan",   accent: "#00bcd4", dim: "rgba(0,188,212,0.18)",   border: "rgba(0,188,212,0.3)",   text: "#4dd9ed" },
+  { id: "pink",   label: "Rose",   accent: "#e91e63", dim: "rgba(233,30,99,0.18)",   border: "rgba(233,30,99,0.3)",   text: "#f06292" },
+];
+
+const REST_OPTIONS = [
+  { value: 30,  label: "30 s" },
+  { value: 45,  label: "45 s" },
+  { value: 60,  label: "1 min" },
+  { value: 75,  label: "1 min 15" },
+  { value: 90,  label: "1 min 30" },
+  { value: 120, label: "2 min" },
+  { value: 150, label: "2 min 30" },
+  { value: 180, label: "3 min" },
+  { value: 240, label: "4 min" },
+  { value: 300, label: "5 min" },
+];
+
+export function applyAccentColor(colorId) {
+  const c = PALETTE.find(p => p.id === colorId) || PALETTE[0];
+  const r = document.documentElement.style;
+  r.setProperty("--accent",        c.accent);
+  r.setProperty("--accent-dim",    c.dim);
+  r.setProperty("--accent-border", c.border);
+  r.setProperty("--accent-text",   c.text);
+}
+
+export default function Settings() {
+  const [accentId, setAccentId] = useState(
+    () => localStorage.getItem("accent_color") || "green"
+  );
+  const [restDuration, setRestDuration] = useState(() => {
+    const saved = parseInt(localStorage.getItem("rest_duration"), 10);
+    return !isNaN(saved) && saved >= 10 ? saved : 75;
+  });
+  const [confirmReset, setConfirmReset] = useState(false);
+
+  const handleColorChange = (id) => {
+    setAccentId(id);
+    localStorage.setItem("accent_color", id);
+    applyAccentColor(id);
+  };
+
+  const handleRestChange = (val) => {
+    const v = parseInt(val, 10);
+    setRestDuration(v);
+    localStorage.setItem("rest_duration", String(v));
+  };
+
+  const handleReset = () => {
+    if (!confirmReset) { setConfirmReset(true); return; }
+    localStorage.clear();
+    window.location.reload();
+  };
+
+  return (
+    <div className="settings-page">
+
+      <section className="settings-section">
+        <p className="settings-section-title">Compte</p>
+        <div className="settings-card settings-account-card">
+          <div className="settings-account-status">
+            <span className="settings-status-dot offline" />
+            <span className="settings-status-label">Mode hors-ligne · données locales</span>
+          </div>
+          <button className="settings-google-btn" disabled>
+            <svg className="settings-google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span>Continuer avec Google</span>
+            <span className="settings-soon-badge">Bientôt</span>
+          </button>
+          <p className="settings-account-hint">
+            La synchronisation en ligne (multi-appareils, sauvegarde cloud) arrivera prochainement.
+            Tes données locales seront migrées automatiquement.
+          </p>
+        </div>
+      </section>
+
+      <section className="settings-section">
+        <p className="settings-section-title">Entraînement</p>
+        <div className="settings-card">
+          <div className="settings-row">
+            <div className="settings-row-label">
+              <span className="settings-row-title">Durée de repos</span>
+              <span className="settings-row-sub">Temps entre chaque série</span>
+            </div>
+            <select
+              className="settings-select"
+              value={restDuration}
+              onChange={(e) => handleRestChange(e.target.value)}
+            >
+              {REST_OPTIONS.map(o => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section className="settings-section">
+        <p className="settings-section-title">Couleur d'accentuation</p>
+        <div className="settings-card">
+          <div className="settings-palette">
+            {PALETTE.map(c => (
+              <button
+                key={c.id}
+                className={`palette-swatch ${accentId === c.id ? "selected" : ""}`}
+                style={{ "--swatch": c.accent }}
+                onClick={() => handleColorChange(c.id)}
+                title={c.label}
+                type="button"
+              >
+                {accentId === c.id && <span className="palette-check">✓</span>}
+              </button>
+            ))}
+          </div>
+          <p className="settings-palette-label">
+            {PALETTE.find(p => p.id === accentId)?.label}
+          </p>
+        </div>
+      </section>
+
+      <section className="settings-section">
+        <p className="settings-section-title">Données</p>
+        <div className="settings-card">
+          <p className="settings-hint">
+            Supprime toutes tes séances, ton historique et tes préférences.
+            Cette action est irréversible.
+          </p>
+          {confirmReset ? (
+            <div className="settings-confirm-row">
+              <span className="settings-confirm-label">Tu es sûr ?</span>
+              <button className="settings-btn settings-btn-danger" onClick={handleReset}>
+                Oui, tout effacer
+              </button>
+              <button className="settings-btn settings-btn-ghost" onClick={() => setConfirmReset(false)}>
+                Annuler
+              </button>
+            </div>
+          ) : (
+            <button className="settings-btn settings-btn-danger-outline" onClick={handleReset}>
+              🗑 Réinitialiser l'application
+            </button>
+          )}
+        </div>
+      </section>
+
+      <p className="settings-version">Workout Tracker · v{APP_VERSION}</p>
+    </div>
+  );
+}
