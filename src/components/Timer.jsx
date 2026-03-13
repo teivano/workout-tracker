@@ -13,7 +13,6 @@ function playBeep() {
   try {
     const ctx = getAudioCtx();
     const resume = ctx.state === "suspended" ? ctx.resume() : Promise.resolve();
-    // .catch() ajouté : une rejection non gérée crashait le composant
     resume.then(() => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -46,7 +45,6 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
   const [isRunning, setIsRunning] = useState(false);
   const prevTrigger = useRef(resetTrigger);
 
-  // Remonte l'état au parent
   useEffect(() => {
     if (onTimerUpdate) {
       const pct = restDuration > 0 ? timeLeft / restDuration : 1;
@@ -54,14 +52,12 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
     }
   }, [timeLeft, isRunning, restDuration, onTimerUpdate]);
 
-  // Demande permission notif
   useEffect(() => {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
   }, []);
 
-  // Démarrage du timer au reset (nouvelle série ajoutée)
   useEffect(() => {
     if (resetTrigger !== prevTrigger.current) {
       prevTrigger.current = resetTrigger;
@@ -71,7 +67,6 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
     }
   }, [resetTrigger, restDuration]);
 
-  // Tick du countdown — ne fait QUE décrémenter, rien d'autre dans le callback
   useEffect(() => {
     if (!isRunning) return;
     const interval = setInterval(() => {
@@ -80,8 +75,6 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
     return () => clearInterval(interval);
   }, [isRunning]);
 
-  // Réaction quand le timer arrive à 0 — séparé du setInterval pour éviter
-  // setState-dans-setState qui crashait la page en blanc
   useEffect(() => {
     if (timeLeft === 0 && isRunning) {
       setIsRunning(false);
@@ -108,16 +101,23 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
   const dash = circ * pct;
   const isDone = timeLeft === 0 && !isRunning;
   const isIdle = !isRunning && timeLeft === restDuration;
-  // Cercle rouge quand < 10% du temps restant (comme la progress bar)
   const isLow = pct < 0.10 && isRunning;
+
+  // Couleur anneau + fond adaptatif
   const ringColor = isDone ? "#ff4444" : isLow ? "#ff2a2a" : "var(--accent)";
+  // Fond de la bulle : neutre → orange subtil → rouge subtil
+  const ringBg = isDone
+    ? "rgba(255,42,42,0.12)"
+    : isLow
+    ? "rgba(255,112,0,0.10)"
+    : "rgba(18,18,18,0.92)";
 
   const formatTime = (s) =>
     `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
   return (
-    <div className={`timer-bubble${isIdle ? " timer-bubble-idle" : ""}${isDone ? " timer-bubble-done" : ""}${isRunning ? " timer-bubble-running" : ""}`}>
-      <div className="timer-bubble-ring" onClick={handlePlayStop}>
+    <div className={`timer-bubble${isIdle ? " timer-bubble-idle" : ""}${isDone ? " timer-bubble-done" : ""}${isRunning ? " timer-bubble-running" : ""}${isLow ? " timer-bubble-low" : ""}`}>
+      <div className="timer-bubble-ring" onClick={handlePlayStop} style={{ background: ringBg }}>
         <svg width="72" height="72" viewBox="0 0 72 72">
           <circle cx="36" cy="36" r={radius} fill="none"
             stroke="rgba(255,255,255,0.08)" strokeWidth="5" />
@@ -130,7 +130,7 @@ export default function Timer({ resetTrigger, onTimerUpdate }) {
             style={{ transition: "stroke-dasharray 0.9s linear, stroke 0.4s ease" }}
           />
         </svg>
-        <span className={`timer-bubble-time${isDone ? " timer-bubble-time-done" : ""}`}>
+        <span className={`timer-bubble-time${isDone ? " timer-bubble-time-done" : ""}${isLow ? " timer-bubble-time-low" : ""}`}>
           {formatTime(timeLeft)}
         </span>
       </div>

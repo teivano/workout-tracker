@@ -1,21 +1,13 @@
 // GARDE-FOU : utiliser UNIQUEMENT push_files pour modifier ce fichier
 import React, { useState, useEffect, useRef } from "react";
 
-// Poids : 0 à 200 kg avec granularité 0.5 kg = 401 valeurs
 const WEIGHT_STEPS = Array.from({ length: 401 }, (_, i) => Math.round(i * 0.5 * 10) / 10);
 
-// WeightInput avec tap = ±0.5kg et long press = ±5kg
-// FIX #6 : valueRef évite la closure stale sur `value` dans le setInterval du long press
-// FIX #7 : cleanup du setInterval/setTimeout au démontage du composant
 function WeightInput({ value, onChange }) {
   const longPressRef = useRef(null);
   const repeatRef = useRef(null);
-  // Ref toujours synchronisée avec la prop value courante
   const valueRef = useRef(value);
   useEffect(() => { valueRef.current = value; }, [value]);
-
-  // Cleanup au démontage : évite fuite de setInterval si le composant disparaît
-  // pendant un long press (ex: collapse de l'exercice)
   useEffect(() => {
     return () => {
       clearTimeout(longPressRef.current);
@@ -27,42 +19,38 @@ function WeightInput({ value, onChange }) {
     const idx = WEIGHT_STEPS.indexOf(v);
     return idx >= 0 ? idx : WEIGHT_STEPS.findIndex((w) => w >= v);
   };
-
   const step = (delta) => {
-    // Lit depuis valueRef.current pour ne jamais être stale
     const idx = getIdx(valueRef.current);
     const next = Math.max(0, Math.min(WEIGHT_STEPS.length - 1, idx + delta));
     onChange(WEIGHT_STEPS[next]);
   };
-
   const startLongPress = (delta) => {
     longPressRef.current = setTimeout(() => {
       repeatRef.current = setInterval(() => step(delta * 10), 120);
     }, 400);
   };
-
   const stopLongPress = () => {
     clearTimeout(longPressRef.current);
     clearInterval(repeatRef.current);
   };
-
   const display = Number.isInteger(value) ? `${value}` : `${value.toFixed(1)}`;
 
   return (
-    <div className="step-input weight-input">
+    <div className="weight-input-wrap">
       <button
-        className="step-btn"
+        className="weight-btn"
         onClick={() => step(-1)}
         onPointerDown={() => startLongPress(-1)}
         onPointerUp={stopLongPress}
         onPointerLeave={stopLongPress}
         type="button"
       >−</button>
-      <span className="step-value">
-        {display}<span className="step-unit">kg</span>
-      </span>
+      <div className="weight-display">
+        <span className="weight-number">{display}</span>
+        <span className="weight-unit">kg</span>
+      </div>
       <button
-        className="step-btn"
+        className="weight-btn"
         onClick={() => step(1)}
         onPointerDown={() => startLongPress(1)}
         onPointerUp={stopLongPress}
@@ -113,28 +101,34 @@ function DeltaBadge({ currentSets, lastSets }) {
   );
 }
 
+// SVG empty state — haltère minimaliste
+function DumbbellSVG() {
+  return (
+    <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" style={{opacity:0.35}}>
+      <rect x="4" y="22" width="8" height="12" rx="3" fill="currentColor"/>
+      <rect x="44" y="22" width="8" height="12" rx="3" fill="currentColor"/>
+      <rect x="10" y="19" width="6" height="18" rx="2" fill="currentColor"/>
+      <rect x="40" y="19" width="6" height="18" rx="2" fill="currentColor"/>
+      <rect x="16" y="26" width="24" height="4" rx="2" fill="currentColor"/>
+    </svg>
+  );
+}
+
 export default function ExerciseList({ exercises, history, addSet, deleteSet, flashIndex, onExpandedChange }) {
   const [expandedIndex, setExpandedIndex] = useState(exercises.length > 0 ? 0 : null);
-
-  // Poids initial = meilleur poids de la dernière séance sur cet exercice (0 si inconnu)
   const [weights, setWeights] = useState(() => {
     const init = {};
     exercises.forEach((ex, i) => {
       const lastData = getLastSessionSets(history, ex.name);
-      if (lastData && lastData.sets.length > 0) {
-        init[i] = getBestSet(lastData.sets).weight;
-      }
+      if (lastData && lastData.sets.length > 0) init[i] = getBestSet(lastData.sets).weight;
     });
     return init;
   });
-
   const [reps, setReps] = useState({});
   const [animating, setAnimating] = useState({});
   const prevExercisesLen = useRef(exercises.length);
   const inputRefs = useRef({});
-  const prevTotalSets = useRef(
-    exercises.reduce((t, ex) => t + ex.sets.length, 0)
-  );
+  const prevTotalSets = useRef(exercises.reduce((t, ex) => t + ex.sets.length, 0));
 
   useEffect(() => {
     if (onExpandedChange) {
@@ -147,10 +141,7 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
     const total = exercises.reduce((t, ex) => t + ex.sets.length, 0);
     if (total > prevTotalSets.current && expandedIndex !== null) {
       setTimeout(() => {
-        inputRefs.current[expandedIndex]?.scrollIntoView({
-          behavior: "smooth",
-          block: "end",
-        });
+        inputRefs.current[expandedIndex]?.scrollIntoView({ behavior: "smooth", block: "end" });
       }, 60);
     }
     prevTotalSets.current = total;
@@ -184,7 +175,7 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
   if (exercises.length === 0) {
     return (
       <div className="empty-state" style={{ height: "40vh" }}>
-        <span>🏋️</span>
+        <DumbbellSVG />
         <p>Aucun exercice dans cette séance</p>
         <small>Ajoute-en depuis l'onglet Séances</small>
       </div>
@@ -203,7 +194,7 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
                 <span className="exercise-name">{exercise.name}</span>
                 {lastData && (
                   <span className="last-session-hint">
-                    Dernière fois :{" "}
+                    Dernière fois : 
                     {lastData.sets.map((s, i) => (
                       <span key={i}>
                         {i > 0 && <span className="hint-sep"> · </span>}
@@ -224,27 +215,28 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
               </div>
             </div>
 
+            {/* Séries en chips visuels */}
             {exercise.sets.length > 0 && (
-              <div className="exercise-sets">
-                <p>Séries effectuées :</p>
-                <div className="series-container">
-                  {exercise.sets.map((set, i) => (
-                    <div key={i} className="series-row">
-                      <span className="series-number">{i + 1}</span>
-                      <span className="series-weight">{set.weight} kg</span>
-                      <span className="series-reps">{set.reps} reps</span>
-                      <button className="series-delete" onClick={() => deleteSet(index, i)}>×</button>
-                    </div>
-                  ))}
-                </div>
+              <div className="exercise-sets-chips">
+                {exercise.sets.map((set, i) => (
+                  <button
+                    key={i}
+                    className="set-chip"
+                    onClick={() => deleteSet(index, i)}
+                    title="Appuyer pour supprimer"
+                    type="button"
+                  >
+                    <span className="set-chip-weight">{set.weight}<span className="set-chip-unit">kg</span></span>
+                    <span className="set-chip-sep">×</span>
+                    <span className="set-chip-reps">{set.reps}</span>
+                    <span className="set-chip-del">×</span>
+                  </button>
+                ))}
               </div>
             )}
 
             {isExpanded && (
-              <div
-                className="set-inputs"
-                ref={(el) => { inputRefs.current[index] = el; }}
-              >
+              <div className="set-inputs" ref={(el) => { inputRefs.current[index] = el; }}>
                 <WeightInput
                   value={getWeight(index)}
                   onChange={(v) => setWeights((prev) => ({ ...prev, [index]: v }))}
