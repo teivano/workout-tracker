@@ -1,13 +1,12 @@
 // GARDE-FOU : utiliser UNIQUEMENT push_files pour modifier ce fichier
 import React, { useState, useEffect, useRef } from "react";
 
-// Muscles triés par ordre alphabétique (localeCompare fr)
 const MUSCLES = [
   { id: "abdominaux",   label: "Abdominaux" },
   { id: "adducteurs",   label: "Adducteurs" },
   { id: "avant_bras",   label: "Avant-bras" },
   { id: "biceps",       label: "Biceps" },
-  { id: "epaules",      label: "Épaules" },
+  { id: "epaules",      label: "\u00c9paules" },
   { id: "fessiers",     label: "Fessiers" },
   { id: "grand_dorsal", label: "Grand dorsal" },
   { id: "ischio",       label: "Ischio-jambiers" },
@@ -15,28 +14,27 @@ const MUSCLES = [
   { id: "obliques",     label: "Obliques" },
   { id: "pectoraux",    label: "Pectoraux" },
   { id: "quadriceps",   label: "Quadriceps" },
-  { id: "trapezes",     label: "Trapèzes" },
+  { id: "trapezes",     label: "Trap\u00e8zes" },
   { id: "triceps",      label: "Triceps" },
 ];
 
 const EXERCISES_BY_MUSCLE = {
-  pectoraux:    ["Développé couché", "Développé incliné", "Développé décliné", "Écarté poulie", "Écarté haltères", "Pompes", "Dips pectoraux", "Pec deck machine"],
-  epaules:      ["Développé militaire", "Développé Arnold", "Élévations latérales", "Élévations frontales", "Oiseau / Face pull", "Rowing menton", "Shrugs haltères", "Développé haltères assis"],
-  grand_dorsal: ["Tractions", "Tirage poulie haute", "Rowing barre", "Rowing haltère", "Tirage horizontal câble", "Pull-over poulie", "Tirage barre en T", "Tractions prises neutres"],
-  trapezes:     ["Shrugs barre", "Shrugs haltères", "Rowing menton", "Face pull", "Tirage nuque", "Élévations latérales arrière", "Rowing Yates", "Tirage basse poulie"],
-  biceps:       ["Curl barre droite", "Curl haltères", "Curl marteau", "Curl concentré", "Curl poulie basse", "Curl barre EZ", "Curl incliné", "Curl Zottman"],
-  triceps:      ["Dips triceps", "Extensions poulie haute", "Barre au front", "Kickback haltère", "Extensions haltère nuque", "Triceps corde poulie", "Close grip bench", "Dips banc"],
-  avant_bras:   ["Curl poignets", "Curl poignets inversé", "Pronation / supination", "Farmer carry", "Pinch grip", "Enroulement de poignet"],
-  abdominaux:   ["Crunch", "Planche", "Relevé de jambes", "Ab wheel", "Crunch à la poulie", "Sit-up", "Dragon flag", "Crunch inversé"],
-  obliques:     ["Crunch oblique", "Russian twist", "Planche latérale", "Woodchop poulie", "Dumbbell side bend", "Bicycle crunch"],
-  quadriceps:   ["Squat", "Presse à cuisses", "Fentes avant", "Leg extension", "Hack squat", "Goblet squat", "Fentes bulgares", "Sissy squat"],
-  ischio:       ["Soulevé de terre jambes tendues", "Leg curl couché", "Leg curl assis", "Good morning", "Hip hinge", "Fentes arrière", "Soulevé de terre roumain"],
-  fessiers:     ["Hip thrust", "Soulevé de terre sumo", "Fentes bulgares", "Abduction hanche machine", "Kick-back câble", "Squat sumo", "Step up", "Glute bridge"],
-  mollets:      ["Mollets debout", "Mollets assis", "Leg press mollets", "Mollets unijambistes", "Saut à la corde", "Tibia raises"],
-  adducteurs:   ["Adduction machine", "Sumo squat", "Fentes latérales", "Câble adduction", "Copenhagen plank", "Butterfly machine"],
+  pectoraux:    ["D\u00e9velopp\u00e9 couch\u00e9", "D\u00e9velopp\u00e9 inclin\u00e9", "D\u00e9velopp\u00e9 d\u00e9clin\u00e9", "\u00c9cart\u00e9 poulie", "\u00c9cart\u00e9 halt\u00e8res", "Pompes", "Dips pectoraux", "Pec deck machine"],
+  epaules:      ["D\u00e9velopp\u00e9 militaire", "D\u00e9velopp\u00e9 Arnold", "\u00c9l\u00e9vations lat\u00e9rales", "\u00c9l\u00e9vations frontales", "Oiseau / Face pull", "Rowing menton", "Shrugs halt\u00e8res", "D\u00e9velopp\u00e9 halt\u00e8res assis"],
+  grand_dorsal: ["Tractions", "Tirage poulie haute", "Rowing barre", "Rowing halt\u00e8re", "Tirage horizontal c\u00e2ble", "Pull-over poulie", "Tirage barre en T", "Tractions prises neutres"],
+  trapezes:     ["Shrugs barre", "Shrugs halt\u00e8res", "Rowing menton", "Face pull", "Tirage nuque", "\u00c9l\u00e9vations lat\u00e9rales arri\u00e8re", "Rowing Yates", "Tirage basse poulie"],
+  biceps:       ["Curl barre droite", "Curl halt\u00e8res", "Curl marteau", "Curl concentr\u00e9", "Curl poulie basse", "Curl barre EZ", "Curl inclin\u00e9", "Curl Zottman"],
+  triceps:      ["Dips triceps", "Extensions poulie haute", "Barre au front", "Kickback halt\u00e8re", "Extensions halt\u00e8re nuque", "Triceps corde poulie", "Close grip bench", "Dips banc"],
+  avant_bras:   ["Curl poignets", "Curl poignets invers\u00e9", "Pronation / supination", "Farmer carry", "Pinch grip", "Enroulement de poignet"],
+  abdominaux:   ["Crunch", "Planche", "Relev\u00e9 de jambes", "Ab wheel", "Crunch \u00e0 la poulie", "Sit-up", "Dragon flag", "Crunch invers\u00e9"],
+  obliques:     ["Crunch oblique", "Russian twist", "Planche lat\u00e9rale", "Woodchop poulie", "Dumbbell side bend", "Bicycle crunch"],
+  quadriceps:   ["Squat", "Presse \u00e0 cuisses", "Fentes avant", "Leg extension", "Hack squat", "Goblet squat", "Fentes bulgares", "Sissy squat"],
+  ischio:       ["Soulev\u00e9 de terre jambes tendues", "Leg curl couch\u00e9", "Leg curl assis", "Good morning", "Hip hinge", "Fentes arri\u00e8re", "Soulev\u00e9 de terre roumain"],
+  fessiers:     ["Hip thrust", "Soulev\u00e9 de terre sumo", "Fentes bulgares", "Abduction hanche machine", "Kick-back c\u00e2ble", "Squat sumo", "Step up", "Glute bridge"],
+  mollets:      ["Mollets debout", "Mollets assis", "Leg press mollets", "Mollets unijambistes", "Saut \u00e0 la corde", "Tibia raises"],
+  adducteurs:   ["Adduction machine", "Sumo squat", "Fentes lat\u00e9rales", "C\u00e2ble adduction", "Copenhagen plank", "Butterfly machine"],
 };
 
-// Dropdown muscles : se ferme après chaque sélection (recliquer sur "+ Ajouter" pour en ajouter un autre)
 function MuscleSelector({ selected, onChange }) {
   const [open, setOpen] = useState(false);
   const [dropPos, setDropPos] = useState({});
@@ -66,13 +64,12 @@ function MuscleSelector({ selected, onChange }) {
     setOpen((o) => !o);
   };
 
-  // Ferme le dropdown après sélection
   const toggle = (id) => {
     onChange(selected.includes(id)
       ? selected.filter((m) => m !== id)
       : [...selected, id]
     );
-    setOpen(false); // ferme après chaque sélection
+    setOpen(false);
   };
 
   const remaining = MUSCLES.filter((m) => !selected.includes(m.id));
@@ -91,7 +88,7 @@ function MuscleSelector({ selected, onChange }) {
                 onPointerDown={(e) => { e.stopPropagation(); }}
                 onClick={() => onChange(selected.filter((x) => x !== id))}
                 type="button"
-              >×</button>
+              >\u00d7</button>
             </span>
           );
         })}
@@ -132,6 +129,10 @@ export default function SessionList({
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [renamingIndex, setRenamingIndex] = useState(null);
   const [renameValue, setRenameValue] = useState("");
+  // Index de la s\u00e9ance nouvellement cr\u00e9\u00e9e (pour diff\u00e9rencier le btn)
+  const [newSessionIndex, setNewSessionIndex] = useState(null);
+  // Feedback visuel apr\u00e8s validation
+  const [savedIndex, setSavedIndex] = useState(null);
 
   const handleAddSession = () => {
     const val = sessionInput.trim();
@@ -142,6 +143,9 @@ export default function SessionList({
       return;
     }
     addSession(val);
+    // La nouvelle s\u00e9ance arrive en index 0 (prepend dans App.jsx)
+    setExpandedIndex(0);
+    setNewSessionIndex(0);
     setSessionInput("");
   };
 
@@ -160,12 +164,33 @@ export default function SessionList({
     setRenamingIndex(null);
   };
 
-  const toggleExpand = (index) =>
-    setExpandedIndex(expandedIndex === index ? null : index);
+  const toggleExpand = (index) => {
+    // Fermer une carte qui n'est pas en mode "nouvelle" efface le flag new
+    if (expandedIndex === index) {
+      setExpandedIndex(null);
+      setNewSessionIndex(null);
+    } else {
+      setExpandedIndex(index);
+    }
+  };
+
+  // Validation : ferme la carte, flash de confirmation bref
+  const handleSaveSession = (index) => {
+    setExpandedIndex(null);
+    setNewSessionIndex(null);
+    setSavedIndex(index);
+    setTimeout(() => setSavedIndex(null), 1800);
+  };
+
+  // Quand sessions change (ajout/suppression), recalibrer les index si n\u00e9cessaire
+  useEffect(() => {
+    // Si on ajoute une s\u00e9ance elle arrive en 0, les autres d\u00e9calent
+    // newSessionIndex = 0 est d\u00e9j\u00e0 correct car addSession prepend
+  }, [sessions.length]);
 
   return (
     <div className="session-list-page">
-      <p className="session-page-title">Mes séances</p>
+      <p className="session-page-title">Mes s\u00e9ances</p>
 
       <div className="input-row">
         <input
@@ -174,7 +199,7 @@ export default function SessionList({
           value={sessionInput}
           onChange={(e) => { if (e.target.value.length <= 30) setSessionInput(e.target.value); }}
           onKeyDown={(e) => e.key === "Enter" && handleAddSession()}
-          placeholder="Ex : Pecs épaules, Fessiers mollets…"
+          placeholder="Ex\u00a0: Pecs \u00e9paules, Fessiers mollets\u2026"
         />
         <button className="add-button" onClick={handleAddSession}>+</button>
       </div>
@@ -182,6 +207,8 @@ export default function SessionList({
       {sessions.map((session, index) => {
         const muscles = session.muscles || [];
         const isExpanded = expandedIndex === index;
+        const isNew = newSessionIndex === index;
+        const isSaved = savedIndex === index;
         const seen = new Set(session.exercises.map((e) => e.name));
         const muscleGroups = muscles
           .map((id) => ({
@@ -195,7 +222,7 @@ export default function SessionList({
         const exCountDanger = exCount === 0;
 
         return (
-          <div key={index} className="session-item">
+          <div key={index} className={`session-item${isSaved ? " session-item-saved" : ""}`}>
             <div className="session-header">
               <div className="session-header-left">
                 {renamingIndex === index ? (
@@ -219,9 +246,9 @@ export default function SessionList({
                 />
               </div>
               <div className="session-actions">
-                <button className="duplicate-btn" onClick={() => duplicateSession(index)}>⧉</button>
-                <button className="rename-btn" onClick={() => { setRenamingIndex(index); setRenameValue(session.name); }}>✏️</button>
-                <button className="delete-session" onClick={() => deleteSession(index)}>❌</button>
+                <button className="duplicate-btn" title="Dupliquer" onClick={() => duplicateSession(index)}>&#x29C7;</button>
+                <button className="rename-btn" title="Renommer" onClick={() => { setRenamingIndex(index); setRenameValue(session.name); }}>&#x270F;&#xFE0F;</button>
+                <button className="delete-session" title="Supprimer" onClick={() => deleteSession(index)}>&#x274C;</button>
               </div>
             </div>
 
@@ -233,7 +260,7 @@ export default function SessionList({
                     value={exerciseInputs[index] || ""}
                     onChange={(e) => setExerciseInputs((prev) => ({ ...prev, [index]: e.target.value }))}
                     onKeyDown={(e) => e.key === "Enter" && handleAddExercise(index)}
-                    placeholder="Exercice personnalisé…"
+                    placeholder="Exercice personnalis\u00e9\u2026"
                   />
                   <button className="add-button" onClick={() => handleAddExercise(index)}>+</button>
                 </div>
@@ -254,21 +281,29 @@ export default function SessionList({
                 )}
 
                 {session.exercises.length === 0 ? (
-                  <p className="no-exercises">Aucun exercice — ajoute-en un !</p>
+                  <p className="no-exercises">Aucun exercice \u2014 ajoute-en un\u00a0!</p>
                 ) : (
                   <div className="exercise-tags">
                     {session.exercises.map((ex, i) => (
                       <span key={i} className="exercise-tag">
                         <span className="exercise-tag-arrows">
-                          <button className="tag-arrow-btn" disabled={i === 0} onClick={() => moveExercise(index, i, -1)}>↑</button>
-                          <button className="tag-arrow-btn" disabled={i === session.exercises.length - 1} onClick={() => moveExercise(index, i, 1)}>↓</button>
+                          <button className="tag-arrow-btn" disabled={i === 0} onClick={() => moveExercise(index, i, -1)}>\u2191</button>
+                          <button className="tag-arrow-btn" disabled={i === session.exercises.length - 1} onClick={() => moveExercise(index, i, 1)}>\u2193</button>
                         </span>
                         <span className="exercise-tag-name">{ex.name}</span>
-                        <button className="exercise-tag-delete" onClick={() => deleteExercise(index, i)}>×</button>
+                        <button className="exercise-tag-delete" onClick={() => deleteExercise(index, i)}>\u00d7</button>
                       </span>
                     ))}
                   </div>
                 )}
+
+                {/* Bouton de validation en bas de la liste */}
+                <button
+                  className={`session-save-btn${isNew ? " session-save-btn-new" : ""}`}
+                  onClick={() => handleSaveSession(index)}
+                >
+                  {isNew ? "\u2713 Cr\u00e9er la s\u00e9ance" : "\u2713 Enregistrer"}
+                </button>
               </div>
             )}
 
@@ -276,9 +311,11 @@ export default function SessionList({
               className={`session-expand-btn ${isExpanded ? "open" : ""}`}
               onClick={() => toggleExpand(index)}
             >
-              {isExpanded
-                ? "▲ Réduire"
-                : <>▼ <span className={exCountDanger ? "expand-count-danger" : ""}>{exCount} exercice{exCount !== 1 ? "s" : ""}</span></>}
+              {isSaved
+                ? <span className="expand-saved-label">\u2713 Enregistr\u00e9e</span>
+                : isExpanded
+                ? "\u25b2 R\u00e9duire"
+                : <>{"\u25bc "}<span className={exCountDanger ? "expand-count-danger" : ""}>{exCount} exercice{exCount !== 1 ? "s" : ""}</span></>}
             </button>
           </div>
         );
