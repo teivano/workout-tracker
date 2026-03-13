@@ -1,3 +1,5 @@
+// GARDE-FOU : ne jamais modifier ce fichier via create_or_update_file
+// Utiliser UNIQUEMENT push_files (les autres outils encodent mal l'UTF-8)
 import React, { useState, useEffect } from "react";
 import SessionList from "./components/SessionList";
 import ExerciseList from "./components/ExerciseList";
@@ -272,7 +274,7 @@ export default function App() {
               onSelectSession={selectSession}
             />
           ) : mode === "history" ? (
-            <History session={historySession || selectedSession} />
+            <History session={historySession || selectedSession} sessions={sessions} />
           ) : mode === "train" && !selectedSession ? (
             <SessionPicker sessions={sessions} onSelect={selectSession} />
           ) : selectedSession ? (
@@ -312,7 +314,7 @@ export default function App() {
               </div>
               <div className="session-bar-progress">
                 <div
-                  className={`session-bar-fill${timerRunning ? " session-bar-fill-running" : ""}`}
+                  className={`session-bar-fill${timerRunning ? " session-bar-fill-running" : ""}${timerPct < 0.10 && timerRunning ? " session-bar-fill-danger" : ""}`}
                   style={{ width: `${timerPct * 100}%` }}
                 />
               </div>
@@ -322,8 +324,7 @@ export default function App() {
           <nav className="bottom-nav">
             <button
               className={`bnav-btn ${mode === "history" ? "active" : ""}`}
-              onClick={() => { if (selectedSession || historySession) setMode("history"); }}
-              disabled={!selectedSession && !historySession}
+              onClick={() => setMode("history")}
             >
               <div className="bnav-icon-wrap"><span className="bnav-icon">📊</span></div>
               <span className="bnav-label">Historique</span>

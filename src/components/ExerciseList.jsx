@@ -1,24 +1,68 @@
+// GARDE-FOU : utiliser UNIQUEMENT push_files pour modifier ce fichier
 import React, { useState, useEffect, useRef } from "react";
 
-const WEIGHT_STEPS = Array.from({ length: 81 }, (_, i) => Math.round(i * 2.5 * 10) / 10);
+// Poids : 0 à 200 kg avec granularité 0.5 kg = 401 valeurs
+const WEIGHT_STEPS = Array.from({ length: 401 }, (_, i) => Math.round(i * 0.5 * 10) / 10);
+
+// StepInput avec tap = ±0.5kg et long press = ±5kg
+function WeightInput({ value, onChange }) {
+  const longPressRef = useRef(null);
+  const repeatRef = useRef(null);
+
+  const getIdx = () => {
+    const idx = WEIGHT_STEPS.indexOf(value);
+    return idx >= 0 ? idx : WEIGHT_STEPS.findIndex((v) => v >= value);
+  };
+
+  const step = (delta) => {
+    const idx = getIdx();
+    const next = Math.max(0, Math.min(WEIGHT_STEPS.length - 1, idx + delta));
+    onChange(WEIGHT_STEPS[next]);
+  };
+
+  const startLongPress = (delta) => {
+    // Délai 400ms avant répétition rapide en +5kg
+    longPressRef.current = setTimeout(() => {
+      repeatRef.current = setInterval(() => step(delta * 10), 120);
+    }, 400);
+  };
+
+  const stopLongPress = () => {
+    clearTimeout(longPressRef.current);
+    clearInterval(repeatRef.current);
+  };
+
+  // Valeur affichée : toujours 1 décimale si .5, sinon entier
+  const display = Number.isInteger(value) ? `${value}` : `${value.toFixed(1)}`;
+
+  return (
+    <div className="step-input weight-input">
+      <button
+        className="step-btn"
+        onClick={() => step(-1)}
+        onPointerDown={() => startLongPress(-1)}
+        onPointerUp={stopLongPress}
+        onPointerLeave={stopLongPress}
+        type="button"
+      >−</button>
+      <span className="step-value">
+        {display}<span className="step-unit">kg</span>
+      </span>
+      <button
+        className="step-btn"
+        onClick={() => step(1)}
+        onPointerDown={() => startLongPress(1)}
+        onPointerUp={stopLongPress}
+        onPointerLeave={stopLongPress}
+        type="button"
+      >+</button>
+    </div>
+  );
+}
 
 function StepInput({ value, onChange, min = 0, step = 1, unit = "" }) {
-  const decrease = () => {
-    if (unit === "kg") {
-      const idx = WEIGHT_STEPS.indexOf(value);
-      onChange(idx > 0 ? WEIGHT_STEPS[idx - 1] : WEIGHT_STEPS[0]);
-    } else {
-      onChange(Math.max(min, value - step));
-    }
-  };
-  const increase = () => {
-    if (unit === "kg") {
-      const idx = WEIGHT_STEPS.indexOf(value);
-      onChange(idx < WEIGHT_STEPS.length - 1 ? WEIGHT_STEPS[idx + 1] : WEIGHT_STEPS[WEIGHT_STEPS.length - 1]);
-    } else {
-      onChange(value + step);
-    }
-  };
+  const decrease = () => onChange(Math.max(min, value - step));
+  const increase = () => onChange(value + step);
   return (
     <div className="step-input">
       <button className="step-btn" onClick={decrease} type="button">−</button>
@@ -67,7 +111,6 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
     exercises.reduce((t, ex) => t + ex.sets.length, 0)
   );
 
-  // Notifie le parent du nom de l'exercice expanded
   useEffect(() => {
     if (onExpandedChange) {
       const name = expandedIndex !== null ? exercises[expandedIndex]?.name ?? null : null;
@@ -75,7 +118,6 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
     }
   }, [expandedIndex, exercises, onExpandedChange]);
 
-  // Auto-scroll vers le formulaire de saisie après ajout de série
   useEffect(() => {
     const total = exercises.reduce((t, ex) => t + ex.sets.length, 0);
     if (total > prevTotalSets.current && expandedIndex !== null) {
@@ -119,7 +161,7 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
       <div className="empty-state" style={{ height: "40vh" }}>
         <span>🏋️</span>
         <p>Aucun exercice dans cette séance</p>
-        <small>Ajoute-en depuis ⚙️ Gérer</small>
+        <small>Ajoute-en depuis l'onglet Séances</small>
       </div>
     );
   }
@@ -178,10 +220,9 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
                 className="set-inputs"
                 ref={(el) => { inputRefs.current[index] = el; }}
               >
-                <StepInput
+                <WeightInput
                   value={getWeight(index)}
                   onChange={(v) => setWeights((prev) => ({ ...prev, [index]: v }))}
-                  unit="kg" min={0}
                 />
                 <StepInput
                   value={getReps(index)}

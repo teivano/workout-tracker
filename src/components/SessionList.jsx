@@ -1,20 +1,22 @@
+// GARDE-FOU : utiliser UNIQUEMENT push_files pour modifier ce fichier
 import React, { useState, useEffect, useRef } from "react";
 
+// Muscles triés par ordre alphabétique (localeCompare fr)
 const MUSCLES = [
-  { id: "pectoraux",    label: "Pectoraux" },
-  { id: "epaules",      label: "Épaules" },
-  { id: "grand_dorsal", label: "Grand dorsal" },
-  { id: "trapezes",     label: "Trapèzes" },
-  { id: "biceps",       label: "Biceps" },
-  { id: "triceps",      label: "Triceps" },
-  { id: "avant_bras",   label: "Avant-bras" },
   { id: "abdominaux",   label: "Abdominaux" },
-  { id: "obliques",     label: "Obliques" },
-  { id: "quadriceps",   label: "Quadriceps" },
-  { id: "ischio",       label: "Ischio-jambiers" },
-  { id: "fessiers",     label: "Fessiers" },
-  { id: "mollets",      label: "Mollets" },
   { id: "adducteurs",   label: "Adducteurs" },
+  { id: "avant_bras",   label: "Avant-bras" },
+  { id: "biceps",       label: "Biceps" },
+  { id: "epaules",      label: "Épaules" },
+  { id: "fessiers",     label: "Fessiers" },
+  { id: "grand_dorsal", label: "Grand dorsal" },
+  { id: "ischio",       label: "Ischio-jambiers" },
+  { id: "mollets",      label: "Mollets" },
+  { id: "obliques",     label: "Obliques" },
+  { id: "pectoraux",    label: "Pectoraux" },
+  { id: "quadriceps",   label: "Quadriceps" },
+  { id: "trapezes",     label: "Trapèzes" },
+  { id: "triceps",      label: "Triceps" },
 ];
 
 const EXERCISES_BY_MUSCLE = {
@@ -34,7 +36,7 @@ const EXERCISES_BY_MUSCLE = {
   adducteurs:   ["Adduction machine", "Sumo squat", "Fentes latérales", "Câble adduction", "Copenhagen plank", "Butterfly machine"],
 };
 
-// Fix dropdown : position fixed calculée au clic, fermeture sur pointerdown hors zone
+// Dropdown muscles : se ferme après chaque sélection (recliquer sur "+ Ajouter" pour en ajouter un autre)
 function MuscleSelector({ selected, onChange }) {
   const [open, setOpen] = useState(false);
   const [dropPos, setDropPos] = useState({});
@@ -44,12 +46,10 @@ function MuscleSelector({ selected, onChange }) {
   useEffect(() => {
     if (!open) return;
     const handler = (e) => {
-      // Ne ferme PAS si le clic vient du dropdown lui-même
       if (dropRef.current?.contains(e.target)) return;
       if (btnRef.current?.contains(e.target)) return;
       setOpen(false);
     };
-    // pointerdown pour intercepter avant le click, mais en ignorant le dropdown
     document.addEventListener("pointerdown", handler);
     return () => document.removeEventListener("pointerdown", handler);
   }, [open]);
@@ -66,13 +66,13 @@ function MuscleSelector({ selected, onChange }) {
     setOpen((o) => !o);
   };
 
+  // Ferme le dropdown après sélection
   const toggle = (id) => {
     onChange(selected.includes(id)
       ? selected.filter((m) => m !== id)
       : [...selected, id]
     );
-    // On garde le dropdown ouvert pour permettre la multi-sélection
-    // On ne ferme que si on clique à l'extérieur
+    setOpen(false); // ferme après chaque sélection
   };
 
   const remaining = MUSCLES.filter((m) => !selected.includes(m.id));
@@ -106,7 +106,6 @@ function MuscleSelector({ selected, onChange }) {
                   <button
                     key={m.id}
                     className="muscle-dropdown-item"
-                    // onPointerDown + preventDefault empêche le blur/pointerdown extérieur de se déclencher
                     onPointerDown={(e) => e.preventDefault()}
                     onClick={() => toggle(m.id)}
                     type="button"
@@ -192,6 +191,9 @@ export default function SessionList({
           }))
           .filter((g) => g.exercises.length > 0);
 
+        const exCount = session.exercises.length;
+        const exCountDanger = exCount === 0;
+
         return (
           <div key={index} className="session-item">
             <div className="session-header">
@@ -217,7 +219,6 @@ export default function SessionList({
                 />
               </div>
               <div className="session-actions">
-                <button className="session-play-btn" onClick={() => onSelectSession(index)}>▶</button>
                 <button className="duplicate-btn" onClick={() => duplicateSession(index)}>⧉</button>
                 <button className="rename-btn" onClick={() => { setRenamingIndex(index); setRenameValue(session.name); }}>✏️</button>
                 <button className="delete-session" onClick={() => deleteSession(index)}>❌</button>
@@ -277,7 +278,7 @@ export default function SessionList({
             >
               {isExpanded
                 ? "▲ Réduire"
-                : `▼ ${session.exercises.length} exercice${session.exercises.length !== 1 ? "s" : ""}`}
+                : <>▼ <span className={exCountDanger ? "expand-count-danger" : ""}>{exCount} exercice{exCount !== 1 ? "s" : ""}</span></>}
             </button>
           </div>
         );

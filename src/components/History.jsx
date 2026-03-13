@@ -1,3 +1,4 @@
+// GARDE-FOU : utiliser UNIQUEMENT push_files pour modifier ce fichier
 import React, { useState } from "react";
 
 const formatDate = (iso) =>
@@ -14,8 +15,20 @@ const totalVolume = (exercises) =>
 const totalSets = (exercises) =>
   exercises.reduce((t, ex) => t + ex.sets.length, 0);
 
-export default function History({ session }) {
+export default function History({ session, sessions }) {
   const [expandedIndex, setExpandedIndex] = useState(0);
+
+  // Aucune session sélectionnée ET aucun historique dans aucune séance
+  if (!session) {
+    const hasAnyHistory = sessions?.some((s) => s.history?.length > 0);
+    return (
+      <div className="empty-state">
+        <span>📅</span>
+        <p>Pas encore de séance enregistrée</p>
+        <small>{hasAnyHistory ? "Sélectionne une séance depuis l'onglet Entraînement" : "Commence par t'entraîner et termine une séance !"}</small>
+      </div>
+    );
+  }
 
   if (!session.history || session.history.length === 0) {
     return (
