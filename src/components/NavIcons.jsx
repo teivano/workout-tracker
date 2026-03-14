@@ -2,6 +2,26 @@
 // Icones SVG custom navbar — style iOS, trait fin, currentColor
 import React from "react";
 
+// Logo Workout Tracker — fleur de tiaré tahitienne avec haltère au centre
+export function LogoTiare({ size = 22 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Workout Tracker">
+      {/* 5 pétales de tiaré */}
+      <ellipse cx="20" cy="6" rx="5" ry="10" fill="var(--accent)" opacity="0.9" transform="rotate(0 20 20)"/>
+      <ellipse cx="20" cy="6" rx="5" ry="10" fill="var(--accent)" opacity="0.9" transform="rotate(72 20 20)"/>
+      <ellipse cx="20" cy="6" rx="5" ry="10" fill="var(--accent)" opacity="0.9" transform="rotate(144 20 20)"/>
+      <ellipse cx="20" cy="6" rx="5" ry="10" fill="var(--accent)" opacity="0.9" transform="rotate(216 20 20)"/>
+      <ellipse cx="20" cy="6" rx="5" ry="10" fill="var(--accent)" opacity="0.9" transform="rotate(288 20 20)"/>
+      {/* Centre blanc */}
+      <circle cx="20" cy="20" r="8" fill="white"/>
+      {/* Haltère dans le centre */}
+      <rect x="11" y="18.5" width="18" height="3" rx="1" fill="#1a1a1a"/>
+      <rect x="10" y="16" width="4" height="8" rx="1.2" fill="#1a1a1a"/>
+      <rect x="26" y="16" width="4" height="8" rx="1.2" fill="#1a1a1a"/>
+    </svg>
+  );
+}
+
 // Historique — graphe barres croissantes
 export function IconHistory({ size = 22 }) {
   return (
@@ -56,4 +76,3 @@ export function IconSettings({ size = 22 }) {
     </svg>
   );
 }
-// Sync
