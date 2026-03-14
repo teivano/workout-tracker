@@ -101,7 +101,6 @@ function DeltaBadge({ currentSets, lastSets }) {
   );
 }
 
-// SVG empty state — haltère minimaliste
 function DumbbellSVG() {
   return (
     <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" style={{opacity:0.35}}>
@@ -130,6 +129,7 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
   const inputRefs = useRef({});
   const prevTotalSets = useRef(exercises.reduce((t, ex) => t + ex.sets.length, 0));
 
+  // Notifie le parent du nom de l'exercice actif (pour le header)
   useEffect(() => {
     if (onExpandedChange) {
       const name = expandedIndex !== null ? exercises[expandedIndex]?.name ?? null : null;
@@ -137,6 +137,16 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
     }
   }, [expandedIndex, exercises, onExpandedChange]);
 
+  // Scroll automatique lors du changement d'exercice (ex: "Exercice terminé")
+  useEffect(() => {
+    if (expandedIndex !== null) {
+      setTimeout(() => {
+        inputRefs.current[expandedIndex]?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 150);
+    }
+  }, [expandedIndex]);
+
+  // Scroll automatique lors de l'ajout d'une série
   useEffect(() => {
     const total = exercises.reduce((t, ex) => t + ex.sets.length, 0);
     if (total > prevTotalSets.current && expandedIndex !== null) {
@@ -163,12 +173,19 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
   const getWeight = (i) => weights[i] ?? 0;
   const getReps = (i) => reps[i] ?? 10;
 
-  const handleAddSet = (exerciseIndex) => {
+  const handleAddSetInternal = (exerciseIndex) => {
     const weight = getWeight(exerciseIndex);
     const rep = getReps(exerciseIndex);
     if (weight >= 0 && rep > 0) {
       addSet(exerciseIndex, weight, rep);
-      setExpandedIndex(exerciseIndex);
+    }
+  };
+
+  const handleNextExercise = (currentIndex) => {
+    if (currentIndex + 1 < exercises.length) {
+      setExpandedIndex(currentIndex + 1);
+    } else {
+      setExpandedIndex(null); // Referme tout si c'est le dernier
     }
   };
 
@@ -194,7 +211,7 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
                 <span className="exercise-name">{exercise.name}</span>
                 {lastData && (
                   <span className="last-session-hint">
-                    Dernière fois : 
+                    Dernière fois : 
                     {lastData.sets.map((s, i) => (
                       <span key={i}>
                         {i > 0 && <span className="hint-sep"> · </span>}
@@ -215,7 +232,6 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
               </div>
             </div>
 
-            {/* Séries en chips visuels */}
             {exercise.sets.length > 0 && (
               <div className="exercise-sets-chips">
                 {exercise.sets.map((set, i) => (
@@ -237,16 +253,34 @@ export default function ExerciseList({ exercises, history, addSet, deleteSet, fl
 
             {isExpanded && (
               <div className="set-inputs" ref={(el) => { inputRefs.current[index] = el; }}>
-                <WeightInput
-                  value={getWeight(index)}
-                  onChange={(v) => setWeights((prev) => ({ ...prev, [index]: v }))}
-                />
-                <StepInput
-                  value={getReps(index)}
-                  onChange={(v) => setReps((prev) => ({ ...prev, [index]: v }))}
-                  unit=" reps" min={1} step={1}
-                />
-                <button className="add-set-button" onClick={() => handleAddSet(index)}>+ Série</button>
+                <div style={{ display: 'flex', gap: '10px', width: '100%', alignItems: 'center' }}>
+                  <WeightInput
+                    value={getWeight(index)}
+                    onChange={(v) => setWeights((prev) => ({ ...prev, [index]: v }))}
+                  />
+                  <StepInput
+                    value={getReps(index)}
+                    onChange={(v) => setReps((prev) => ({ ...prev, [index]: v }))}
+                    unit=" reps" min={1} step={1}
+                  />
+                </div>
+
+                <div className="exercise-card-footer">
+                  <button 
+                    className="btn-finish-serie" 
+                    onClick={() => handleAddSetInternal(index)}
+                    type="button"
+                  >
+                    Série terminée
+                  </button>
+                  <button 
+                    className="btn-finish-exo" 
+                    onClick={() => handleNextExercise(index)}
+                    type="button"
+                  >
+                    Exercice terminé
+                  </button>
+                </div>
               </div>
             )}
           </li>
