@@ -5,25 +5,25 @@ const SLIDES = [
   {
     id: "welcome",
     title: ["Ton coach de salle,", "dans ta poche"],
-    sub: "Organise tes s\u00e9ances, suis tes s\u00e9ries en temps r\u00e9el et regarde ta progression semaine apr\u00e8s semaine.",
+    sub: "Organise tes séances, suis tes séries en temps réel et regarde ta progression semaine après semaine.",
     visual: "welcome",
   },
   {
     id: "sessions",
-    title: ["Cr\u00e9e tes s\u00e9ances"],
-    sub: "Choisis tes muscles cibles \u2014 les exercices sugg\u00e9r\u00e9s apparaissent automatiquement.",
+    title: ["Crée tes séances"],
+    sub: "Choisis tes muscles cibles \u2014 les exercices suggérés apparaissent automatiquement.",
     visual: "sessions",
   },
   {
     id: "train",
-    title: ["Entra\u00eene-toi"],
-    sub: "Timer de repos automatique. Tes meilleures perfs de la derni\u00e8re s\u00e9ance s'affichent en temps r\u00e9el.",
+    title: ["Entraîne-toi"],
+    sub: "Timer de repos automatique. Tes meilleures perfs de la dernière séance s'affichent en temps réel.",
     visual: "train",
   },
   {
     id: "history",
     title: ["Regarde ta progression"],
-    sub: "Historique complet, streak hebdo, graphiques. Chaque s\u00e9ance compte.",
+    sub: "Historique complet, streak hebdo, graphiques. Chaque séance compte.",
     visual: "history",
   },
 ];
@@ -41,7 +41,7 @@ function VisualWelcome() {
         </svg>
       </div>
       <div className="ob-welcome-pills">
-        {["S\u00e9ances", "Timer", "Stats", "Progression"].map((label, i) => (
+        {["Séances", "Timer", "Stats", "Progression"].map((label, i) => (
           <span key={i} className={`ob-pill ${i === 0 ? "ob-pill-accent" : "ob-pill-dim"}`}
             style={{ animationDelay: `${i * 0.08}s` }}>
             {label}
@@ -66,7 +66,7 @@ function VisualSessions() {
           ))}
         </div>
         <div className="ob-mock-exos">
-          {["D\u00e9velopp\u00e9 couch\u00e9", "\u00c9l\u00e9vations lat\u00e9rales", "Dips triceps"].map((ex, i) => (
+          {["Développé couché", "\u00c9lévations latérales", "Dips triceps"].map((ex, i) => (
             <div key={i} className="ob-mock-ex-row">
               <div className="ob-mock-dot ob-dot-dim" />
               <span className="ob-mock-ex">{ex}</span>
@@ -107,8 +107,8 @@ function VisualTrain() {
       </div>
       <div className="ob-mock-card" style={{ marginTop: "0" }}>
         <div className="ob-mock-row" style={{ justifyContent: "space-between" }}>
-          <span className="ob-mock-title">D\u00e9velopp\u00e9 couch\u00e9</span>
-          <span className="ob-pill ob-pill-accent" style={{ fontSize: "10px", padding: "2px 8px" }}>3 s\u00e9ries</span>
+          <span className="ob-mock-title">Développé couché</span>
+          <span className="ob-pill ob-pill-accent" style={{ fontSize: "10px", padding: "2px 8px" }}>3 séries</span>
         </div>
         <div className="ob-set-chips">
           {["80kg\u00b710", "80kg\u00b79", "82.5kg\u00b78"].map((s, i) => (
@@ -127,11 +127,11 @@ function VisualHistory() {
       <div className="ob-stats-row">
         <div className="ob-stat-card">
           <span className="ob-stat-val">24</span>
-          <span className="ob-stat-lbl">S\u00e9ances</span>
+          <span className="ob-stat-lbl">Séances</span>
         </div>
         <div className="ob-stat-card">
           <span className="ob-stat-val">48'</span>
-          <span className="ob-stat-lbl">Dur\u00e9e moy.</span>
+          <span className="ob-stat-lbl">Durée moy.</span>
         </div>
       </div>
       <div className="ob-mock-card" style={{ padding: "10px 12px" }}>
@@ -145,7 +145,7 @@ function VisualHistory() {
             </div>
           ))}
         </div>
-        <div className="ob-bar-caption">\u2191 Ta meilleure s\u00e9ance</div>
+        <div className="ob-bar-caption">\u2191 Ta meilleure séance</div>
       </div>
     </div>
   );
