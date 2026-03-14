@@ -56,3 +56,4 @@ export function IconSettings({ size = 22 }) {
     </svg>
   );
 }
+// Sync
