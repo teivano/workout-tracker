@@ -33,7 +33,6 @@ function formatLastDate(history) {
   return d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
 }
 
-// Dupliqué depuis History.jsx — évite une dépendance inter-composants
 function formatDuration(seconds) {
   if (!seconds || seconds <= 0) return null;
   const h = Math.floor(seconds / 3600);
@@ -42,26 +41,26 @@ function formatDuration(seconds) {
   return `${m} min`;
 }
 
-// SVG haltère minimaliste
-function DumbbellPickerSVG() {
+function IllustrationTraining() {
   return (
-    <svg width="48" height="48" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" style={{opacity:0.3}}>
-      <rect x="4" y="22" width="8" height="12" rx="3" fill="currentColor"/>
-      <rect x="44" y="22" width="8" height="12" rx="3" fill="currentColor"/>
-      <rect x="10" y="19" width="6" height="18" rx="2" fill="currentColor"/>
-      <rect x="40" y="19" width="6" height="18" rx="2" fill="currentColor"/>
-      <rect x="16" y="26" width="24" height="4" rx="2" fill="currentColor"/>
-    </svg>
+    <div className="empty-illustration">
+      <svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 65C30 65 40 45 60 45C80 45 90 65 110 65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.3"/>
+        <rect x="30" y="35" width="60" height="6" rx="3" fill="currentColor"/>
+        <path d="M35 41V55M85 41V55M45 41V48M75 41V48" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+      </svg>
+    </div>
   );
 }
 
+// C'est cette ligne qu'il ne faut pas oublier !
 export default function SessionPicker({ sessions, onSelect }) {
   if (sessions.length === 0) {
     return (
-      <div className="empty-state" style={{ height: "60vh" }}>
-        <DumbbellPickerSVG />
-        <p>Aucune séance créée</p>
-        <small>Va dans 📋 Séances pour créer ta première séance</small>
+      <div className="empty-state-rich">
+        <IllustrationTraining />
+        <h3>Prêt pour ta séance ?</h3>
+        <p>Crée d'abord un programme dans l'onglet <b>Séances</b> pour commencer à t'entraîner.</p>
       </div>
     );
   }

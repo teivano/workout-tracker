@@ -349,7 +349,7 @@ export default function App() {
                   className={`finish-session-btn${confirmFinish ? " finish-session-btn-confirm" : ""}`}
                   onClick={handleFinishClick}
                 >
-                  {confirmFinish ? "⚠️ Appuyer à nouveau pour terminer" : "Terminer la séance"}
+                  {confirmFinish ? "Appuyer à nouveau pour terminer" : "Terminer la séance"}
                 </button>
               )}
             </>
@@ -399,4 +399,3 @@ export default function App() {
     </>
   );
 }
-// Sync

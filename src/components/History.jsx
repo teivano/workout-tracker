@@ -66,41 +66,35 @@ function WeekStreak({ history }) {
   );
 }
 
-// SVG calendrier minimaliste
-function CalendarSVG() {
+// Illustration Pro : Sablier + Progression
+function IllustrationHistory() {
   return (
-    <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" style={{opacity:0.35}}>
-      <rect x="4" y="10" width="44" height="36" rx="5" stroke="currentColor" strokeWidth="2.5" fill="none"/>
-      <rect x="14" y="4" width="4" height="12" rx="2" fill="currentColor"/>
-      <rect x="34" y="4" width="4" height="12" rx="2" fill="currentColor"/>
-      <line x1="4" y1="22" x2="48" y2="22" stroke="currentColor" strokeWidth="2"/>
-      <rect x="13" y="28" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.6"/>
-      <rect x="23" y="28" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.6"/>
-      <rect x="33" y="28" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.3"/>
-    </svg>
+    <div className="empty-illustration">
+      <svg width="100" height="80" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M35 20H65M35 60H65M40 20C40 35 60 35 60 20M40 60C40 45 60 45 60 60" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+        <path d="M75 35L80 30L85 35M80 30V50" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <rect x="30" y="15" width="40" height="5" rx="2" fill="currentColor" opacity="0.3"/>
+        <rect x="30" y="60" width="40" height="5" rx="2" fill="currentColor" opacity="0.3"/>
+      </svg>
+    </div>
   );
 }
 
 export default function History({ session, sessions }) {
   const [expandedIndex, setExpandedIndex] = useState(0);
 
-  if (!session) {
-    const hasAnyHistory = sessions?.some((s) => s.history?.length > 0);
+  // État vide enrichi
+  const hasAnyHistory = sessions?.some((s) => s.history?.length > 0);
+  if (!session || !session.history || session.history.length === 0) {
     return (
-      <div className="empty-state">
-        <CalendarSVG />
-        <p>Pas encore de séance enregistrée</p>
-        <small>{hasAnyHistory ? "Sélectionne une séance depuis l'onglet Entraînement" : "Commence par t'entraîner et termine une séance !"}</small>
-      </div>
-    );
-  }
-
-  if (!session.history || session.history.length === 0) {
-    return (
-      <div className="empty-state">
-        <CalendarSVG />
-        <p>Aucune séance terminée pour l'instant</p>
-        <small>Appuie sur ✅ pour archiver une séance</small>
+      <div className="empty-state-rich">
+        <IllustrationHistory />
+        <h3>Aucun historique</h3>
+        <p>
+          {hasAnyHistory 
+            ? "Sélectionne une séance dans la liste pour voir tes anciennes performances." 
+            : "Termine ta première séance pour voir apparaître tes graphiques et ta progression ici."}
+        </p>
       </div>
     );
   }

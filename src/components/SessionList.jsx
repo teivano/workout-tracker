@@ -37,15 +37,16 @@ const EXERCISES_BY_MUSCLE = {
   autres:       [],
 };
 
-function DumbbellEmptySVG() {
+// Illustration Pro : Dossier + Force
+function IllustrationSessions() {
   return (
-    <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.35 }}>
-      <rect x="4" y="22" width="8" height="12" rx="3" fill="currentColor" />
-      <rect x="44" y="22" width="8" height="12" rx="3" fill="currentColor" />
-      <rect x="10" y="19" width="6" height="18" rx="2" fill="currentColor" />
-      <rect x="40" y="19" width="6" height="18" rx="2" fill="currentColor" />
-      <rect x="16" y="26" width="24" height="4" rx="2" fill="currentColor" />
-    </svg>
+    <div className="empty-illustration">
+      <svg width="100" height="80" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 25C10 22.2386 12.2386 20 15 20H35L42 28H85C87.7614 28 90 30.2386 90 33V65C90 67.7614 87.7614 70 85 70H15C12.2386 70 10 67.7614 10 65V25Z" stroke="currentColor" strokeWidth="2.5"/>
+        <circle cx="50" cy="49" r="8" stroke="currentColor" strokeWidth="2" strokeDasharray="4 2"/>
+        <path d="M47 49L50 46L53 49M50 46V53" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      </svg>
+    </div>
   );
 }
 
@@ -134,40 +135,64 @@ export default function SessionList({
   renameSession, deleteExercise, moveExercise,
   duplicateSession, setMusclesSession, onSelectSession,
 }) {
-  const [sessionInput, setSessionInput] = useState("");
-  const [showInput, setShowInput] = useState(false);
+  // États pour la création progressive
+  const [isCreating, setIsCreating] = useState(false);
+  const [draftName, setDraftName] = useState("");
+  const [draftMuscles, setDraftMuscles] = useState([]);
+  const [draftExercises, setDraftExercises] = useState([]);
+  const [draftExInput, setDraftExInput] = useState("");
+
   const [exerciseInputs, setExerciseInputs] = useState({});
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [renamingIndex, setRenamingIndex] = useState(null);
   const [renameValue, setRenameValue] = useState("");
-  const [newSessionIndex, setNewSessionIndex] = useState(null);
   const [savedIndex, setSavedIndex] = useState(null);
-  const inputRef = useRef(null);
+  
+  const draftInputRef = useRef(null);
+  const draftCardRef = useRef(null);
 
+  // Auto-focus et Scroll lors de la création
   useEffect(() => {
-    if (showInput) setTimeout(() => inputRef.current?.focus(), 60);
-  }, [showInput]);
-
-  const handleAddSession = () => {
-    const val = sessionInput.trim();
-    if (!val || val.length > 30) {
-      inputRef.current?.classList.add("input-error");
-      setTimeout(() => inputRef.current?.classList.remove("input-error"), 300);
-      return;
+    if (isCreating) {
+      setTimeout(() => {
+        draftInputRef.current?.focus();
+        draftCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
     }
-    addSession(val);
-    setSessionInput("");
-    setShowInput(false);
-    setExpandedIndex(0);
-    setNewSessionIndex(0);
+  }, [isCreating]);
+
+  const handleStartCreation = () => {
+    setIsCreating(true);
+    setDraftName("");
+    setDraftMuscles([]);
+    setDraftExercises([]);
   };
 
-  const handleAddExercise = (sessionIndex, name) => {
-    const val = name !== undefined ? name : exerciseInputs[sessionIndex] || "";
+  const handleCancelCreation = () => {
+    setIsCreating(false);
+  };
+
+  const handleConfirmCreation = () => {
+    if (!draftName.trim()) return;
+    // Ajout de la séance via le parent
+    addSession(draftName.trim());
+    
+    // Application immédiate des muscles et exercices au nouvel index 0
+    setTimeout(() => {
+      if (draftMuscles.length > 0) setMusclesSession(0, draftMuscles);
+      draftExercises.forEach(ex => addExercise(0, ex));
+      setSavedIndex(0);
+      setTimeout(() => setSavedIndex(null), 1800);
+    }, 50);
+
+    setIsCreating(false);
+  };
+
+  const handleAddDraftExercise = (name) => {
+    const val = name || draftExInput;
     if (val.trim()) {
-      addExercise(sessionIndex, val.trim());
-      if (name === undefined)
-        setExerciseInputs((prev) => ({ ...prev, [sessionIndex]: "" }));
+      setDraftExercises(prev => [...prev, val.trim()]);
+      setDraftExInput("");
     }
   };
 
@@ -178,38 +203,17 @@ export default function SessionList({
   };
 
   const toggleExpand = (index) => {
-    if (expandedIndex === index) {
-      setExpandedIndex(null);
-      setNewSessionIndex(null);
-    } else {
-      const muscles = sessions[index]?.muscles || [];
-      if (muscles.length === 0) return;
-      setExpandedIndex(index);
-    }
+    setExpandedIndex(expandedIndex === index ? null : index);
   };
 
-  const handleMusclesChange = (index, muscles) => {
-    setMusclesSession(index, muscles);
-    if (muscles.length > 0 && sessions[index]?.exercises?.length === 0) {
-      setExpandedIndex(index);
-    }
-  };
-
-  const handleSaveSession = (index) => {
-    setExpandedIndex(null);
-    setNewSessionIndex(null);
-    setSavedIndex(index);
-    setTimeout(() => setSavedIndex(null), 1800);
-  };
-
-  if (sessions.length === 0 && !showInput) {
+  if (sessions.length === 0 && !isCreating) {
     return (
       <div className="session-list-page">
-        <div className="empty-state" style={{ height: "55vh" }}>
-          <DumbbellEmptySVG />
-          <p>Aucune séance créée</p>
-          <small>Commence par créer ta première séance d’entraînement</small>
-          <button className="session-create-btn" onClick={() => setShowInput(true)}>
+        <div className="empty-state-rich">
+          <IllustrationSessions />
+          <h3>Organise ton entraînement</h3>
+          <p>Crée tes propres séances personnalisées pour suivre tes progrès.</p>
+          <button className="session-create-btn" style={{marginTop: '20px'}} onClick={handleStartCreation}>
             + Nouvelle séance
           </button>
         </div>
@@ -221,53 +225,98 @@ export default function SessionList({
     <div className="session-list-page">
       <p className="session-page-title">Mes séances</p>
 
-      <div className="session-create-row">
-        {showInput ? (
-          <div className="session-create-input-wrap">
-            <input
-              ref={inputRef}
-              type="text"
-              className="session-input"
-              value={sessionInput}
-              onChange={(e) => { if (e.target.value.length <= 30) setSessionInput(e.target.value); }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleAddSession();
-                if (e.key === "Escape") { setShowInput(false); setSessionInput(""); }
-              }}
-              placeholder="Nom de la séance…"
-            />
-            <button className="session-create-btn session-create-btn-confirm" onClick={handleAddSession}>
-              Créer
-            </button>
-            <button className="session-create-btn-cancel" onClick={() => { setShowInput(false); setSessionInput(""); }}>
-              Annuler
-            </button>
-          </div>
-        ) : (
-          <button className="session-create-btn" onClick={() => setShowInput(true)}>
+      {!isCreating && (
+        <div className="session-create-row">
+          <button className="session-create-btn" onClick={handleStartCreation}>
             + Nouvelle séance
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
+      {/* CARTE DE CRÉATION (DRAFT) */}
+      {isCreating && (
+<div className="session-item session-item-draft" ref={draftCardRef}>          <div className="session-header">
+            <div className="session-header-left">
+              <input
+                ref={draftInputRef}
+                className="rename-input"
+                style={{ width: '100%', marginBottom: '8px' }}
+                value={draftName}
+                onChange={(e) => setDraftName(e.target.value)}
+                placeholder="Nom de la séance..."
+              />
+              
+              {/* Le MuscleSelector s'affiche dès le début, mais les options d'exercices restent fermées */}
+              <MuscleSelector
+                selected={draftMuscles}
+                onChange={setDraftMuscles}
+              />
+            </div>
+            <div className="session-actions">
+              <button className="session-create-btn-cancel" onClick={handleCancelCreation}>Annuler</button>
+            </div>
+          </div>
+
+          {/* Déverrouillage des exercices si 1+ muscle sélectionné */}
+          {draftMuscles.length > 0 && (
+            <div className="session-exercises">
+              <div className="input-row" style={{ marginBottom: 6 }}>
+                <input
+                  type="text"
+                  value={draftExInput}
+                  onChange={(e) => setDraftExInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddDraftExercise()}
+                  placeholder="Ajouter un exercice..."
+                />
+                <button className="add-button" onClick={() => handleAddDraftExercise()}>+</button>
+              </div>
+
+              {/* Suggestions basées sur les muscles sélectionnés */}
+              <div className="biblio-groups">
+                {draftMuscles.map(id => (
+                  <div key={id} className="biblio-group">
+                    <p className="biblio-group-label">{MUSCLES.find(m => m.id === id)?.label}</p>
+                    <div className="biblio-suggestions">
+                      {EXERCISES_BY_MUSCLE[id]?.filter(n => !draftExercises.includes(n)).map(name => (
+                        <button key={name} className="biblio-chip" onClick={() => handleAddDraftExercise(name)}>{name}</button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Liste des exercices ajoutés au draft */}
+              {draftExercises.length > 0 && (
+                <div className="exercise-tags">
+                  {draftExercises.map((ex, i) => (
+                    <span key={i} className="exercise-tag">
+                      <span className="exercise-tag-name">{ex}</span>
+                      <button className="exercise-tag-delete" onClick={() => setDraftExercises(prev => prev.filter((_, idx) => idx !== i))}>×</button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div style={{ padding: '0 16px 16px' }}>
+            <button
+              className="session-save-btn session-save-btn-new"
+              onClick={handleConfirmCreation}
+              disabled={!draftName.trim()}
+            >
+              ✓ Créer la séance
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* LISTE DES SÉANCES EXISTANTES */}
       {sessions.map((session, index) => {
         const muscles = session.muscles || [];
         const isExpanded = expandedIndex === index;
-        const isNew = newSessionIndex === index;
         const isSaved = savedIndex === index;
-        const hasMuscles = muscles.length > 0;
-        const seen = new Set(session.exercises.map((e) => e.name));
-        const muscleGroups = muscles
-          .filter((id) => id !== "autres")
-          .map((id) => ({
-            id,
-            label: MUSCLES.find((m) => m.id === id)?.label || id,
-            exercises: (EXERCISES_BY_MUSCLE[id] || []).filter((n) => !seen.has(n)),
-          }))
-          .filter((g) => g.exercises.length > 0);
-
         const exCount = session.exercises.length;
-        const exCountDanger = exCount === 0;
 
         return (
           <div key={index} className={`session-item${isSaved ? " session-item-saved" : ""}`}>
@@ -279,10 +328,7 @@ export default function SessionList({
                     value={renameValue}
                     autoFocus
                     onChange={(e) => setRenameValue(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") confirmRename(index);
-                      if (e.key === "Escape") setRenamingIndex(null);
-                    }}
+                    onKeyDown={(e) => e.key === "Enter" && confirmRename(index)}
                     onBlur={() => confirmRename(index)}
                   />
                 ) : (
@@ -290,49 +336,28 @@ export default function SessionList({
                 )}
                 <MuscleSelector
                   selected={muscles}
-                  onChange={(m) => handleMusclesChange(index, m)}
+                  onChange={(m) => setMusclesSession(index, m)}
                 />
               </div>
               <div className="session-actions">
-                <button className="duplicate-btn" title="Dupliquer" onClick={() => duplicateSession(index)}>&#x29C7;</button>
-                <button className="rename-btn" title="Renommer" onClick={() => { setRenamingIndex(index); setRenameValue(session.name); }}>&#x270F;&#xFE0F;</button>
-                <button className="delete-session" title="Supprimer" onClick={() => deleteSession(index)}>&#x274C;</button>
+                <button className="duplicate-btn" title="Dupliquer" onClick={() => duplicateSession(index)}>❐</button>
+                <button className="rename-btn" title="Renommer" onClick={() => { setRenamingIndex(index); setRenameValue(session.name); }}>✎</button>
+                <button className="delete-session" title="Supprimer" onClick={() => deleteSession(index)}>✕</button>
               </div>
             </div>
 
             {isExpanded && (
               <div className="session-exercises">
-                {exCount === 0 && hasMuscles && (
-                  <p className="session-exercises-prompt">
-                    Ajoute des exercices depuis les suggestions ci-dessous ↓
-                  </p>
-                )}
-
                 <div className="input-row" style={{ marginBottom: 6 }}>
                   <input
                     type="text"
                     value={exerciseInputs[index] || ""}
-                    onChange={(e) => setExerciseInputs((prev) => ({ ...prev, [index]: e.target.value }))}
-                    onKeyDown={(e) => e.key === "Enter" && handleAddExercise(index)}
-                    placeholder="Exercice personnalisé…"
+                    onChange={(e) => setExerciseInputs(prev => ({ ...prev, [index]: e.target.value }))}
+                    onKeyDown={(e) => e.key === "Enter" && addExercise(index, exerciseInputs[index])}
+                    placeholder="Exercice personnalisé..."
                   />
-                  <button className="add-button" onClick={() => handleAddExercise(index)}>+</button>
+                  <button className="add-button" onClick={() => { addExercise(index, exerciseInputs[index]); setExerciseInputs(p => ({...p, [index]: ""})); }}>+</button>
                 </div>
-
-                {muscleGroups.length > 0 && (
-                  <div className="biblio-groups">
-                    {muscleGroups.map((g) => (
-                      <div key={g.id} className="biblio-group">
-                        <p className="biblio-group-label">{g.label}</p>
-                        <div className="biblio-suggestions">
-                          {g.exercises.map((name) => (
-                            <button key={name} className="biblio-chip" onClick={() => handleAddExercise(index, name)}>{name}</button>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
 
                 {exCount > 0 && (
                   <div className="exercise-tags">
@@ -340,7 +365,7 @@ export default function SessionList({
                       <span key={i} className="exercise-tag">
                         <span className="exercise-tag-arrows">
                           <button className="tag-arrow-btn" disabled={i === 0} onClick={() => moveExercise(index, i, -1)}>↑</button>
-                          <button className="tag-arrow-btn" disabled={i === session.exercises.length - 1} onClick={() => moveExercise(index, i, 1)}>↓</button>
+                          <button className="tag-arrow-btn" disabled={i === exCount - 1} onClick={() => moveExercise(index, i, 1)}>↓</button>
                         </span>
                         <span className="exercise-tag-name">{ex.name}</span>
                         <button className="exercise-tag-delete" onClick={() => deleteExercise(index, i)}>×</button>
@@ -349,28 +374,14 @@ export default function SessionList({
                   </div>
                 )}
 
-                <button
-                  className={`session-save-btn${isNew ? " session-save-btn-new" : ""}`}
-                  onClick={() => handleSaveSession(index)}
-                >
-                  {isNew ? "✓ Créer la séance" : "✓ Enregistrer"}
+                <button className="session-save-btn" onClick={() => setExpandedIndex(null)}>
+                  ✓ Enregistrer
                 </button>
               </div>
             )}
 
-            <button
-              className={`session-expand-btn ${isExpanded ? "open" : ""}${!hasMuscles ? " session-expand-btn-hint" : ""}`}
-              onClick={() => toggleExpand(index)}
-            >
-              {isSaved ? (
-                <span className="expand-saved-label">✓ Enregistrée</span>
-              ) : !hasMuscles ? (
-                <span className="expand-hint-label">↑ Sélectionne d’abord des muscles</span>
-              ) : isExpanded ? (
-                "▲ Réduire"
-              ) : (
-                <>{"\u25bc "}<span className={exCountDanger ? "expand-count-danger" : ""}>{exCount} exercice{exCount !== 1 ? "s" : ""}</span></>
-              )}
+            <button className="session-expand-btn" onClick={() => toggleExpand(index)}>
+              {isExpanded ? "▲ Réduire" : `▼ ${exCount} exercice${exCount !== 1 ? "s" : ""}`}
             </button>
           </div>
         );
@@ -378,4 +389,3 @@ export default function SessionList({
     </div>
   );
 }
-// Sync
