@@ -8,7 +8,7 @@ import History from "./components/History";
 import Onboarding from "./components/Onboarding";
 import SessionPicker from "./components/SessionPicker";
 import Settings, { applyAccentColor } from "./components/Settings";
-import { IconHistory, IconTrain, IconSessions, IconSettings } from "./components/NavIcons";
+import { LogoTiare, IconHistory, IconTrain, IconSessions, IconSettings } from "./components/NavIcons";
 
 const useIsDesktop = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
@@ -268,8 +268,9 @@ export default function App() {
             </>
           ) : (
             <div className="app-title-block">
-              <span className="app-title">Workout</span>
-            </div>
+  <LogoTiare size={24} />
+  <span className="app-title">Workout Tracker</span>
+</div>
           )}
         </div>
 
