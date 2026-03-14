@@ -145,7 +145,7 @@ function VisualHistory() {
             </div>
           ))}
         </div>
-        <div className="ob-bar-caption">\u2191 Ta meilleure séance</div>
+        <div className="ob-bar-caption">↑ Ta meilleure séance</div>
       </div>
     </div>
   );
