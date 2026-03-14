@@ -3,12 +3,10 @@ import { APP_VERSION } from "../version.js";
 
 const PALETTE = [
   { id: "green",  label: "Vert",   accent: "#28a745", dim: "rgba(40,167,69,0.18)",   border: "rgba(40,167,69,0.3)",   text: "#4cdb78" },
-  { id: "blue",   label: "Bleu",   accent: "#2196f3", dim: "rgba(33,150,243,0.18)",  border: "rgba(33,150,243,0.3)",  text: "#64b8ff" },
-  { id: "violet", label: "Violet", accent: "#9c27b0", dim: "rgba(156,39,176,0.18)",  border: "rgba(156,39,176,0.3)",  text: "#ce7de8" },
-  { id: "orange", label: "Orange", accent: "#ff7043", dim: "rgba(255,112,67,0.18)",  border: "rgba(255,112,67,0.3)",  text: "#ff9a78" },
-  { id: "red",    label: "Rouge",  accent: "#e53935", dim: "rgba(229,57,53,0.18)",   border: "rgba(229,57,53,0.3)",   text: "#ff6b6b" },
   { id: "cyan",   label: "Cyan",   accent: "#00bcd4", dim: "rgba(0,188,212,0.18)",   border: "rgba(0,188,212,0.3)",   text: "#4dd9ed" },
   { id: "pink",   label: "Rose",   accent: "#e91e63", dim: "rgba(233,30,99,0.18)",   border: "rgba(233,30,99,0.3)",   text: "#f06292" },
+  { id: "orange", label: "Orange", accent: "#ff7043", dim: "rgba(255,112,67,0.18)",  border: "rgba(255,112,67,0.3)",  text: "#ff9a78" },
+  { id: "red",    label: "Rouge",  accent: "#e53935", dim: "rgba(229,57,53,0.18)",   border: "rgba(229,57,53,0.3)",   text: "#ff6b6b" },
 ];
 
 const REST_OPTIONS = [
